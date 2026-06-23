@@ -1,0 +1,292 @@
+@let r = record();
+@let insp = r.inspectionData;
+
+<!-- Job Details -->
+<div class="grid grid-cols-2 gap-x-8 gap-y-3 mb-5 text-sm">
+  <div>
+    <span class="text-slate-500">Description</span>
+    <p class="text-slate-800 font-medium mt-0.5">{{ r.jobDescription }}</p>
+  </div>
+  <div>
+    <span class="text-slate-500">Status</span>
+    <div class="mt-0.5"><app-status-badge [status]="r.status" /></div>
+  </div>
+  <div>
+    <span class="text-slate-500">Planned Date</span>
+    <p class="text-slate-800 mt-0.5">{{ r.plannedDate | dateFormat }}</p>
+  </div>
+  <div>
+    <span class="text-slate-500">Completed Date</span>
+    <p class="text-slate-800 mt-0.5">{{ (r.completedDate | dateFormat) || '—' }}</p>
+  </div>
+  <div>
+    <span class="text-slate-500">Operator</span>
+    <p class="text-slate-800 mt-0.5">{{ r.operatorName }}</p>
+  </div>
+  <div>
+    <span class="text-slate-500">Next PM Date</span>
+    <p class="text-slate-800 mt-0.5">{{ (r.nextPmDate | dateFormat) || '—' }}</p>
+  </div>
+</div>
+
+@if (!insp) {
+  <p class="text-sm text-slate-400 italic py-4 text-center">No inspection data recorded for this PM.</p>
+} @else {
+
+  <div class="space-y-3">
+
+    <!-- XT Body -->
+    <div class="border border-slate-200 rounded-lg overflow-hidden">
+      <button type="button" (click)="toggleSection('xtBody')"
+        class="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors text-left">
+        <span class="text-sm font-semibold text-slate-700">XT</span>
+        <svg class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="sectionExpanded().xtBody"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      @if (sectionExpanded().xtBody) {
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 border-t border-slate-200">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-36">Component</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Init P (psi)</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Final P (psi)</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Leak Test</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-28">Function Test</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-20">Status</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">Comment</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (row of [
+                {label: 'Body', c: insp.xtBody.xtBody, fn: false},
+                {label: 'UMV',  c: insp.xtBody.umv,   fn: true},
+                {label: 'LMV',  c: insp.xtBody.lmv,   fn: true},
+                {label: 'WV',   c: insp.xtBody.wv,    fn: true},
+                {label: 'KWV',  c: insp.xtBody.kwv,   fn: true},
+                {label: 'SV',   c: insp.xtBody.sv,    fn: true}
+              ]; track row.label) {
+                <tr class="hover:bg-slate-50">
+                  <td class="px-4 py-2 font-medium text-slate-700">{{ row.label }}</td>
+                  <td class="px-3 py-2 text-slate-700 font-mono text-xs">{{ row.c.initialPressure ?? '—' }}</td>
+                  <td class="px-3 py-2 text-slate-700 font-mono text-xs">{{ row.c.finalPressure ?? '—' }}</td>
+                  <td class="px-3 py-2">
+                    @if (row.c.leakTest) {
+                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.c.leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ row.c.leakTest }}</span>
+                    } @else { <span class="text-slate-400 text-xs">—</span> }
+                  </td>
+                  <td class="px-3 py-2">
+                    @if (row.fn && $any(row.c).functionTest) {
+                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + ($any(row.c).functionTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ $any(row.c).functionTest }}</span>
+                    } @else { <span class="text-slate-400 text-xs">—</span> }
+                  </td>
+                  <td class="px-3 py-2">
+                    <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.c.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ row.c.currentStatus }}</span>
+                  </td>
+                  <td class="px-3 py-2 text-slate-600 text-xs">{{ row.c.comment || '—' }}</td>
+                </tr>
+              }
+              <!-- Stuffing Box -->
+              <tr class="hover:bg-slate-50 bg-slate-50/40">
+                <td class="px-4 py-2 font-medium text-slate-700">Stuffing Box</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2">
+                  <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (insp.xtBody.stuffingBox.currentStatus === 'Clean' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800')">
+                    {{ insp.xtBody.stuffingBox.currentStatus }}
+                  </span>
+                </td>
+                <td class="px-3 py-2 text-slate-600 text-xs">{{ insp.xtBody.stuffingBox.comment || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    <!-- Wellhead -->
+    <div class="border border-slate-200 rounded-lg overflow-hidden">
+      <button type="button" (click)="toggleSection('wellhead')"
+        class="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors text-left">
+        <span class="text-sm font-semibold text-slate-700">Wellhead</span>
+        <svg class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="sectionExpanded().wellhead"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      @if (sectionExpanded().wellhead) {
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 border-t border-slate-200">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-44">Component</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Init P (psi)</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Final P (psi)</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Leak Test</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-28">Function Test</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-20">Status</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">Comment</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (row of [
+                {label: 'XMT Carrier A',         c: insp.wellhead.xmtCarrierA,          fn: false},
+                {label: 'Tbg Hgr Carrier B',     c: insp.wellhead.tubingHangerCarrierB,  fn: false},
+                {label: 'Cavity C',              c: insp.wellhead.cavityC,               fn: false},
+                {label: 'TBG HGR Seal D',        c: insp.wellhead.tbgHgrSealD,           fn: false},
+                {label: '7" CSG Pack-off',       c: insp.wellhead.csg7inPackOff,         fn: false},
+                {label: '9-5/8" CSG Pack-off',   c: insp.wellhead.csg9inPackOff,         fn: false},
+                {label: 'A-ann CSG Valve',       c: insp.wellhead.aAnnCsgValve,          fn: true},
+                {label: 'B-ann CSG',             c: insp.wellhead.bAnnCsg,              fn: true},
+                {label: 'C-ann CSG',             c: insp.wellhead.cAnnCsg,              fn: true}
+              ]; track row.label) {
+                <tr class="hover:bg-slate-50">
+                  <td class="px-4 py-2 font-medium text-slate-700 whitespace-nowrap">{{ row.label }}</td>
+                  <td class="px-3 py-2 text-slate-700 font-mono text-xs">{{ row.c.initialPressure ?? '—' }}</td>
+                  <td class="px-3 py-2 text-slate-700 font-mono text-xs">{{ row.c.finalPressure ?? '—' }}</td>
+                  <td class="px-3 py-2">
+                    @if (row.c.leakTest) {
+                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.c.leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ row.c.leakTest }}</span>
+                    } @else { <span class="text-slate-400 text-xs">—</span> }
+                  </td>
+                  <td class="px-3 py-2">
+                    @if (row.fn && $any(row.c).functionTest) {
+                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + ($any(row.c).functionTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ $any(row.c).functionTest }}</span>
+                    } @else { <span class="text-slate-400 text-xs">—</span> }
+                  </td>
+                  <td class="px-3 py-2">
+                    <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.c.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ row.c.currentStatus }}</span>
+                  </td>
+                  <td class="px-3 py-2 text-slate-600 text-xs">{{ row.c.comment || '—' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    <!-- Tubing -->
+    <div class="border border-slate-200 rounded-lg overflow-hidden">
+      <button type="button" (click)="toggleSection('tubing')"
+        class="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors text-left">
+        <span class="text-sm font-semibold text-slate-700">Tubing</span>
+        <svg class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="sectionExpanded().tubing"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      @if (sectionExpanded().tubing) {
+        @let dhsv = insp.tubing.dhsv;
+        @let tub = insp.tubing.tubing;
+        <div class="p-4 space-y-4 border-t border-slate-200">
+          <!-- DHSV -->
+          <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide">DHSV</h3>
+          <div class="grid grid-cols-3 gap-3 text-sm">
+            <div><span class="text-slate-500 text-xs">Pressure Before Inflow Test (psi)</span><p class="font-mono text-slate-800 mt-0.5">{{ dhsv.pressureBeforeInflowTest ?? '—' }}</p></div>
+            <div><span class="text-slate-500 text-xs">Initial P When Inflow Test (psi)</span><p class="font-mono text-slate-800 mt-0.5">{{ dhsv.initialPressureWhenInflowTest ?? '—' }}</p></div>
+            <div><span class="text-slate-500 text-xs">Final Pressure (psi)</span><p class="font-mono text-slate-800 mt-0.5">{{ dhsv.finalPressure ?? '—' }}</p></div>
+            <div>
+              <span class="text-slate-500 text-xs">Leak Rate / Leak Test</span>
+              <div class="flex items-center gap-2 mt-0.5">
+                @if (dhsv.leakRate != null) {
+                  <span class="font-mono text-slate-800 text-sm">{{ dhsv.leakRate | number:'1.2-4' }}</span>
+                  <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (dhsv.leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ dhsv.leakTest }}</span>
+                } @else { <span class="text-slate-400">—</span> }
+              </div>
+            </div>
+            <div><span class="text-slate-500 text-xs">Hydraulic Return (psi)</span><p class="font-mono text-slate-800 mt-0.5">{{ dhsv.hydraulicReturn ?? '—' }}</p></div>
+            <div>
+              <span class="text-slate-500 text-xs">Function Test</span>
+              <div class="mt-0.5">
+                @if (dhsv.functionTest) {
+                  <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (dhsv.functionTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ dhsv.functionTest }}</span>
+                } @else { <span class="text-slate-400">—</span> }
+              </div>
+            </div>
+            <div>
+              <span class="text-slate-500 text-xs">Current Status</span>
+              <div class="mt-0.5">
+                <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (dhsv.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ dhsv.currentStatus }}</span>
+              </div>
+            </div>
+            <div class="col-span-2"><span class="text-slate-500 text-xs">Comment</span><p class="text-slate-700 mt-0.5">{{ dhsv.comment || '—' }}</p></div>
+          </div>
+
+          <!-- Tubing subsection -->
+          <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide pt-2 border-t border-slate-100">Tubing</h3>
+          <div class="grid grid-cols-3 gap-3 text-sm">
+            <div><span class="text-slate-500 text-xs">Pressure Before (psi)</span><p class="font-mono text-slate-800 mt-0.5">{{ tub.pressureBefore ?? '—' }}</p></div>
+            <div><span class="text-slate-500 text-xs">Pressure After (psi)</span><p class="font-mono text-slate-800 mt-0.5">{{ tub.pressureAfter ?? '—' }}</p></div>
+            <div><span class="text-slate-500 text-xs">Current Status</span><p class="text-slate-800 mt-0.5">{{ tub.currentStatus }}</p></div>
+            <div><span class="text-slate-500 text-xs">Temperature Before (°C)</span><p class="font-mono text-slate-800 mt-0.5">{{ tub.temperatureBefore ?? '—' }}</p></div>
+            <div><span class="text-slate-500 text-xs">Temperature After (°C)</span><p class="font-mono text-slate-800 mt-0.5">{{ tub.temperatureAfter ?? '—' }}</p></div>
+            <div><span class="text-slate-500 text-xs">Comment</span><p class="text-slate-700 mt-0.5">{{ tub.comment || '—' }}</p></div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Annulus Pressure -->
+    <div class="border border-slate-200 rounded-lg overflow-hidden">
+      <button type="button" (click)="toggleSection('annulusPressure')"
+        class="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors text-left">
+        <span class="text-sm font-semibold text-slate-700">Annulus Pressure</span>
+        <svg class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="sectionExpanded().annulusPressure"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      @if (sectionExpanded().annulusPressure) {
+        <div class="overflow-x-auto border-t border-slate-200">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-28">Annulus</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-32">Top Op. Window (psi)</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-28">Current P (psi)</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-32">PBU Rate (psi/min)</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-20">Status</th>
+                <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">Comment</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (row of [
+                {label: 'A-Annulus', c: insp.annulusPressure.aAnn},
+                {label: 'B-Annulus', c: insp.annulusPressure.bAnn},
+                {label: 'C-Annulus', c: insp.annulusPressure.cAnn}
+              ]; track row.label) {
+                <tr class="hover:bg-slate-50">
+                  <td class="px-4 py-2 font-medium text-slate-700">{{ row.label }}</td>
+                  <td class="px-3 py-2 font-mono text-xs text-slate-700">{{ row.c.tow ?? '—' }}</td>
+                  <td class="px-3 py-2 font-mono text-xs text-slate-700">{{ row.c.currentPressure ?? '—' }}</td>
+                  <td class="px-3 py-2 font-mono text-xs text-slate-700">{{ row.c.pbuRate ?? '—' }}</td>
+                  <td class="px-3 py-2">
+                    <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.c.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ row.c.currentStatus }}</span>
+                  </td>
+                  <td class="px-3 py-2 text-slate-600 text-xs">{{ row.c.comment || '—' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+  </div>
+
+  <!-- Open in PM Records link -->
+  <div class="mt-4 flex justify-end">
+    <a [routerLink]="['/pm-records/edit', r.id]"
+      class="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+      Open in PM Records
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    </a>
+  </div>
+}

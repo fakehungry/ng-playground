@@ -1,0 +1,65 @@
+<div class="py-2 text-sm select-none">
+  @for (asset of assets(); track asset.id) {
+    <!-- Asset row -->
+    <button
+      type="button"
+      (click)="handleAssetClick(asset.id, $event)"
+      class="w-full flex items-center gap-1.5 px-3 py-1.5 text-left font-semibold text-slate-800 hover:bg-slate-50 transition-colors"
+      [class.border-l-2]="hasAnySelectedInAsset(asset.id)"
+      [class.border-blue-500]="hasAnySelectedInAsset(asset.id)"
+      [class.pl-2.5]="hasAnySelectedInAsset(asset.id)"
+    >
+      <!-- Chevron -->
+      <svg
+        class="w-3.5 h-3.5 shrink-0 text-slate-400 transition-transform"
+        [class.rotate-90]="isAssetExpanded(asset.id)"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+      <span class="truncate text-xs">{{ asset.name }}</span>
+    </button>
+
+    @if (isAssetExpanded(asset.id)) {
+      @for (platform of platformsFor(asset.id); track platform.id) {
+        <!-- Platform row -->
+        <button
+          type="button"
+          (click)="handlePlatformClick(asset.id, platform.id, $event)"
+          class="w-full flex items-center gap-1.5 pl-6 pr-3 py-1.5 text-left text-slate-700 hover:bg-slate-50 transition-colors"
+          [class.border-l-2]="hasAnySelectedInPlatform(platform.id)"
+          [class.border-blue-400]="hasAnySelectedInPlatform(platform.id)"
+          [class.pl-5.5]="hasAnySelectedInPlatform(platform.id)"
+        >
+          <svg
+            class="w-3 h-3 shrink-0 text-slate-400 transition-transform"
+            [class.rotate-90]="isPlatformExpanded(platform.id)"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          <span class="truncate text-xs font-medium">{{ platform.name }}</span>
+        </button>
+
+        @if (isPlatformExpanded(platform.id)) {
+          @for (well of wellsFor(platform.id); track well.id) {
+            <!-- Well row -->
+            <button
+              type="button"
+              (click)="handleWellClick(well.id, $event)"
+              class="w-full flex items-center gap-2 pl-10 pr-3 py-1 text-left text-xs transition-colors"
+              [class]="isWellSelected(well.id)
+                ? 'bg-blue-50 text-blue-700 font-medium border-l-2 border-blue-500 pl-9'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+            >
+              <span class="w-1.5 h-1.5 rounded-full shrink-0"
+                [class]="isWellSelected(well.id) ? 'bg-blue-500' : 'bg-slate-300'">
+              </span>
+              <span class="truncate">{{ well.name }}</span>
+            </button>
+          }
+        }
+      }
+    }
+  }
+</div>
