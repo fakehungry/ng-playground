@@ -23222,5 +23222,55 @@
       "remark": "High priority — escalated to Superintendent"
     }
   ],
+  "failureReports": [
+    {
+      "id": "ZkfZh6sUHhY",
+      "wellId": "w1",
+      "reportDate": "2026-06-24",
+      "reportedBy": "Test Engineer",
+      "xt": {
+        "body": {
+          "status": "Fail",
+          "comment": "testsss"
+        },
+        "umv": {
+          "status": "Good",
+          "comment": ""
+        },
+        "lmv": {
+          "status": "Good",
+          "comment": ""
+        },
+        "wv": {
+          "status": "Good",
+          "comment": ""
+        },
+        "kwv": {
+          "status": "Good",
+          "comment": ""
+        },
+        "sv": {
+          "status": "Good",
+          "comment": ""
+        }
+      },
+      "annulusPressure": {
+        "aAnn": {
+          "status": "Good",
+          "comment": ""
+        },
+        "bAnn": {
+          "status": "Fail",
+          "comment": "sss"
+        },
+        "cAnn": {
+          "status": "Good",
+          "comment": ""
+        }
+      },
+      "createdAt": "2026-06-24T08:37:36.336Z",
+      "updatedAt": "2026-06-24T08:44:22.188Z"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

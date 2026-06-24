@@ -234,3 +234,30 @@ export interface WellStatusRow {
   nextPmDate: string | null;
   issueText: string;
 }
+
+export interface FailureReportItem {
+  status: ComponentStatus;
+  comment: string;
+}
+
+export interface FailureReport {
+  id: string;
+  wellId: string;
+  reportDate: string;
+  reportedBy: string;
+  xt: {
+    body: FailureReportItem;
+    umv:  FailureReportItem;
+    lmv:  FailureReportItem;
+    wv:   FailureReportItem;
+    kwv:  FailureReportItem;
+    sv:   FailureReportItem;
+  };
+  annulusPressure: {
+    aAnn: FailureReportItem;
+    bAnn: FailureReportItem;
+    cAnn: FailureReportItem;
+  };
+  createdAt: string;
+  updatedAt: string;
+}

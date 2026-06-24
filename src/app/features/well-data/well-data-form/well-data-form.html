@@ -1,7 +1,7 @@
 <div class="p-6 max-w-3xl mx-auto space-y-4">
   <!-- Header -->
   <div class="mb-2">
-    <h1 class="text-xl font-bold text-slate-900">Well Data Input</h1>
+    <h1 class="text-xl font-bold text-slate-900">Engineering Data</h1>
     <p class="text-sm text-slate-500 mt-0.5">Configure well parameters, annulus data, and view PM history</p>
   </div>
 
@@ -135,30 +135,114 @@
       </button>
     </div>
 
-    <!-- PM History -->
+    <!-- History (PM Records + Failure Reports) -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-200">
-        <h2 class="text-sm font-semibold text-slate-700">PM History</h2>
+        <h2 class="text-sm font-semibold text-slate-700">Well History</h2>
       </div>
 
       <div class="p-5">
-        @if (wellPmRecords().length === 0) {
-          <p class="text-sm text-slate-400 text-center py-6">No PM records for this well.</p>
+        @if (historyItems().length === 0) {
+          <p class="text-sm text-slate-400 text-center py-6">No records for this well.</p>
         } @else {
           <div class="mb-4">
-            <label class="block text-sm font-medium text-slate-700 mb-1">Select PM Record</label>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Select Record</label>
             <select
-              (change)="onSelectPm($event)"
+              (change)="onSelectItem($event)"
               class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
-              @for (pm of wellPmRecords(); track pm.id) {
-                <option [value]="pm.id" [selected]="pm.id === selectedPmId()">{{ pmRecordLabel(pm) }}</option>
+              @for (item of historyItems(); track item.id) {
+                <option [value]="item.id" [selected]="item.id === selectedItemId()">{{ item.label }}</option>
               }
             </select>
           </div>
 
-          @if (selectedPm(); as pm) {
-            <app-pm-inspection-view [record]="pm" />
+          @if (selectedItem(); as item) {
+            @if (item.type === 'pm') {
+              <app-pm-inspection-view [record]="item.record" />
+            } @else {
+              <!-- Inline Failure Report view -->
+              @let fr = item.record;
+              <div class="space-y-1 text-sm text-slate-600 mb-4 grid grid-cols-2 gap-x-8 gap-y-2">
+                <div><span class="text-slate-500">Report Date</span><p class="text-slate-800 font-medium mt-0.5">{{ fr.reportDate }}</p></div>
+                <div><span class="text-slate-500">Reported By</span><p class="text-slate-800 font-medium mt-0.5">{{ fr.reportedBy }}</p></div>
+              </div>
+
+              <div class="space-y-3">
+                <!-- XT -->
+                <div class="border border-slate-200 rounded-lg overflow-hidden">
+                  <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-700">XT</span>
+                  </div>
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                      <thead class="bg-slate-50 border-t border-slate-200">
+                        <tr>
+                          <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-36">Component</th>
+                          <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Status</th>
+                          <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">Comment</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100">
+                        @for (row of [
+                          {label: 'Body', item: fr.xt.body},
+                          {label: 'UMV',  item: fr.xt.umv},
+                          {label: 'LMV',  item: fr.xt.lmv},
+                          {label: 'WV',   item: fr.xt.wv},
+                          {label: 'KWV',  item: fr.xt.kwv},
+                          {label: 'SV',   item: fr.xt.sv}
+                        ]; track row.label) {
+                          <tr class="hover:bg-slate-50">
+                            <td class="px-4 py-2 font-medium text-slate-700">{{ row.label }}</td>
+                            <td class="px-3 py-2">
+                              <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.item.status === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+                                {{ row.item.status }}
+                              </span>
+                            </td>
+                            <td class="px-3 py-2 text-slate-600 text-xs">{{ row.item.comment || '—' }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Annulus Pressure -->
+                <div class="border border-slate-200 rounded-lg overflow-hidden">
+                  <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-700">Annulus Pressure</span>
+                  </div>
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                      <thead class="bg-slate-50 border-t border-slate-200">
+                        <tr>
+                          <th class="px-4 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-36">Annulus</th>
+                          <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Status</th>
+                          <th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide">Comment</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100">
+                        @for (row of [
+                          {label: 'A-Annulus', item: fr.annulusPressure.aAnn},
+                          {label: 'B-Annulus', item: fr.annulusPressure.bAnn},
+                          {label: 'C-Annulus', item: fr.annulusPressure.cAnn}
+                        ]; track row.label) {
+                          <tr class="hover:bg-slate-50">
+                            <td class="px-4 py-2 font-medium text-slate-700">{{ row.label }}</td>
+                            <td class="px-3 py-2">
+                              <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.item.status === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
+                                {{ row.item.status }}
+                              </span>
+                            </td>
+                            <td class="px-3 py-2 text-slate-600 text-xs">{{ row.item.comment || '—' }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            }
           }
         }
       </div>

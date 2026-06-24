@@ -7,14 +7,21 @@ import {
   AnnulusFormValue,
   AnnulusType,
   CompletionType,
+  FailureReport,
   IntegrityStatus,
   PmRecord,
   WellConfigFormValue,
 } from '../../../core/models/well-integrity.models';
 import { PmService } from '../../../core/services/pm.service';
+import { FailureReportService } from '../../../core/services/failure-report.service';
 import { AnnulusTab } from '../annulus-tab/annulus-tab';
 import { PmInspectionView } from '../pm-inspection-view/pm-inspection-view';
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
+
+type HistoryItem =
+  | { type: 'pm'; id: string; label: string; record: PmRecord }
+  | { type: 'failure'; id: string; label: string; record: FailureReport };
+
 @Component({
   selector: 'app-well-data-form',
   standalone: true,
@@ -25,6 +32,7 @@ export class WellDataForm implements OnInit {
   protected readonly wellService = inject(WellService);
   protected readonly wellDataService = inject(WellDataService);
   protected readonly pmService = inject(PmService);
+  protected readonly failureReportService = inject(FailureReportService);
 
   @ViewChildren(AnnulusTab) private annulusTabs!: QueryList<AnnulusTab>;
 
@@ -32,6 +40,7 @@ export class WellDataForm implements OnInit {
     this.wellService.selectAsset(null);
     this.wellDataService.clear();
     this.pmService.clear();
+    this.failureReportService.clear();
   }
 
   protected readonly annulusTypes: AnnulusType[] = ['A', 'B', 'C'];
@@ -39,7 +48,7 @@ export class WellDataForm implements OnInit {
   protected readonly saving = signal(false);
   protected readonly saveSuccess = signal(false);
   protected readonly errorMsg = signal('');
-  protected readonly selectedPmId = signal<string | null>(null);
+  protected readonly selectedItemId = signal<string | null>(null);
 
   protected readonly configForm = new FormGroup({
     completionType: new FormControl<CompletionType>('Conventional', { nonNullable: true }),
@@ -49,9 +58,6 @@ export class WellDataForm implements OnInit {
 
   private readonly _configTick = toSignal(this.configForm.valueChanges, { initialValue: null });
 
-  // All three statuses computed from the saved record + current configForm values.
-  // Uses record data for A-ann TOC and B-ann shoe depth (cross-annulus references).
-  // Statuses refresh after Save All or when configForm changes.
   protected readonly allAnnulusStatuses = computed<Record<AnnulusType, IntegrityStatus>>(() => {
     this._configTick();
     const record = this.wellDataService.record();
@@ -80,8 +86,30 @@ export class WellDataForm implements OnInit {
     });
   });
 
-  protected readonly selectedPm = computed<PmRecord | null>(
-    () => this.wellPmRecords().find(r => r.id === this.selectedPmId()) ?? null,
+  protected readonly historyItems = computed<HistoryItem[]>(() => {
+    const pms: HistoryItem[] = this.wellPmRecords().map(r => ({
+      type: 'pm',
+      id: r.id,
+      label: `[PM] ${r.completedDate ?? r.plannedDate} — ${r.jobDescription.slice(0, 35)} (${r.status})`,
+      record: r,
+    }));
+    const frs: HistoryItem[] = [...this.failureReportService.reports()]
+      .sort((a, b) => b.reportDate.localeCompare(a.reportDate))
+      .map(r => ({
+        type: 'failure',
+        id: r.id,
+        label: `[FR] ${r.reportDate} — Reported by ${r.reportedBy}`,
+        record: r,
+      }));
+    return [...pms, ...frs].sort((a, b) => {
+      const da = a.type === 'pm' ? (a.record.completedDate ?? a.record.plannedDate) : a.record.reportDate;
+      const db = b.type === 'pm' ? (b.record.completedDate ?? b.record.plannedDate) : b.record.reportDate;
+      return db.localeCompare(da);
+    });
+  });
+
+  protected readonly selectedItem = computed<HistoryItem | null>(
+    () => this.historyItems().find(i => i.id === this.selectedItemId()) ?? null,
   );
 
   constructor() {
@@ -93,9 +121,9 @@ export class WellDataForm implements OnInit {
           mocRecord: record.mocRecord ?? false,
           topPerforation: record.topPerforation ?? null,
         });
-        const latest = this.wellPmRecords();
-        if (latest.length && !this.selectedPmId()) {
-          this.selectedPmId.set(latest[0].id);
+        const items = this.historyItems();
+        if (items.length && !this.selectedItemId()) {
+          this.selectedItemId.set(items[0].id);
         }
       } else {
         this.configForm.reset({ completionType: 'Conventional', mocRecord: false, topPerforation: null });
@@ -111,14 +139,14 @@ export class WellDataForm implements OnInit {
     const id = (event.target as HTMLSelectElement).value;
     this.wellService.selectAsset(id);
     this.wellDataService.clear();
-    this.selectedPmId.set(null);
+    this.selectedItemId.set(null);
   }
 
   protected onPlatformChange(event: Event): void {
     const id = (event.target as HTMLSelectElement).value;
     this.wellService.selectPlatform(id);
     this.wellDataService.clear();
-    this.selectedPmId.set(null);
+    this.selectedItemId.set(null);
   }
 
   protected onWellChange(event: Event): void {
@@ -126,18 +154,20 @@ export class WellDataForm implements OnInit {
     this.wellService.selectWell(id);
     this.saveSuccess.set(false);
     this.errorMsg.set('');
-    this.selectedPmId.set(null);
+    this.selectedItemId.set(null);
     if (id) {
       this.wellDataService.loadByWell(id);
       this.pmService.loadByWell(id);
+      this.failureReportService.loadByWell(id);
     } else {
       this.wellDataService.clear();
+      this.failureReportService.clear();
     }
   }
 
-  protected onSelectPm(event: Event): void {
+  protected onSelectItem(event: Event): void {
     const id = (event.target as HTMLSelectElement).value;
-    this.selectedPmId.set(id || null);
+    this.selectedItemId.set(id || null);
   }
 
   protected onSaveAll(): void {
@@ -169,10 +199,5 @@ export class WellDataForm implements OnInit {
         this.errorMsg.set('Failed to save. Please try again.');
       },
     });
-  }
-
-  protected pmRecordLabel(r: PmRecord): string {
-    const date = r.completedDate ?? r.plannedDate;
-    return `${date} — ${r.jobDescription.slice(0, 40)} (${r.status})`;
   }
 }
