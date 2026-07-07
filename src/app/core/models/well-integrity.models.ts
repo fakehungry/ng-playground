@@ -32,7 +32,6 @@ export interface AnnulusData {
   toc: number | null;
   cblToc: number | null;
   shoeDepth: number | null;
-  mesp: number | null;
   masp: number | null;
   mop: number | null;
   tow: number | null;
@@ -46,6 +45,7 @@ export interface WellAnnulusRecord {
   completionType: CompletionType;
   mocRecord: boolean;
   topPerforation: number | null;
+  mesp: number | null;
   annuli: Record<AnnulusType, AnnulusData>;
   lastUpdatedAt: string;
   lastUpdatedBy: string;
@@ -67,7 +67,7 @@ export interface DhsvComponent {
   pressureBeforeInflowTest: number | null;
   initialPressureWhenInflowTest: number | null;
   finalPressure: number | null;
-  leakRate: number | null;       // (topSectionId² × depth × constant × ΔP) / 30
+  leakRate: number | null; // (topSectionId² × depth × constant × ΔP) / 30
   leakTest: LeakTestResult | null; // Pass if leakRate <= 15, else Fail
   hydraulicReturn: number | null;
   functionTest: FunctionTestResult | null;
@@ -173,7 +173,6 @@ export interface AnnulusFormValue {
   toc: number | null;
   cblToc: number | null;
   shoeDepth: number | null;
-  mesp: number | null;
   masp: number | null;
   mop: number | null;
   tow: number | null;
@@ -184,6 +183,7 @@ export interface WellConfigFormValue {
   completionType: CompletionType;
   mocRecord: boolean;
   topPerforation: number | null;
+  mesp: number | null;
 }
 
 export interface AnnulusIntegrityResult {
@@ -198,6 +198,7 @@ export interface WellIntegrityReport {
   well: Well;
   platform: Platform;
   asset: Asset;
+  mesp: number | null;
   annulusResults: AnnulusIntegrityResult[];
   pmHistory: PmRecord[];
   overallStatus: IntegrityStatus;
@@ -247,11 +248,11 @@ export interface FailureReport {
   reportedBy: string;
   xt: {
     body: FailureReportItem;
-    umv:  FailureReportItem;
-    lmv:  FailureReportItem;
-    wv:   FailureReportItem;
-    kwv:  FailureReportItem;
-    sv:   FailureReportItem;
+    umv: FailureReportItem;
+    lmv: FailureReportItem;
+    wv: FailureReportItem;
+    kwv: FailureReportItem;
+    sv: FailureReportItem;
   };
   annulusPressure: {
     aAnn: FailureReportItem;

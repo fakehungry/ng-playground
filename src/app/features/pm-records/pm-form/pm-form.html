@@ -7,56 +7,76 @@
       </svg>
     </a>
     <div>
-      <h1 class="text-xl font-bold text-slate-900">{{ editId ? 'Edit PM Record' : 'New PM Record' }}</h1>
-      <p class="text-sm text-slate-500 mt-0.5">{{ editId ? 'Update preventive maintenance record' : 'Create a new PM record for a well' }}</p>
+      <h1 class="text-xl font-bold text-slate-900">
+        {{ editId ? 'Edit PM Record' : 'New PM Record' }}
+      </h1>
+      <p class="text-sm text-slate-500 mt-0.5">
+        {{ editId ? 'Update preventive maintenance record' : 'Create a new PM record for a well' }}
+      </p>
     </div>
   </div>
 
   <!-- Basic Info Card -->
   <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-5">
-
       <!-- Well Selection -->
       <div class="border-b border-slate-100 pb-5">
         <h2 class="text-sm font-semibold text-slate-700 mb-4">Well Selection</h2>
         <div class="grid grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Asset <span class="text-red-500">*</span></label>
-            <select formControlName="assetId" (change)="onAssetChange($event)"
-              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Asset <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="assetId"
+              (change)="onAssetChange($event)"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
               <option value="">Select asset</option>
               @for (asset of wellService.assets(); track asset.id) {
-                <option [value]="asset.id">{{ asset.name }}</option>
+              <option [value]="asset.id">{{ asset.name }}</option>
               }
             </select>
             @if (form.controls.assetId.invalid && form.controls.assetId.touched) {
-              <p class="text-xs text-red-600 mt-1">Required</p>
+            <p class="text-xs text-red-600 mt-1">Required</p>
             }
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Platform <span class="text-red-500">*</span></label>
-            <select formControlName="platformId" (change)="onPlatformChange($event)" [disabled]="!wellService.selectedAssetId()"
-              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed">
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Platform <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="platformId"
+              (change)="onPlatformChange($event)"
+              [disabled]="!wellService.selectedAssetId()"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
+            >
               <option value="">Select platform</option>
               @for (p of wellService.filteredPlatforms(); track p.id) {
-                <option [value]="p.id">{{ p.name }}</option>
+              <option [value]="p.id">{{ p.name }}</option>
               }
             </select>
             @if (form.controls.platformId.invalid && form.controls.platformId.touched) {
-              <p class="text-xs text-red-600 mt-1">Required</p>
+            <p class="text-xs text-red-600 mt-1">Required</p>
             }
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Well <span class="text-red-500">*</span></label>
-            <select formControlName="wellId" (change)="onWellChange($event)" [disabled]="!wellService.selectedPlatformId()"
-              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed">
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Well <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="wellId"
+              (change)="onWellChange($event)"
+              [disabled]="!wellService.selectedPlatformId()"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
+            >
               <option value="">Select well</option>
               @for (w of wellService.filteredWells(); track w.id) {
-                <option [value]="w.id">{{ w.name }}</option>
+              <option [value]="w.id">{{ w.name }}</option>
               }
             </select>
             @if (form.controls.wellId.invalid && form.controls.wellId.touched) {
-              <p class="text-xs text-red-600 mt-1">Required</p>
+            <p class="text-xs text-red-600 mt-1">Required</p>
             }
           </div>
         </div>
@@ -66,51 +86,80 @@
       <div class="space-y-4">
         <h2 class="text-sm font-semibold text-slate-700">Job Details</h2>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Job Description <span class="text-red-500">*</span></label>
-          <textarea formControlName="jobDescription" rows="3" placeholder="Describe the PM work to be performed..."
-            class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"></textarea>
+          <label class="block text-sm font-medium text-slate-700 mb-1"
+            >Job Description <span class="text-red-500">*</span></label
+          >
+          <textarea
+            formControlName="jobDescription"
+            rows="3"
+            placeholder="Describe the PM work to be performed..."
+            class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+          ></textarea>
           @if (form.controls.jobDescription.invalid && form.controls.jobDescription.touched) {
-            <p class="text-xs text-red-600 mt-1">Required</p>
+          <p class="text-xs text-red-600 mt-1">Required</p>
           }
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Planned Date <span class="text-red-500">*</span></label>
-            <input type="date" formControlName="plannedDate"
-              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Planned Date <span class="text-red-500">*</span></label
+            >
+            <input
+              type="date"
+              formControlName="plannedDate"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
             @if (form.controls.plannedDate.invalid && form.controls.plannedDate.touched) {
-              <p class="text-xs text-red-600 mt-1">Required</p>
+            <p class="text-xs text-red-600 mt-1">Required</p>
             }
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Operator Name <span class="text-red-500">*</span></label>
-            <input type="text" formControlName="operatorName" placeholder="Enter operator name"
-              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Operator Name <span class="text-red-500">*</span></label
+            >
+            <input
+              type="text"
+              formControlName="operatorName"
+              placeholder="Enter operator name"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
             @if (form.controls.operatorName.invalid && form.controls.operatorName.touched) {
-              <p class="text-xs text-red-600 mt-1">Required</p>
+            <p class="text-xs text-red-600 mt-1">Required</p>
             }
           </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Status <span class="text-red-500">*</span></label>
-            <select formControlName="status" (change)="onStatusChange($event)"
-              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Status <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="status"
+              (change)="onStatusChange($event)"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
               @for (opt of statusOptions; track opt) {
-                <option [value]="opt">{{ opt }}</option>
+              <option [value]="opt">{{ opt }}</option>
               }
             </select>
           </div>
           @if (showCompletedDate()) {
-            <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">Completed Date <span class="text-red-500">*</span></label>
-              <input type="date" formControlName="completedDate"
-                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-              @if (form.controls.completedDate.invalid && form.controls.completedDate.touched) {
-                <p class="text-xs text-red-600 mt-1">Required when status is Completed</p>
-              }
-              <p class="text-xs text-slate-500 mt-1">Next PM date will be set to 1 year after this date</p>
-            </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Completed Date <span class="text-red-500">*</span></label
+            >
+            <input
+              type="date"
+              formControlName="completedDate"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            @if (form.controls.completedDate.invalid && form.controls.completedDate.touched) {
+            <p class="text-xs text-red-600 mt-1">Required when status is Completed</p>
+            }
+            <p class="text-xs text-slate-500 mt-1">
+              Next PM date will be set to 1 year after this date
+            </p>
+          </div>
           }
         </div>
       </div>
@@ -118,483 +167,968 @@
 
     <!-- Inspection Sections -->
     <div [formGroup]="inspectionForm" class="space-y-3">
-
       <!-- ─── SECTION 1: XT BODY ─── -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <button type="button" (click)="toggleSection('xtBody')"
-          class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+        <button
+          type="button"
+          (click)="toggleSection('xtBody')"
+          class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors"
+        >
           <div class="flex items-center gap-3">
             <span class="text-sm font-semibold text-slate-800">XT</span>
           </div>
-          <svg class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="sectionExpanded().xtBody"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          <svg
+            class="w-4 h-4 text-slate-400 transition-transform"
+            [class.rotate-180]="sectionExpanded().xtBody"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
         @if (sectionExpanded().xtBody) {
-          <div class="border-t border-slate-100 overflow-x-auto" formGroupName="xtBody">
-            <table class="w-full text-sm">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-36">Component</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28">Init P (psi)</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28">Final P (psi)</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24">Leak Test</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28">Function Test</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24">Status</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Comment</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                <!-- XTBody -->
-                <tr formGroupName="xtBody" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">Body</td>
-                  <td class="px-3 py-2"><input type="number" formControlName="initialPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="finalPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().xtBody.leakTest; as lt) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ lt }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2 text-slate-400 text-xs">—</td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().xtBody.status; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-                <!-- UMV -->
-                <tr formGroupName="umv" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">UMV</td>
-                  <td class="px-3 py-2"><input type="number" formControlName="initialPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="finalPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().umv.leakTest; as lt) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ lt }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2">
-                    <select formControlName="functionTest" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                      <option [value]="null">—</option>
-                      @for (o of functionTestOptions; track o) { <option [value]="o">{{ o }}</option> }
-                    </select>
-                  </td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().umv.status; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-                <!-- LMV -->
-                <tr formGroupName="lmv" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">LMV</td>
-                  <td class="px-3 py-2"><input type="number" formControlName="initialPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="finalPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().lmv.leakTest; as lt) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ lt }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2">
-                    <select formControlName="functionTest" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                      <option [value]="null">—</option>
-                      @for (o of functionTestOptions; track o) { <option [value]="o">{{ o }}</option> }
-                    </select>
-                  </td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().lmv.status; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-                <!-- WV -->
-                <tr formGroupName="wv" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">WV</td>
-                  <td class="px-3 py-2"><input type="number" formControlName="initialPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="finalPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().wv.leakTest; as lt) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ lt }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2">
-                    <select formControlName="functionTest" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                      <option [value]="null">—</option>
-                      @for (o of functionTestOptions; track o) { <option [value]="o">{{ o }}</option> }
-                    </select>
-                  </td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().wv.status; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-                <!-- KWV -->
-                <tr formGroupName="kwv" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">KWV</td>
-                  <td class="px-3 py-2"><input type="number" formControlName="initialPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="finalPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().kwv.leakTest; as lt) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ lt }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2">
-                    <select formControlName="functionTest" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                      <option [value]="null">—</option>
-                      @for (o of functionTestOptions; track o) { <option [value]="o">{{ o }}</option> }
-                    </select>
-                  </td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().kwv.status; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-                <!-- SV -->
-                <tr formGroupName="sv" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">SV</td>
-                  <td class="px-3 py-2"><input type="number" formControlName="initialPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="finalPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().sv.leakTest; as lt) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ lt }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2">
-                    <select formControlName="functionTest" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                      <option [value]="null">—</option>
-                      @for (o of functionTestOptions; track o) { <option [value]="o">{{ o }}</option> }
-                    </select>
-                  </td>
-                  <td class="px-3 py-2">
-                    @if (xtBodyCalc().sv.status; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-                <!-- Stuffing Box -->
-                <tr formGroupName="stuffingBox" class="hover:bg-slate-50 bg-slate-50/50">
-                  <td class="px-4 py-2 font-medium text-slate-700">Stuffing Box</td>
-                  <td class="px-3 py-2 text-slate-400 text-xs">—</td>
-                  <td class="px-3 py-2 text-slate-400 text-xs">—</td>
-                  <td class="px-3 py-2 text-slate-400 text-xs">—</td>
-                  <td class="px-3 py-2 text-slate-400 text-xs">—</td>
-                  <td class="px-3 py-2">
-                    <select formControlName="currentStatus" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                      @for (o of stuffingBoxOptions; track o) { <option [value]="o">{{ o }}</option> }
-                    </select>
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="border-t border-slate-100 overflow-x-auto" formGroupName="xtBody">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th
+                  class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-36"
+                >
+                  Component
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Init P (psi)
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Final P (psi)
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24"
+                >
+                  Leak Test
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Function Test
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24"
+                >
+                  Status
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide"
+                >
+                  Comment
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <!-- XTBody -->
+              <tr formGroupName="xtBody" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">Body</td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().xtBody.leakTest; as lt) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ lt }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().xtBody.status; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              <!-- UMV -->
+              <tr formGroupName="umv" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">UMV</td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().umv.leakTest; as lt) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ lt }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().umv.status; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              <!-- LMV -->
+              <tr formGroupName="lmv" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">LMV</td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().lmv.leakTest; as lt) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ lt }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().lmv.status; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              <!-- WV -->
+              <tr formGroupName="wv" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">WV</td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().wv.leakTest; as lt) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ lt }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().wv.status; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              <!-- KWV -->
+              <tr formGroupName="kwv" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">KWV</td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().kwv.leakTest; as lt) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ lt }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().kwv.status; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              <!-- SV -->
+              <tr formGroupName="sv" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">SV</td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().sv.leakTest; as lt) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ lt }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
+                  @if (xtBodyCalc().sv.status; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              <!-- Stuffing Box -->
+              <tr formGroupName="stuffingBox" class="hover:bg-slate-50 bg-slate-50/50">
+                <td class="px-4 py-2 font-medium text-slate-700">Stuffing Box</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="currentStatus"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of stuffingBoxOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         }
       </div>
 
       <!-- ─── SECTION 2: WELLHEAD ─── -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <button type="button" (click)="toggleSection('wellhead')"
-          class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+        <button
+          type="button"
+          (click)="toggleSection('wellhead')"
+          class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors"
+        >
           <span class="text-sm font-semibold text-slate-800">Wellhead</span>
-          <svg class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="sectionExpanded().wellhead"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          <svg
+            class="w-4 h-4 text-slate-400 transition-transform"
+            [class.rotate-180]="sectionExpanded().wellhead"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
         @if (sectionExpanded().wellhead) {
-          <div class="border-t border-slate-100 overflow-x-auto" formGroupName="wellhead">
-            <table class="w-full text-sm">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-44">Component</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28">Init P (psi)</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28">Final P (psi)</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24">Leak Test</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28">Function Test</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24">Status</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Comment</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                @for (row of wellheadRows; track row.key) {
-                  <tr [formGroupName]="row.key" class="hover:bg-slate-50">
-                    <td class="px-4 py-2 font-medium text-slate-700 whitespace-nowrap">{{ row.label }}</td>
-                    <td class="px-3 py-2"><input type="number" formControlName="initialPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                    <td class="px-3 py-2"><input type="number" formControlName="finalPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                    <td class="px-3 py-2">
-                      @if (wellheadCalc()[row.key].leakTest; as lt) {
-                        <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ lt }}</span>
-                      } @else { <span class="text-slate-400 text-xs">—</span> }
-                    </td>
-                    <td class="px-3 py-2">
-                      @if (row.hasFunc) {
-                        <select formControlName="functionTest" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                          <option [value]="null">—</option>
-                          @for (o of functionTestOptions; track o) { <option [value]="o">{{ o }}</option> }
-                        </select>
-                      } @else { <span class="text-slate-400 text-xs">—</span> }
-                    </td>
-                    <td class="px-3 py-2">
-                      @if (wellheadCalc()[row.key].status; as st) {
-                        <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                      } @else { <span class="text-slate-400 text-xs">—</span> }
-                    </td>
-                    <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+        <div class="border-t border-slate-100 overflow-x-auto" formGroupName="wellhead">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th
+                  class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-44"
+                >
+                  Component
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Init P (psi)
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Final P (psi)
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24"
+                >
+                  Leak Test
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Function Test
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24"
+                >
+                  Status
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide"
+                >
+                  Comment
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (row of wellheadRows; track row.key) {
+              <tr [formGroupName]="row.key" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700 whitespace-nowrap">
+                  {{ row.label }}
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (wellheadCalc()[row.key].leakTest; as lt) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ lt }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  @if (row.hasFunc) {
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  @if (wellheadCalc()[row.key].status; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
         }
       </div>
 
       <!-- ─── SECTION 3: TUBING ─── -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <button type="button" (click)="toggleSection('tubing')"
-          class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+        <button
+          type="button"
+          (click)="toggleSection('tubing')"
+          class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors"
+        >
           <span class="text-sm font-semibold text-slate-800">Tubing</span>
-          <svg class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="sectionExpanded().tubing"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          <svg
+            class="w-4 h-4 text-slate-400 transition-transform"
+            [class.rotate-180]="sectionExpanded().tubing"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
         @if (sectionExpanded().tubing) {
-          <div class="border-t border-slate-100 p-5 space-y-5" formGroupName="tubing">
-
-            <!-- DHSV info card -->
-            @if (dhsvData(); as dh) {
-              <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
-                <p class="text-xs font-semibold text-blue-700 mb-2 uppercase tracking-wide">DHSV Configuration (from well data)</p>
-                <div class="grid grid-cols-4 gap-3 text-xs text-blue-900">
-                  <div><span class="text-blue-500">Type</span><br>{{ dh.dhsvType }}</div>
-                  <div><span class="text-blue-500">Depth (m)</span><br>{{ dh.dhsvDepth }}</div>
-                  <div><span class="text-blue-500">Top Section ID</span><br>{{ dh.topSectionId }}</div>
-                  <div><span class="text-blue-500">Status</span><br>{{ dh.dhsvStatus }}</div>
-                </div>
+        <div class="border-t border-slate-100 p-5 space-y-5" formGroupName="tubing">
+          <!-- DHSV info card -->
+          @if (dhsvData(); as dh) {
+          <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
+            <p class="text-xs font-semibold text-blue-700 mb-2 uppercase tracking-wide">
+              DHSV Configuration (from well data)
+            </p>
+            <div class="grid grid-cols-4 gap-3 text-xs text-blue-900">
+              <div><span class="text-blue-500">Type</span><br />{{ dh.dhsvType }}</div>
+              <div><span class="text-blue-500">Depth (m)</span><br />{{ dh.dhsvDepth }}</div>
+              <div>
+                <span class="text-blue-500">Top Section ID</span><br />{{ dh.topSectionId }}
               </div>
-            } @else {
-              <p class="text-xs text-slate-400 italic">No DHSV data configured for this well.</p>
-            }
-
-            <!-- DHSV inputs -->
-            <div formGroupName="dhsv">
-              <h3 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">DHSV</h3>
-              <div class="grid grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Pressure Before Inflow Test (psi)</label>
-                  <input type="number" formControlName="pressureBeforeInflowTest"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Initial Pressure When Inflow Test (psi)</label>
-                  <input type="number" formControlName="initialPressureWhenInflowTest"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Final Pressure (psi)</label>
-                  <input type="number" formControlName="finalPressure"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">
-                    Constant for Field
-                    <span class="text-slate-400 font-normal">(pre-filled from well data, can override)</span>
-                  </label>
-                  <input type="number" formControlName="constantForField" step="0.01"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Leak Test (calculated)</label>
-                  @if (tubingCalc().leakRate != null) {
-                    <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
-                      <span class="text-sm font-mono text-slate-800">{{ tubingCalc().leakRate | number:'1.2-4' }}</span>
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' +
-                        (tubingCalc().leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">
-                        {{ tubingCalc().leakTest }}
-                      </span>
-                    </div>
-                  } @else {
-                    <div class="px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-400 italic">
-                      Fill pressures &amp; constant to calculate
-                    </div>
-                  }
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Hydraulic Return (psi)</label>
-                  <input type="number" formControlName="hydraulicReturn"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Function Test</label>
-                  <select formControlName="functionTest"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    <option [value]="null">—</option>
-                    @for (o of functionTestOptions; track o) { <option [value]="o">{{ o }}</option> }
-                  </select>
-                </div>
-                <div class="col-span-2">
-                  <label class="block text-xs text-slate-600 mb-1">Current Status</label>
-                  @if (tubingCalc().dhsvStatus; as st) {
-                    <span [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                  } @else { <span class="text-slate-400 text-xs">—</span> }
-                </div>
-                <div class="col-span-3">
-                  <label class="block text-xs text-slate-600 mb-1">Comment</label>
-                  <input type="text" formControlName="comment"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
-              </div>
+              <div><span class="text-blue-500">Status</span><br />{{ dh.dhsvStatus }}</div>
             </div>
+          </div>
+          } @else {
+          <p class="text-xs text-slate-400 italic">No DHSV data configured for this well.</p>
+          }
 
-            <!-- Tubing inputs -->
-            <div formGroupName="tubing">
-              <h3 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">Tubing</h3>
-              <div class="grid grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Pressure Before (psi)</label>
-                  <input type="number" formControlName="pressureBefore"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          <!-- DHSV inputs -->
+          <div formGroupName="dhsv">
+            <h3 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">DHSV</h3>
+            <div class="grid grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs text-slate-600 mb-1"
+                  >Pressure Before Inflow Test (psi)</label
+                >
+                <input
+                  type="number"
+                  formControlName="pressureBeforeInflowTest"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1"
+                  >Initial Pressure When Inflow Test (psi)</label
+                >
+                <input
+                  type="number"
+                  formControlName="initialPressureWhenInflowTest"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Final Pressure (psi)</label>
+                <input
+                  type="number"
+                  formControlName="finalPressure"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">
+                  Constant for Field
+                  <span class="text-slate-400 font-normal"
+                    >(pre-filled from well data, can override)</span
+                  >
+                </label>
+                <input
+                  type="number"
+                  formControlName="constantForField"
+                  step="0.01"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Leak Test (calculated)</label>
+                @if (tubingCalc().leakRate != null) {
+                <div
+                  class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200"
+                >
+                  <span class="text-sm font-mono text-slate-800"
+                    >{{ tubingCalc().leakRate | number:'1.2-4' }}</span
+                  >
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' +
+                        (tubingCalc().leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                  >
+                    {{ tubingCalc().leakTest }}
+                  </span>
                 </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Pressure After (psi)</label>
-                  <input type="number" formControlName="pressureAfter"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                } @else {
+                <div
+                  class="px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-400 italic"
+                >
+                  Fill pressures &amp; constant to calculate
                 </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Current Status</label>
-                  <select formControlName="currentStatus"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    @for (o of tubingStatusOptions; track o) { <option [value]="o">{{ o }}</option> }
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Temperature Before (°C)</label>
-                  <input type="number" formControlName="temperatureBefore"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Temperature After (°C)</label>
-                  <input type="number" formControlName="temperatureAfter"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
-                <div>
-                  <label class="block text-xs text-slate-600 mb-1">Comment</label>
-                  <input type="text" formControlName="comment"
-                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
-                </div>
+                }
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Hydraulic Return (ml)</label>
+                <input
+                  type="number"
+                  formControlName="hydraulicReturn"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Function Test</label>
+                <select
+                  formControlName="functionTest"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+                  <option [value]="null">—</option>
+                  @for (o of functionTestOptions; track o) {
+                  <option [value]="o">{{ o }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-span-2">
+                <label class="block text-xs text-slate-600 mb-1">Current Status</label>
+                @if (tubingCalc().dhsvStatus; as st) {
+                <span
+                  [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                  >{{ st }}</span
+                >
+                } @else { <span class="text-slate-400 text-xs">—</span> }
+              </div>
+              <div class="col-span-3">
+                <label class="block text-xs text-slate-600 mb-1">Comment</label>
+                <input
+                  type="text"
+                  formControlName="comment"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
               </div>
             </div>
           </div>
+
+          <!-- Tubing inputs -->
+          <div formGroupName="tubing">
+            <h3 class="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-3">
+              Tubing
+            </h3>
+            <div class="grid grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Pressure Before (psi)</label>
+                <input
+                  type="number"
+                  formControlName="pressureBefore"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Pressure After (psi)</label>
+                <input
+                  type="number"
+                  formControlName="pressureAfter"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Current Status</label>
+                <select
+                  formControlName="currentStatus"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+                  @for (o of tubingStatusOptions; track o) {
+                  <option [value]="o">{{ o }}</option>
+                  }
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Temperature Before (°C)</label>
+                <input
+                  type="number"
+                  formControlName="temperatureBefore"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Temperature After (°C)</label>
+                <input
+                  type="number"
+                  formControlName="temperatureAfter"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-600 mb-1">Comment</label>
+                <input
+                  type="text"
+                  formControlName="comment"
+                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
         }
       </div>
 
       <!-- ─── SECTION 4: ANNULUS PRESSURE ─── -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <button type="button" (click)="toggleSection('annulusPressure')"
-          class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors">
+        <button
+          type="button"
+          (click)="toggleSection('annulusPressure')"
+          class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-slate-50 transition-colors"
+        >
           <span class="text-sm font-semibold text-slate-800">Annulus Pressure</span>
-          <svg class="w-4 h-4 text-slate-400 transition-transform" [class.rotate-180]="sectionExpanded().annulusPressure"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          <svg
+            class="w-4 h-4 text-slate-400 transition-transform"
+            [class.rotate-180]="sectionExpanded().annulusPressure"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
           </svg>
         </button>
 
         @if (sectionExpanded().annulusPressure) {
-          <div class="border-t border-slate-100 overflow-x-auto" formGroupName="annulusPressure">
-            <table class="w-full text-sm">
-              <thead class="bg-slate-50">
-                <tr>
-                  <th class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28">Annulus</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28">Top Op. Window (psi)</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-32">Current P (psi)</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-32">PBU Rate (psi/min)</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24">Status</th>
-                  <th class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Comment</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                <!-- A-ann -->
-                <tr formGroupName="aAnn" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">A-Annulus</td>
-                  <td class="px-3 py-2">
-                    @if (annulusRecord()?.annuli?.A?.tow != null) {
-                      <span class="text-sm text-slate-600 font-mono bg-slate-100 px-2 py-1 rounded">{{ annulusRecord()!.annuli.A.tow }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="number" formControlName="currentPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="pbuRate" step="0.01" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (annPressureCalc().aAnn; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-                <!-- B-ann -->
-                <tr formGroupName="bAnn" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">B-Annulus</td>
-                  <td class="px-3 py-2">
-                    @if (annulusRecord()?.annuli?.B?.tow != null) {
-                      <span class="text-sm text-slate-600 font-mono bg-slate-100 px-2 py-1 rounded">{{ annulusRecord()!.annuli.B.tow }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="number" formControlName="currentPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="pbuRate" step="0.01" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (annPressureCalc().bAnn; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-                <!-- C-ann -->
-                <tr formGroupName="cAnn" class="hover:bg-slate-50">
-                  <td class="px-4 py-2 font-medium text-slate-700">C-Annulus</td>
-                  <td class="px-3 py-2">
-                    @if (annulusRecord()?.annuli?.C?.tow != null) {
-                      <span class="text-sm text-slate-600 font-mono bg-slate-100 px-2 py-1 rounded">{{ annulusRecord()!.annuli.C.tow }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="number" formControlName="currentPressure" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2"><input type="number" formControlName="pbuRate" step="0.01" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                  <td class="px-3 py-2">
-                    @if (annPressureCalc().cAnn; as st) {
-                      <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')">{{ st }}</span>
-                    } @else { <span class="text-slate-400 text-xs">—</span> }
-                  </td>
-                  <td class="px-3 py-2"><input type="text" formControlName="comment" class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none" /></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="border-t border-slate-100 overflow-x-auto" formGroupName="annulusPressure">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50">
+              <tr>
+                <th
+                  class="px-4 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Annulus
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Top Op. Window (psi)
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-32"
+                >
+                  Current P (psi)
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-32"
+                >
+                  PBU Rate (psi/min)
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24"
+                >
+                  Status
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide"
+                >
+                  Comment
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <!-- A-ann -->
+              <tr formGroupName="aAnn" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">A-Annulus</td>
+                <td class="px-3 py-2">
+                  @if (annulusRecord()?.annuli?.A?.tow != null) {
+                  <span class="text-sm text-slate-600 font-mono bg-slate-100 px-2 py-1 rounded"
+                    >{{ annulusRecord()!.annuli.A.tow }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="currentPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="pbuRate"
+                    step="0.01"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (annPressureCalc().aAnn; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              <!-- B-ann -->
+              <tr formGroupName="bAnn" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">B-Annulus</td>
+                <td class="px-3 py-2">
+                  @if (annulusRecord()?.annuli?.B?.tow != null) {
+                  <span class="text-sm text-slate-600 font-mono bg-slate-100 px-2 py-1 rounded"
+                    >{{ annulusRecord()!.annuli.B.tow }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="currentPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="pbuRate"
+                    step="0.01"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (annPressureCalc().bAnn; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              <!-- C-ann -->
+              <tr formGroupName="cAnn" class="hover:bg-slate-50">
+                <td class="px-4 py-2 font-medium text-slate-700">C-Annulus</td>
+                <td class="px-3 py-2">
+                  @if (annulusRecord()?.annuli?.C?.tow != null) {
+                  <span class="text-sm text-slate-600 font-mono bg-slate-100 px-2 py-1 rounded"
+                    >{{ annulusRecord()!.annuli.C.tow }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="currentPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="pbuRate"
+                    step="0.01"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (annPressureCalc().cAnn; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         }
       </div>
     </div>
 
     <!-- Error -->
     @if (errorMsg()) {
-      <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">{{ errorMsg() }}</div>
+    <div class="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+      {{ errorMsg() }}
+    </div>
     }
 
     <!-- Actions -->
     <div class="flex justify-end gap-3 pt-2">
-      <a routerLink="/pm-records"
-        class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+      <a
+        routerLink="/pm-records"
+        class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+      >
         Cancel
       </a>
-      <button type="submit" [disabled]="saving()"
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+      <button
+        type="submit"
+        [disabled]="saving()"
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+      >
         {{ saving() ? 'Saving…' : (editId ? 'Update Record' : 'Create Record') }}
       </button>
     </div>

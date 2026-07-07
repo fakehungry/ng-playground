@@ -29,10 +29,10 @@ function checkMopVsMasp(data: AnnulusData): IntegrityStatus {
   return data.mop > data.masp ? 'fail' : 'pass';
 }
 
-function checkMespVsMasp(data: AnnulusData): IntegrityStatus {
-  if (data.mesp === null || data.masp === null) return 'no-data';
-  if (data.mesp > data.masp) return 'fail';
-  if (data.mesp / data.masp > 0.85) return 'warning';
+function checkMespVsMasp(mesp: number | null, data: AnnulusData): IntegrityStatus {
+  if (mesp === null || data.masp === null) return 'no-data';
+  if (mesp > data.masp) return 'fail';
+  if (mesp / data.masp > 0.85) return 'warning';
   return 'pass';
 }
 
@@ -156,6 +156,7 @@ export class ReportService {
 
     const annulusRecord = this.wellDataService.record();
     const pmHistory = this.pmService.records().filter(r => r.wellId === wellId);
+    const mesp = annulusRecord?.wellId === wellId ? (annulusRecord.mesp ?? null) : null;
 
     const annulusResults: AnnulusIntegrityResult[] = ANNULUS_TYPES.map(type => {
       const data = annulusRecord?.wellId === wellId ? (annulusRecord.annuli[type] ?? null) : null;
@@ -166,7 +167,7 @@ export class ReportService {
       }
 
       const mopVsMaspStatus = checkMopVsMasp(data);
-      const mespVsMaspStatus = checkMespVsMasp(data);
+      const mespVsMaspStatus = checkMespVsMasp(mesp, data);
       return {
         annulusType: type,
         data,
@@ -177,7 +178,7 @@ export class ReportService {
     });
 
     const overallStatus = worstStatus(...annulusResults.map(r => r.overallStatus));
-    return { well, platform, asset, annulusResults, pmHistory, overallStatus };
+    return { well, platform, asset, mesp, annulusResults, pmHistory, overallStatus };
   }
 
   generateWellStatusRow(wellId: string): WellStatusRow | null {

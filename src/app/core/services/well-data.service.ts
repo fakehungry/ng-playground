@@ -12,7 +12,7 @@ import {
 } from '../models/well-integrity.models';
 
 function emptyAnnulus(type: AnnulusType): AnnulusData {
-  return { annulusType: type, toc: null, cblToc: null, shoeDepth: null, mesp: null, masp: null, mop: null, tow: null, updatedAt: '', updatedBy: '' };
+  return { annulusType: type, toc: null, cblToc: null, shoeDepth: null, masp: null, mop: null, tow: null, updatedAt: '', updatedBy: '' };
 }
 
 // aAnnVolToc / aAnnCblToc = A-annulus TOC values (used for all annulus types in Monobore).
@@ -84,7 +84,6 @@ export class WellDataService {
         toc: val.toc,
         cblToc: val.cblToc,
         shoeDepth: val.shoeDepth,
-        mesp: val.mesp,
         masp: val.masp,
         mop: val.mop,
         tow: val.tow,
@@ -106,6 +105,7 @@ export class WellDataService {
         completionType: config.completionType,
         mocRecord: config.mocRecord,
         topPerforation: config.topPerforation,
+        mesp: config.mesp,
         annuli,
         lastUpdatedAt: now,
         lastUpdatedBy: updatedBy,
@@ -120,6 +120,7 @@ export class WellDataService {
         completionType: config.completionType,
         mocRecord: config.mocRecord,
         topPerforation: config.topPerforation,
+        mesp: config.mesp,
         annuli,
         lastUpdatedAt: now,
         lastUpdatedBy: updatedBy,

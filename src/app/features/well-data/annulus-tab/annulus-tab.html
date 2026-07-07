@@ -41,7 +41,7 @@
 
     <!-- Top Operating Window -->
     <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">Top Operating Window (psi)</label>
+      <label class="block text-sm font-medium text-slate-700 mb-1">TOW (psi)</label>
       <input
         type="number"
         formControlName="tow"
@@ -52,7 +52,9 @@
 
     <!-- MAP -->
     <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">MAP — Maximum Allowable Pressure (psi) <span class="text-red-500">*</span></label>
+      <label class="block text-sm font-medium text-slate-700 mb-1"
+        >MAP (psi) <span class="text-red-500">*</span></label
+      >
       <input
         type="number"
         formControlName="masp"
@@ -60,13 +62,13 @@
         class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
       />
       @if (form.controls.masp.invalid && form.controls.masp.touched) {
-        <p class="text-xs text-red-600 mt-1">Required and must be ≥ 0</p>
+      <p class="text-xs text-red-600 mt-1">Required and must be ≥ 0</p>
       }
     </div>
 
     <!-- MOP -->
     <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">MOP — Maximum Operation Pressure (psi)</label>
+      <label class="block text-sm font-medium text-slate-700 mb-1">MOP (psi)</label>
       <input
         type="number"
         formControlName="mop"
@@ -74,27 +76,15 @@
         class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
       />
       @if (form.controls.mop.invalid && form.controls.mop.touched) {
-        <p class="text-xs text-red-600 mt-1">Must be ≥ 0</p>
-      }
-    </div>
-
-    <!-- MESP -->
-    <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">MESP — Maximum Expected Surface Pressure (psi)</label>
-      <input
-        type="number"
-        formControlName="mesp"
-        placeholder="e.g. 180"
-        class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-      />
-      @if (form.controls.mesp.invalid && form.controls.mesp.touched) {
-        <p class="text-xs text-red-600 mt-1">Must be ≥ 0</p>
+      <p class="text-xs text-red-600 mt-1">Must be ≥ 0</p>
       }
     </div>
 
     <!-- Updated By -->
     <div>
-      <label class="block text-sm font-medium text-slate-700 mb-1">Updated By <span class="text-red-500">*</span></label>
+      <label class="block text-sm font-medium text-slate-700 mb-1"
+        >Updated By <span class="text-red-500">*</span></label
+      >
       <input
         type="text"
         formControlName="updatedBy"
@@ -102,7 +92,7 @@
         class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
       />
       @if (form.controls.updatedBy.invalid && form.controls.updatedBy.touched) {
-        <p class="text-xs text-red-600 mt-1">Required</p>
+      <p class="text-xs text-red-600 mt-1">Required</p>
       }
     </div>
   </div>

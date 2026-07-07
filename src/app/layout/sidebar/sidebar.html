@@ -21,28 +21,41 @@
       @if (item.children) {
         <!-- Group item -->
         <div>
-          <div class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-400">
+          <button
+            type="button"
+            (click)="toggleGroup(item.label)"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+          >
             @if (item.icon === 'database') {
               <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
               </svg>
             }
-            <span class="uppercase tracking-wide text-xs font-semibold">{{ item.label }}</span>
-          </div>
-          <div class="ml-4 mt-0.5 space-y-0.5 border-l border-slate-700 pl-3">
-            @for (child of item.children; track child.route) {
-              <a
-                [routerLink]="child.route"
-                routerLinkActive="bg-slate-700 text-white"
-                [routerLinkActiveOptions]="{ exact: false }"
-                class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-              >
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0"></span>
-                {{ child.label }}
-              </a>
-            }
-          </div>
+            <span class="flex-1 text-left">{{ item.label }}</span>
+            <svg
+              class="w-3.5 h-3.5 shrink-0 transition-transform"
+              [class.rotate-90]="expandedGroups().has(item.label)"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          @if (expandedGroups().has(item.label)) {
+            <div class="ml-4 mt-0.5 space-y-0.5 border-l border-slate-700 pl-3">
+              @for (child of item.children; track child.route) {
+                <a
+                  [routerLink]="child.route"
+                  routerLinkActive="bg-slate-700 text-white"
+                  [routerLinkActiveOptions]="{ exact: false }"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0"></span>
+                  {{ child.label }}
+                </a>
+              }
+            </div>
+          }
         </div>
       } @else {
         <!-- Leaf item -->

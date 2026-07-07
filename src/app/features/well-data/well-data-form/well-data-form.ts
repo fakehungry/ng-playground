@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { WellService } from '../../../core/services/well.service';
 import { WellDataService, computeAnnulusStatus } from '../../../core/services/well-data.service';
 import {
@@ -54,6 +54,7 @@ export class WellDataForm implements OnInit {
     completionType: new FormControl<CompletionType>('Conventional', { nonNullable: true }),
     mocRecord: new FormControl<boolean>(false, { nonNullable: true }),
     topPerforation: new FormControl<number | null>(null),
+    mesp: new FormControl<number | null>(null, [Validators.min(0)]),
   });
 
   private readonly _configTick = toSignal(this.configForm.valueChanges, { initialValue: null });
@@ -120,13 +121,14 @@ export class WellDataForm implements OnInit {
           completionType: record.completionType ?? 'Conventional',
           mocRecord: record.mocRecord ?? false,
           topPerforation: record.topPerforation ?? null,
+          mesp: record.mesp ?? null,
         });
         const items = this.historyItems();
         if (items.length && !this.selectedItemId()) {
           this.selectedItemId.set(items[0].id);
         }
       } else {
-        this.configForm.reset({ completionType: 'Conventional', mocRecord: false, topPerforation: null });
+        this.configForm.reset({ completionType: 'Conventional', mocRecord: false, topPerforation: null, mesp: null });
       }
     });
   }
@@ -179,7 +181,7 @@ export class WellDataForm implements OnInit {
     const annuliValues: Record<AnnulusType, AnnulusFormValue> = {} as Record<AnnulusType, AnnulusFormValue>;
     types.forEach((type, i) => {
       const raw = tabs[i]?.form.getRawValue();
-      annuliValues[type] = raw ?? { toc: null, cblToc: null, shoeDepth: null, mesp: null, masp: null, mop: null, tow: null, updatedBy: '' };
+      annuliValues[type] = raw ?? { toc: null, cblToc: null, shoeDepth: null, masp: null, mop: null, tow: null, updatedBy: '' };
     });
 
     const config: WellConfigFormValue = this.configForm.getRawValue();

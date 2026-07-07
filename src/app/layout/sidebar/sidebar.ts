@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 interface NavChild {
@@ -31,4 +31,18 @@ export class Sidebar {
     },
     { label: 'Integrity Report', icon: 'chart',   route: '/report' },
   ];
+
+  protected readonly expandedGroups = signal<ReadonlySet<string>>(
+    new Set(this.navItems.filter(i => i.children).map(i => i.label)),
+  );
+
+  protected toggleGroup(label: string): void {
+    const next = new Set(this.expandedGroups());
+    if (next.has(label)) {
+      next.delete(label);
+    } else {
+      next.add(label);
+    }
+    this.expandedGroups.set(next);
+  }
 }
