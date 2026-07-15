@@ -23072,5 +23072,91 @@
       "updatedAt": "2026-06-24T08:44:22.188Z"
     }
   ],
+  "rigSchedules": [
+    {
+      "id": "rig1",
+      "platformId": "p1",
+      "rigName": "Hakuryu-14",
+      "startDate": "2026-07-01",
+      "endDate": "2026-07-25"
+    },
+    {
+      "id": "rig2",
+      "platformId": "p1",
+      "rigName": "Valiant Driller",
+      "startDate": "2026-07-20",
+      "endDate": "2026-08-05"
+    },
+    {
+      "id": "rig3",
+      "platformId": "p2",
+      "rigName": "COSL Pioneer",
+      "startDate": "2026-08-10",
+      "endDate": "2026-09-05"
+    },
+    {
+      "id": "rig4",
+      "platformId": "p3",
+      "rigName": "Endeavor",
+      "startDate": "2026-09-01",
+      "endDate": "2026-09-18"
+    },
+    {
+      "id": "rig5",
+      "platformId": "p4",
+      "rigName": "PV Drilling V",
+      "startDate": "2026-10-05",
+      "endDate": "2026-10-28"
+    },
+    {
+      "id": "rig6",
+      "platformId": "p5",
+      "rigName": "Baker Marine 5",
+      "startDate": "2027-01-15",
+      "endDate": "2027-02-10"
+    },
+    {
+      "id": "rig7",
+      "platformId": "p6",
+      "rigName": "Hakuryu-11",
+      "startDate": "2026-11-20",
+      "endDate": "2026-12-15"
+    },
+    {
+      "id": "rig8",
+      "platformId": "p7",
+      "rigName": "Noble Discoverer",
+      "startDate": "2027-04-01",
+      "endDate": "2027-04-22"
+    },
+    {
+      "id": "rig9",
+      "platformId": "p8",
+      "rigName": "Valiant Driller",
+      "startDate": "2027-05-10",
+      "endDate": "2027-05-30"
+    },
+    {
+      "id": "rig10",
+      "platformId": "p9",
+      "rigName": "COSL Pioneer",
+      "startDate": "2027-02-20",
+      "endDate": "2027-03-10"
+    },
+    {
+      "id": "rig11",
+      "platformId": "p11",
+      "rigName": "Endeavor",
+      "startDate": "2026-07-05",
+      "endDate": "2026-07-15"
+    },
+    {
+      "id": "rig12",
+      "platformId": "p12",
+      "rigName": "Hakuryu-14",
+      "startDate": "2027-06-01",
+      "endDate": "2027-06-20"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

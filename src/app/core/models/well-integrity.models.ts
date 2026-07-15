@@ -212,6 +212,14 @@ export interface WellRemark {
   remark: string;
 }
 
+export interface RigSchedule {
+  id: string;
+  platformId: string;
+  rigName: string;
+  startDate: string;
+  endDate: string;
+}
+
 export interface WellStatusRow {
   well: Well;
   platform: Platform;
