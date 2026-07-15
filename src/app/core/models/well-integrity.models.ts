@@ -114,6 +114,9 @@ export interface WellheadSection {
   aAnnCsgValve: ValveComponent;
   bAnnCsg: ValveComponent;
   cAnnCsg: ValveComponent;
+  aAnnCsgValve2?: ValveComponent;
+  bAnnCsg2?: ValveComponent;
+  cAnnCsg2?: ValveComponent;
 }
 
 export interface TubingSection {
