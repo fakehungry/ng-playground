@@ -1,0 +1,660 @@
+<div class="flex h-full overflow-hidden">
+  <!-- Left: Well Tree -->
+  <div class="w-56 shrink-0 border-r border-slate-200 bg-white overflow-y-auto flex flex-col">
+    <div class="px-3 py-3 border-b border-slate-200 shrink-0">
+      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Wells</p>
+      <p class="text-xs text-slate-400 mt-0.5">Ctrl+click to multi-select</p>
+    </div>
+    <div class="flex-1 overflow-y-auto">
+      <app-well-tree
+        [assets]="wellService.assets()"
+        [platforms]="wellService.platforms()"
+        [wells]="wellService.wells()"
+        [selectedWellIds]="selectedWellIds()"
+        (selectionChange)="onSelectionChange($event)"
+      />
+    </div>
+  </div>
+
+  <!-- Right: Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 overflow-y-auto">
+      <div class="p-5 space-y-4">
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-lg font-bold text-slate-900">Well Integrity Report</h1>
+            <p class="text-xs text-slate-500 mt-0.5">
+              {{ selectedWellIds().size }} well(s) selected
+            </p>
+          </div>
+          <button
+            type="button"
+            (click)="exportCsv()"
+            [disabled]="!rows().length"
+            class="inline-flex items-center gap-1.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            Export CSV
+          </button>
+        </div>
+
+        <!-- Tab bar -->
+        <div class="flex gap-1 border-b border-slate-200 -mx-5 px-5">
+          <button
+            type="button"
+            (click)="switchTab('status')"
+            class="px-4 py-2.5 text-sm font-medium transition-colors border-b-2"
+            [class.border-blue-600]="activeTab() === 'status'"
+            [class.text-blue-700]="activeTab() === 'status'"
+            [class.border-transparent]="activeTab() !== 'status'"
+            [class.text-slate-500]="activeTab() !== 'status'"
+          >
+            Status Report
+          </button>
+          <button
+            type="button"
+            (click)="switchTab('schedule')"
+            class="px-4 py-2.5 text-sm font-medium transition-colors border-b-2"
+            [class.border-blue-600]="activeTab() === 'schedule'"
+            [class.text-blue-700]="activeTab() === 'schedule'"
+            [class.border-transparent]="activeTab() !== 'schedule'"
+            [class.text-slate-500]="activeTab() !== 'schedule'"
+          >
+            PM Schedule
+          </button>
+        </div>
+
+        @if (activeTab() === 'status') { @if (selectedWellIds().size > 0) {
+        <!-- Donut Chart + Legend -->
+        <div class="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-8">
+          <!-- SVG donut -->
+          <div class="shrink-0 relative">
+            <svg
+              width="200"
+              height="200"
+              viewBox="0 0 200 200"
+              class="overflow-visible drop-shadow-sm"
+            >
+              @if (pieSlices().length > 0) { @for (slice of pieSlices(); track slice.status) { @if
+              (slice.isFull) {
+              <!-- Full-circle: use stroked circle to avoid compound-path fill-rule issues -->
+              <circle
+                cx="100"
+                cy="100"
+                r="65"
+                fill="none"
+                [attr.stroke]="slice.color"
+                stroke-width="30"
+                style="transform-origin: 100px 100px"
+                class="cursor-pointer transition-all duration-150"
+                [class.opacity-25]="activeFilter() !== null && activeFilter() !== slice.status"
+                [class.scale-105]="hoveredStatus() === slice.status"
+                (mouseenter)="onSliceHover(slice.status)"
+                (mouseleave)="onSliceHover(null)"
+                (click)="onSliceClick(slice.status)"
+              />
+              } @else {
+              <path
+                [attr.d]="slice.path"
+                [attr.fill]="slice.color"
+                [attr.stroke]="activeFilter() === slice.status ? 'white' : 'none'"
+                [attr.stroke-width]="activeFilter() === slice.status ? 2 : 0"
+                style="transform-origin: 100px 100px"
+                class="cursor-pointer transition-all duration-150"
+                [class.opacity-25]="activeFilter() !== null && activeFilter() !== slice.status"
+                [class.scale-105]="hoveredStatus() === slice.status"
+                (mouseenter)="onSliceHover(slice.status)"
+                (mouseleave)="onSliceHover(null)"
+                (click)="onSliceClick(slice.status)"
+              />
+              } } } @else {
+              <!-- Empty ring when no data -->
+              <circle cx="100" cy="100" r="65" fill="none" stroke="#e2e8f0" stroke-width="30" />
+              }
+
+              <!-- Center label -->
+              @if (centerLabel(); as cl) {
+              <text
+                x="100"
+                y="93"
+                text-anchor="middle"
+                fill="#1e293b"
+                font-size="24"
+                font-weight="700"
+                font-family="ui-sans-serif, system-ui, sans-serif"
+              >
+                {{ cl.count }}
+              </text>
+              <text
+                x="100"
+                y="112"
+                text-anchor="middle"
+                fill="#94a3b8"
+                font-size="11"
+                font-family="ui-sans-serif, system-ui, sans-serif"
+              >
+                {{ cl.label }}
+              </text>
+              }
+            </svg>
+          </div>
+
+          <!-- Legend -->
+          <div class="flex flex-col gap-1 min-w-48">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">
+              Status Summary
+            </p>
+            @for (slice of pieSlices(); track slice.status) {
+            <button
+              type="button"
+              (click)="onSliceClick(slice.status)"
+              (mouseenter)="onSliceHover(slice.status)"
+              (mouseleave)="onSliceHover(null)"
+              class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-left w-full transition-all"
+              [class.ring-1]="activeFilter() === slice.status"
+              [class.ring-slate-300]="activeFilter() === slice.status"
+              [class.bg-slate-50]="activeFilter() === slice.status || hoveredStatus() === slice.status"
+              [class.opacity-30]="activeFilter() !== null && activeFilter() !== slice.status"
+            >
+              <span
+                class="w-3 h-3 rounded-full shrink-0"
+                [style.background-color]="slice.color"
+              ></span>
+              <span class="text-sm text-slate-700 font-medium flex-1">{{ slice.label }}</span>
+              <span class="text-xs text-slate-500 font-mono tabular-nums">
+                {{ slice.count }}&nbsp;<span class="text-slate-400">({{ slice.pct }}%)</span>
+              </span>
+            </button>
+            } @if (activeFilter()) {
+            <button
+              type="button"
+              (click)="clearFilter()"
+              class="mt-2 text-xs text-blue-600 hover:text-blue-800 hover:underline text-center py-1 transition-colors"
+            >
+              ✕ Clear filter
+            </button>
+            }
+          </div>
+        </div>
+
+        <!-- Active filter banner -->
+        @if (activeFilter()) {
+        <div
+          class="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700"
+        >
+          <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L13 10.414V17a1 1 0 01-1.447.894l-4-2A1 1 0 017 15v-4.586L3.293 6.707A1 1 0 013 6V3z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Showing {{ rows().length }} of {{ selectedWellIds().size }} selected wells — filtered to
+          <strong class="mx-1"
+            >{{ pieSlices().find(s => s.status === activeFilter())?.label ?? activeFilter()
+            }}</strong
+          >
+          <button
+            type="button"
+            (click)="clearFilter()"
+            class="ml-auto font-semibold hover:underline"
+          >
+            Clear
+          </button>
+        </div>
+        } @if (rows().length > 0) {
+        <!-- Status Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+          <table class="w-full text-xs whitespace-nowrap border-collapse">
+            <thead>
+              <tr class="bg-slate-100 border-b border-slate-300">
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-left font-semibold text-slate-500 border-r border-slate-200"
+                >
+                  #
+                </th>
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-left font-semibold text-slate-700 border-r border-slate-200 min-w-28"
+                >
+                  Well
+                </th>
+                <th
+                  colspan="4"
+                  class="px-3 py-2 text-center font-semibold text-slate-600 border-r border-slate-200"
+                >
+                  External Envelope
+                </th>
+                <th
+                  colspan="3"
+                  class="px-3 py-2 text-center font-semibold text-slate-600 border-r border-slate-200"
+                >
+                  Internal Envelope
+                </th>
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-center font-semibold text-slate-600 border-r border-slate-200"
+                >
+                  Combined
+                </th>
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-center font-semibold text-slate-600 border-r border-slate-200"
+                >
+                  Ann. P
+                </th>
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-center font-semibold text-slate-600 border-r border-slate-200"
+                >
+                  MOC
+                </th>
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-center font-semibold text-slate-600 border-r border-slate-200"
+                >
+                  Final
+                </th>
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-left font-semibold text-slate-600 border-r border-slate-200 min-w-36"
+                >
+                  Issue
+                </th>
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-left font-semibold text-slate-600 border-r border-slate-200 min-w-36"
+                >
+                  Action
+                </th>
+                <th
+                  rowspan="2"
+                  class="px-3 py-2 text-left font-semibold text-slate-600 border-r border-slate-200 min-w-36"
+                >
+                  Remark
+                </th>
+              </tr>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-500">
+                <th class="px-3 py-1.5 text-center font-medium">WH</th>
+                <th class="px-3 py-1.5 text-center font-medium">XT</th>
+                <th class="px-3 py-1.5 text-center font-medium">THGHGR</th>
+                <th class="px-3 py-1.5 text-center font-medium border-r border-slate-200">DHSV</th>
+                <th class="px-3 py-1.5 text-center font-medium">A Barr.</th>
+                <th class="px-3 py-1.5 text-center font-medium">B Barr.</th>
+                <th class="px-3 py-1.5 text-center font-medium border-r border-slate-200">TBG</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (row of rows(); track row.well.id; let i = $index) {
+              <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-3 py-2 text-slate-400 border-r border-slate-100">{{ i + 1 }}</td>
+                <td class="px-3 py-2 border-r border-slate-100">
+                  <p class="font-semibold text-slate-800">{{ row.well.name }}</p>
+                  <p class="text-slate-400">{{ row.platform.name }}</p>
+                </td>
+                <!-- External Envelope -->
+                <td class="px-3 py-2 text-center">
+                  <span class="inline-block w-4 h-4 rounded-full" [class]="dotClass(row.wh)"></span>
+                </td>
+                <td class="px-3 py-2 text-center">
+                  <span class="inline-block w-4 h-4 rounded-full" [class]="dotClass(row.xt)"></span>
+                </td>
+                <td class="px-3 py-2 text-center">
+                  <span
+                    class="inline-block w-4 h-4 rounded-full"
+                    [class]="dotClass(row.thgr)"
+                  ></span>
+                </td>
+                <td class="px-3 py-2 text-center border-r border-slate-100">
+                  <span
+                    class="inline-block w-4 h-4 rounded-full"
+                    [class]="dotClass(row.dhsv)"
+                  ></span>
+                </td>
+                <!-- Internal Envelope -->
+                <td class="px-3 py-2 text-center">
+                  <span
+                    class="inline-block w-4 h-4 rounded-full"
+                    [class]="dotClass(row.aBarrier)"
+                  ></span>
+                </td>
+                <td class="px-3 py-2 text-center">
+                  <span
+                    class="inline-block w-4 h-4 rounded-full"
+                    [class]="dotClass(row.bBarrier)"
+                  ></span>
+                </td>
+                <td class="px-3 py-2 text-center border-r border-slate-100">
+                  <span
+                    class="inline-block w-4 h-4 rounded-full"
+                    [class]="dotClass(row.tbg)"
+                  ></span>
+                </td>
+                <!-- Combined -->
+                <td class="px-3 py-2 text-center border-r border-slate-100">
+                  <span
+                    class="inline-block w-4 h-4 rounded-full"
+                    [class]="dotClass(row.extIntCombined)"
+                  ></span>
+                </td>
+                <!-- Ann. P -->
+                <td class="px-3 py-2 text-center border-r border-slate-100">
+                  <span
+                    class="inline-block w-4 h-4 rounded-full"
+                    [class]="dotClass(row.annulusPressure)"
+                  ></span>
+                </td>
+                <!-- MOC -->
+                <td class="px-3 py-2 text-center border-r border-slate-100">
+                  @if (row.mocRecord === null) { <span class="text-slate-300">—</span> } @else if
+                  (row.mocRecord) { <span class="text-green-600 font-bold text-sm">✓</span> } @else
+                  { <span class="text-slate-400">—</span> }
+                </td>
+                <!-- Final -->
+                <td class="px-3 py-2 text-center border-r border-slate-100">
+                  <span
+                    class="inline-block w-5 h-5 rounded-full shadow-sm"
+                    [class]="dotClass(row.finalStatus)"
+                  ></span>
+                </td>
+                <!-- Issue (editable) -->
+                <td class="px-2 py-1.5 border-r border-slate-100">
+                  <input
+                    type="text"
+                    [value]="getEdit(row.well.id, 'issue')"
+                    (input)="setEdit(row.well.id, 'issue', $any($event.target).value)"
+                    [placeholder]="row.issueText || 'Enter issue…'"
+                    class="w-full bg-transparent border border-slate-200 rounded px-2 py-1 text-xs text-slate-700 placeholder:text-slate-300 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors"
+                  />
+                </td>
+                <!-- Action (editable) -->
+                <td class="px-2 py-1.5 border-r border-slate-100">
+                  <input
+                    type="text"
+                    [value]="getEdit(row.well.id, 'action')"
+                    (input)="setEdit(row.well.id, 'action', $any($event.target).value)"
+                    placeholder="Enter action…"
+                    class="w-full bg-transparent border border-slate-200 rounded px-2 py-1 text-xs text-slate-700 placeholder:text-slate-300 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors"
+                  />
+                </td>
+                <!-- Remark (editable) -->
+                <td class="px-2 py-1.5 border-r border-slate-100">
+                  <input
+                    type="text"
+                    [value]="getEdit(row.well.id, 'remark')"
+                    (input)="setEdit(row.well.id, 'remark', $any($event.target).value)"
+                    placeholder="Enter remark…"
+                    class="w-full bg-transparent border border-slate-200 rounded px-2 py-1 text-xs text-slate-700 placeholder:text-slate-300 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors"
+                  />
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        } @else if (activeFilter()) {
+        <!-- Filter active but no matching rows -->
+        <div class="bg-white rounded-xl border border-slate-200 p-8 text-center">
+          <p class="text-sm text-slate-500">No wells match the selected filter.</p>
+          <button
+            type="button"
+            (click)="clearFilter()"
+            class="mt-2 text-xs text-blue-600 hover:underline"
+          >
+            Clear filter
+          </button>
+        </div>
+        } } @else {
+        <!-- No wells selected -->
+        <div
+          class="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center text-slate-400"
+        >
+          <svg
+            class="w-10 h-10 mx-auto mb-3 text-slate-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          <p class="text-sm font-medium text-slate-500 mb-1">No wells selected</p>
+          <p class="text-xs text-slate-400">
+            Click an asset or well in the left panel to view its status
+          </p>
+        </div>
+        } }
+        <!-- end activeTab === 'status' -->
+
+        @if (activeTab() === 'schedule') { @if (selectedWellIds().size === 0) {
+        <div
+          class="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center text-slate-400"
+        >
+          <svg
+            class="w-10 h-10 mx-auto mb-3 text-slate-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          <p class="text-sm font-medium text-slate-500 mb-1">No wells selected</p>
+          <p class="text-xs text-slate-400">
+            Click an asset or well in the left panel to view the PM schedule
+          </p>
+        </div>
+        } @else {
+        <!-- Bar chart: wells due per bucket -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+              PM Workload by Month
+            </p>
+            @if (selectedMonth()) {
+            <button
+              type="button"
+              (click)="selectedMonth.set(null)"
+              class="text-xs text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              ✕ Clear month filter
+            </button>
+            }
+          </div>
+
+          <div class="overflow-x-auto">
+            <svg [attr.width]="scheduleChartWidth()" height="140" class="overflow-visible">
+              @for (bar of scheduleBars(); track bar.month) {
+              <rect
+                [attr.x]="bar.x"
+                [attr.y]="bar.y"
+                [attr.width]="bar.width"
+                [attr.height]="bar.height"
+                [attr.fill]="bar.color"
+                [attr.stroke]="hoveredMonth() === bar.month ? '#1e293b' : 'none'"
+                [attr.stroke-width]="hoveredMonth() === bar.month ? 2 : 0"
+                rx="3"
+                class="cursor-pointer transition-opacity duration-150"
+                [class.opacity-30]="selectedMonth() !== null && selectedMonth() !== bar.month"
+                (mouseenter)="hoveredMonth.set(bar.month)"
+                (mouseleave)="hoveredMonth.set(null)"
+                (click)="onBarClick(bar.month)"
+              />
+              <text
+                [attr.x]="bar.x + bar.width / 2"
+                [attr.y]="bar.y - 6"
+                text-anchor="middle"
+                fill="#334155"
+                font-size="11"
+                font-weight="600"
+                font-family="ui-sans-serif, system-ui, sans-serif"
+              >
+                {{ bar.count }}
+              </text>
+              }
+            </svg>
+
+            <!-- Month labels aligned to bars -->
+            <div class="flex">
+              @for (bar of scheduleBars(); track bar.month) {
+              <div
+                class="text-center text-xs font-medium cursor-pointer transition-opacity duration-150"
+                [style.width.px]="bar.labelWidth"
+                [class.text-red-600]="bar.month === 'overdue'"
+                [class.text-slate-600]="bar.month !== 'overdue'"
+                [class.opacity-30]="selectedMonth() !== null && selectedMonth() !== bar.month"
+                (click)="onBarClick(bar.month)"
+              >
+                {{ bar.label }}
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Matrix: platform groups per bucket -->
+        <div class="flex gap-4 overflow-x-auto pb-2">
+          @for (col of scheduleColumns(); track col.month) {
+          <div class="shrink-0 w-56 bg-white rounded-xl shadow-sm border border-slate-200">
+            <div
+              class="px-3 py-2 text-xs font-semibold flex items-center justify-between border-b rounded-t-xl"
+              [class.bg-red-50]="col.month === 'overdue'"
+              [class.text-red-700]="col.month === 'overdue'"
+              [class.border-red-200]="col.month === 'overdue'"
+              [class.bg-blue-50]="col.month !== 'overdue'"
+              [class.text-blue-700]="col.month !== 'overdue'"
+              [class.border-blue-200]="col.month !== 'overdue'"
+            >
+              <span>{{ col.label }}</span>
+              <span>{{ col.totalCount }}</span>
+            </div>
+
+            <div class="divide-y divide-slate-100">
+              @for (g of col.groups; track g.platformId) {
+              <div>
+                <button
+                  type="button"
+                  (click)="toggleCell(col.month, g.platformId)"
+                  class="w-full flex items-center gap-1.5 px-3 py-1.5 text-left text-xs text-slate-700 hover:bg-slate-50 transition-colors"
+                >
+                  <svg
+                    class="w-3 h-3 shrink-0 text-slate-400 transition-transform"
+                    [class.rotate-90]="isCellExpanded(col.month, g.platformId)"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                  <span class="font-medium">{{ g.platformCode }}</span>
+                  @if (g.rigs.length > 0) {
+                  <span class="relative inline-flex items-center group/rig">
+                    <svg
+                      class="w-2.5 h-2.5 shrink-0 text-amber-500"
+                      viewBox="0 0 8 8"
+                      fill="currentColor"
+                    >
+                      <circle cx="4" cy="4" r="4" />
+                    </svg>
+                    <span
+                      class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-30 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[10px] font-normal text-white opacity-0 invisible group-hover/rig:opacity-100 group-hover/rig:visible transition-opacity"
+                    >
+                      Rig on site: {{ rigNames(g.rigs) }}
+                    </span>
+                  </span>
+                  }
+                  <span class="text-slate-400 ml-auto">x {{ g.count }}</span>
+                </button>
+
+                @if (isCellExpanded(col.month, g.platformId)) {
+                <div class="pl-8 pr-3 pb-2 space-y-1.5">
+                  @for (row of g.rows; track row.well.id) {
+                  <div class="flex items-center gap-2 text-xs">
+                    <span
+                      class="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                      [class]="dotClass(row.finalStatus)"
+                    ></span>
+                    <span class="text-slate-700 truncate flex-1">{{ row.well.name }}</span>
+                    @if (dueBadge(row.nextPmDate); as badge) {
+                    <span
+                      class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium ring-1 ring-inset shrink-0"
+                      [class]="badge.classes"
+                    >
+                      {{ badge.label }}
+                    </span>
+                    }
+                  </div>
+                  }
+                </div>
+                }
+              </div>
+              }
+            </div>
+          </div>
+          } @empty {
+          <div
+            class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center text-sm text-slate-400 w-full"
+          >
+            No wells with a scheduled or overdue PM date among the selected wells.
+          </div>
+          }
+        </div>
+        } }
+        <!-- end activeTab === 'schedule' -->
+      </div>
+    </div>
+    <!-- end overflow-y-auto -->
+
+    <!-- Fixed bottom save bar -->
+    <div
+      class="shrink-0 border-t border-slate-200 bg-white px-5 py-3 flex items-center justify-end gap-4"
+    >
+      @if (saveSuccess()) {
+      <span class="text-sm text-green-600 font-medium flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+        All changes saved
+      </span>
+      } @if (anyDirty()) {
+      <span class="text-xs text-slate-500">{{ dirtyCount() }} unsaved row(s)</span>
+      }
+      <button
+        type="button"
+        (click)="saveAll()"
+        [disabled]="!anyDirty() || saving()"
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      >
+        {{ saving() ? 'Saving…' : 'Save All' }}
+      </button>
+    </div>
+  </div>
+  <!-- end right panel -->
+</div>
