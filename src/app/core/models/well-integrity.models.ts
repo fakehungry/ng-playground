@@ -61,6 +61,7 @@ export interface PressureComponent {
 
 export interface ValveComponent extends PressureComponent {
   functionTest: FunctionTestResult | null;
+  greaseVolume: number | null;
 }
 
 export interface DhsvComponent {

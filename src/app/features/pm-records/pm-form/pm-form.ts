@@ -132,6 +132,7 @@ export class PmForm implements OnInit {
       initialPressure: new FormControl<number | null>(null),
       finalPressure: new FormControl<number | null>(null),
       functionTest: new FormControl<FunctionTestResult | null>(null),
+      greaseVolume: new FormControl<number | null>(null),
       comment: new FormControl<string>('', { nonNullable: true }),
     });
   }
@@ -387,11 +388,13 @@ export class PmForm implements OnInit {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     }) => ({
       initialPressure: c.initialPressure,
       finalPressure: c.finalPressure,
       functionTest: c.functionTest,
+      greaseVolume: c.greaseVolume,
       comment: c.comment,
     });
 

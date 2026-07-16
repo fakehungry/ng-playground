@@ -52,30 +52,35 @@ export interface InspectionFormRaw {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     lmv: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     wv: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     kwv: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     sv: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     stuffingBox: { currentStatus: 'Clean' | 'Dirty'; comment: string };
@@ -103,36 +108,42 @@ export interface InspectionFormRaw {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     bAnnCsg: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     cAnnCsg: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     aAnnCsgValve2: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     bAnnCsg2: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
     cAnnCsg2: {
       initialPressure: number | null;
       finalPressure: number | null;
       functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
       comment: string;
     };
   };
@@ -180,6 +191,7 @@ function buildValveComponent(raw: {
   initialPressure: number | null;
   finalPressure: number | null;
   functionTest: FunctionTestResult | null;
+  greaseVolume: number | null;
   comment: string;
 }): ValveComponent {
   const lt = leakTest(raw.initialPressure, raw.finalPressure);
@@ -188,6 +200,7 @@ function buildValveComponent(raw: {
     finalPressure: raw.finalPressure,
     leakTest: lt,
     functionTest: raw.functionTest,
+    greaseVolume: raw.greaseVolume,
     currentStatus: valveStatus(lt, raw.functionTest),
     comment: raw.comment,
   };
@@ -197,12 +210,14 @@ function hasValveInput(raw: {
   initialPressure: number | null;
   finalPressure: number | null;
   functionTest: FunctionTestResult | null;
+  greaseVolume: number | null;
   comment: string;
 }): boolean {
   return (
     raw.initialPressure != null ||
     raw.finalPressure != null ||
     raw.functionTest != null ||
+    raw.greaseVolume != null ||
     raw.comment.trim() !== ''
   );
 }
