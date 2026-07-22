@@ -84,6 +84,11 @@
               Function Test
             </th>
             <th
+              class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-28"
+            >
+              Grease Vol. (kg)
+            </th>
+            <th
               class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-20"
             >
               Status
@@ -124,6 +129,11 @@
               >
               } @else { <span class="text-slate-400 text-xs">—</span> }
             </td>
+            <td class="px-3 py-2 font-mono text-xs text-slate-700">
+              @if (row.fn) { {{ $any(row.c).greaseVolume ?? '—' }} } @else {
+              <span class="text-slate-400">—</span>
+              }
+            </td>
             <td class="px-3 py-2">
               <span
                 [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.c.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
@@ -136,6 +146,7 @@
           <!-- Stuffing Box -->
           <tr class="hover:bg-slate-50 bg-slate-50/40">
             <td class="px-4 py-2 font-medium text-slate-700">Stuffing Box</td>
+            <td class="px-3 py-2 text-slate-400 text-xs">—</td>
             <td class="px-3 py-2 text-slate-400 text-xs">—</td>
             <td class="px-3 py-2 text-slate-400 text-xs">—</td>
             <td class="px-3 py-2 text-slate-400 text-xs">—</td>
@@ -206,6 +217,11 @@
               Function Test
             </th>
             <th
+              class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-28"
+            >
+              Grease Vol. (kg)
+            </th>
+            <th
               class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wide w-20"
             >
               Status
@@ -250,6 +266,11 @@
               >
               } @else { <span class="text-slate-400 text-xs">—</span> }
             </td>
+            <td class="px-3 py-2 font-mono text-xs text-slate-700">
+              @if (row.fn) { {{ $any(row.c).greaseVolume ?? '—' }} } @else {
+              <span class="text-slate-400">—</span>
+              }
+            </td>
             <td class="px-3 py-2">
               <span
                 [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.c.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
@@ -257,6 +278,108 @@
               >
             </td>
             <td class="px-3 py-2 text-slate-600 text-xs">{{ row.c.comment || '—' }}</td>
+          </tr>
+          } @if (insp.wellhead.aAnnCsgValve2; as v) {
+          <tr class="hover:bg-slate-50 bg-slate-50/40">
+            <td class="px-4 py-2 font-medium text-slate-700 whitespace-nowrap pl-8">
+              A-ann CSG Valve (2nd)
+            </td>
+            <td class="px-3 py-2 text-slate-700 font-mono text-xs">
+              {{ v.initialPressure ?? '—' }}
+            </td>
+            <td class="px-3 py-2 text-slate-700 font-mono text-xs">{{ v.finalPressure ?? '—' }}</td>
+            <td class="px-3 py-2">
+              @if (v.leakTest) {
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.leakTest }}</span
+              >
+              } @else { <span class="text-slate-400 text-xs">—</span> }
+            </td>
+            <td class="px-3 py-2">
+              @if (v.functionTest) {
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.functionTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.functionTest }}</span
+              >
+              } @else { <span class="text-slate-400 text-xs">—</span> }
+            </td>
+            <td class="px-3 py-2 font-mono text-xs text-slate-700">{{ v.greaseVolume ?? '—' }}</td>
+            <td class="px-3 py-2">
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.currentStatus }}</span
+              >
+            </td>
+            <td class="px-3 py-2 text-slate-600 text-xs">{{ v.comment || '—' }}</td>
+          </tr>
+          } @if (insp.wellhead.bAnnCsg2; as v) {
+          <tr class="hover:bg-slate-50 bg-slate-50/40">
+            <td class="px-4 py-2 font-medium text-slate-700 whitespace-nowrap pl-8">
+              B-ann CSG (2nd)
+            </td>
+            <td class="px-3 py-2 text-slate-700 font-mono text-xs">
+              {{ v.initialPressure ?? '—' }}
+            </td>
+            <td class="px-3 py-2 text-slate-700 font-mono text-xs">{{ v.finalPressure ?? '—' }}</td>
+            <td class="px-3 py-2">
+              @if (v.leakTest) {
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.leakTest }}</span
+              >
+              } @else { <span class="text-slate-400 text-xs">—</span> }
+            </td>
+            <td class="px-3 py-2">
+              @if (v.functionTest) {
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.functionTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.functionTest }}</span
+              >
+              } @else { <span class="text-slate-400 text-xs">—</span> }
+            </td>
+            <td class="px-3 py-2 font-mono text-xs text-slate-700">{{ v.greaseVolume ?? '—' }}</td>
+            <td class="px-3 py-2">
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.currentStatus }}</span
+              >
+            </td>
+            <td class="px-3 py-2 text-slate-600 text-xs">{{ v.comment || '—' }}</td>
+          </tr>
+          } @if (insp.wellhead.cAnnCsg2; as v) {
+          <tr class="hover:bg-slate-50 bg-slate-50/40">
+            <td class="px-4 py-2 font-medium text-slate-700 whitespace-nowrap pl-8">
+              C-ann CSG (2nd)
+            </td>
+            <td class="px-3 py-2 text-slate-700 font-mono text-xs">
+              {{ v.initialPressure ?? '—' }}
+            </td>
+            <td class="px-3 py-2 text-slate-700 font-mono text-xs">{{ v.finalPressure ?? '—' }}</td>
+            <td class="px-3 py-2">
+              @if (v.leakTest) {
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.leakTest }}</span
+              >
+              } @else { <span class="text-slate-400 text-xs">—</span> }
+            </td>
+            <td class="px-3 py-2">
+              @if (v.functionTest) {
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.functionTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.functionTest }}</span
+              >
+              } @else { <span class="text-slate-400 text-xs">—</span> }
+            </td>
+            <td class="px-3 py-2 font-mono text-xs text-slate-700">{{ v.greaseVolume ?? '—' }}</td>
+            <td class="px-3 py-2">
+              <span
+                [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (v.currentStatus === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                >{{ v.currentStatus }}</span
+              >
+            </td>
+            <td class="px-3 py-2 text-slate-600 text-xs">{{ v.comment || '—' }}</td>
           </tr>
           }
         </tbody>

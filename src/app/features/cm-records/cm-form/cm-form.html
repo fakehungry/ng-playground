@@ -1,0 +1,459 @@
+<div class="p-6 max-w-4xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center gap-4 mb-6">
+    <a routerLink="/cm-records" class="text-slate-500 hover:text-slate-700 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <div>
+      <h1 class="text-xl font-bold text-slate-900">
+        {{ editId ? 'Edit CM Record' : 'New CM Record' }}
+      </h1>
+      <p class="text-sm text-slate-500 mt-0.5">
+        {{ editId ? 'Update corrective maintenance record' : 'Log corrective maintenance for one or more well elements' }}
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-5">
+      <!-- Well Selection -->
+      <div class="border-b border-slate-100 pb-5">
+        <h2 class="text-sm font-semibold text-slate-700 mb-4">Well Selection</h2>
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Asset <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="assetId"
+              (change)="onAssetChange($event)"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="">Select asset</option>
+              @for (asset of wellService.assets(); track asset.id) {
+                <option [value]="asset.id">{{ asset.name }}</option>
+              }
+            </select>
+            @if (form.controls.assetId.invalid && form.controls.assetId.touched) {
+              <p class="text-xs text-red-600 mt-1">Required</p>
+            }
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Platform <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="platformId"
+              (change)="onPlatformChange($event)"
+              [disabled]="!wellService.selectedAssetId()"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
+            >
+              <option value="">Select platform</option>
+              @for (p of wellService.filteredPlatforms(); track p.id) {
+                <option [value]="p.id">{{ p.name }}</option>
+              }
+            </select>
+            @if (form.controls.platformId.invalid && form.controls.platformId.touched) {
+              <p class="text-xs text-red-600 mt-1">Required</p>
+            }
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Well <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="wellId"
+              (change)="onWellChange($event)"
+              [disabled]="!wellService.selectedPlatformId()"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-slate-100 disabled:cursor-not-allowed"
+            >
+              <option value="">Select well</option>
+              @for (w of wellService.filteredWells(); track w.id) {
+                <option [value]="w.id">{{ w.name }}</option>
+              }
+            </select>
+            @if (form.controls.wellId.invalid && form.controls.wellId.touched) {
+              <p class="text-xs text-red-600 mt-1">Required</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Report Details -->
+      <div>
+        <h2 class="text-sm font-semibold text-slate-700 mb-4">Report Details</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Event Date <span class="text-red-500">*</span></label
+            >
+            <input
+              type="date"
+              formControlName="eventDate"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            @if (form.controls.eventDate.invalid && form.controls.eventDate.touched) {
+              <p class="text-xs text-red-600 mt-1">Required</p>
+            }
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Reported By <span class="text-red-500">*</span></label
+            >
+            <input
+              type="text"
+              formControlName="reportedBy"
+              placeholder="Enter reporter name"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            @if (form.controls.reportedBy.invalid && form.controls.reportedBy.touched) {
+              <p class="text-xs text-red-600 mt-1">Required</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Elements -->
+    <div class="flex items-center justify-between">
+      <h2 class="text-sm font-semibold text-slate-700">Elements</h2>
+      <button
+        type="button"
+        (click)="addElement()"
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Add Element
+      </button>
+    </div>
+
+    @for (row of elementRows(); track row.index) {
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-5" [formGroup]="row.group">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-slate-700">
+            Element {{ row.index + 1 }}{{ row.def ? ' — ' + row.def.label : '' }}
+          </h3>
+          @if (elementRows().length > 1) {
+            <button
+              type="button"
+              (click)="removeElement(row.index)"
+              class="text-slate-400 hover:text-red-600 transition-colors"
+              title="Remove element"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 max-w-xs">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Element <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="elementKey"
+              (change)="onElementKeyChange(row.index)"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="">Select element</option>
+              <optgroup label="XT">
+                @for (el of availableElements(row.index, xtElements); track el.key) {
+                  <option [value]="el.key">{{ el.label }}</option>
+                }
+              </optgroup>
+              <optgroup label="Wellhead">
+                @for (el of availableElements(row.index, wellheadElements); track el.key) {
+                  <option [value]="el.key">{{ el.label }}</option>
+                }
+              </optgroup>
+              <optgroup label="DHSV">
+                @for (el of availableElements(row.index, dhsvElements); track el.key) {
+                  <option [value]="el.key">{{ el.label }}</option>
+                }
+              </optgroup>
+            </select>
+            @if (row.group.controls.elementKey.invalid && row.group.controls.elementKey.touched) {
+              <p class="text-xs text-red-600 mt-1">Required</p>
+            }
+          </div>
+        </div>
+
+        @if (row.def; as el) {
+          @if (el.kind === 'dhsv') {
+            @if (dhsvData(); as dh) {
+              <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
+                <p class="text-xs font-semibold text-blue-700 mb-2 uppercase tracking-wide">
+                  DHSV Configuration (from well data)
+                </p>
+                <div class="grid grid-cols-4 gap-3 text-xs text-blue-900">
+                  <div><span class="text-blue-500">Type</span><br />{{ dh.dhsvType }}</div>
+                  <div><span class="text-blue-500">Depth (m)</span><br />{{ dh.dhsvDepth }}</div>
+                  <div><span class="text-blue-500">Top Section ID</span><br />{{ dh.topSectionId }}</div>
+                  <div><span class="text-blue-500">Status</span><br />{{ dh.dhsvStatus }}</div>
+                </div>
+              </div>
+            } @else {
+              <p class="text-xs text-slate-400 italic">No DHSV data configured for this well.</p>
+            }
+          }
+
+          @switch (el.kind) {
+            @case ('pressure') {
+              <div class="grid grid-cols-4 gap-4">
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Initial Pressure (psi)</label>
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Final Pressure (psi)</label>
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Leak Test</label>
+                  @if (row.calc.leakTest; as lt) {
+                    <span
+                      [class]="'inline-flex items-center px-2.5 py-2 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                      >{{ lt }}</span
+                    >
+                  } @else {
+                    <span class="text-slate-400 text-xs">—</span>
+                  }
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Status</label>
+                  @if (row.calc.status; as st) {
+                    <span
+                      [class]="'inline-flex items-center px-2.5 py-2 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                      >{{ st }}</span
+                    >
+                  } @else {
+                    <span class="text-slate-400 text-xs">—</span>
+                  }
+                </div>
+              </div>
+            }
+            @case ('valve') {
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Initial Pressure (psi)</label>
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Final Pressure (psi)</label>
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Grease Volume (kg)</label>
+                  <input
+                    type="number"
+                    formControlName="greaseVolume"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Function Test</label>
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                      <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Leak Test</label>
+                  @if (row.calc.leakTest; as lt) {
+                    <span
+                      [class]="'inline-flex items-center px-2.5 py-2 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                      >{{ lt }}</span
+                    >
+                  } @else {
+                    <span class="text-slate-400 text-xs">—</span>
+                  }
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Status</label>
+                  @if (row.calc.status; as st) {
+                    <span
+                      [class]="'inline-flex items-center px-2.5 py-2 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                      >{{ st }}</span
+                    >
+                  } @else {
+                    <span class="text-slate-400 text-xs">—</span>
+                  }
+                </div>
+              </div>
+            }
+            @case ('stuffingBox') {
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Current Status</label>
+                  <select
+                    formControlName="stuffingBoxStatus"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of stuffingBoxOptions; track o) {
+                      <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            }
+            @case ('dhsv') {
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Pressure Before Inflow Test (psi)</label>
+                  <input
+                    type="number"
+                    formControlName="pressureBeforeInflowTest"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Initial Pressure When Inflow Test (psi)</label>
+                  <input
+                    type="number"
+                    formControlName="initialPressureWhenInflowTest"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Final Pressure (psi)</label>
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">
+                    Constant for Field
+                    <span class="text-slate-400 font-normal">(pre-filled from well data, can override)</span>
+                  </label>
+                  <input
+                    type="number"
+                    formControlName="constantForField"
+                    step="0.01"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Leak Test (calculated)</label>
+                  @if (row.calc.leakRate != null) {
+                    <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
+                      <span class="text-sm font-mono text-slate-800">{{ row.calc.leakRate | number:'1.2-4' }}</span>
+                      <span
+                        [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (row.calc.leakTest === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                      >
+                        {{ row.calc.leakTest }}
+                      </span>
+                    </div>
+                  } @else {
+                    <div class="px-3 py-2 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-400 italic">
+                      Fill pressures &amp; constant to calculate
+                    </div>
+                  }
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Hydraulic Return (ml)</label>
+                  <input
+                    type="number"
+                    formControlName="hydraulicReturn"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-600 mb-1">Function Test</label>
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                      <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-span-2">
+                  <label class="block text-xs text-slate-600 mb-1">Current Status</label>
+                  @if (row.calc.status; as st) {
+                    <span
+                      [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                      >{{ st }}</span
+                    >
+                  } @else {
+                    <span class="text-slate-400 text-xs">—</span>
+                  }
+                </div>
+              </div>
+            }
+          }
+
+          <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Root Cause</label>
+              <textarea
+                formControlName="rootCause"
+                rows="3"
+                placeholder="What caused the failure..."
+                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Corrective Action</label>
+              <textarea
+                formControlName="correctiveAction"
+                rows="3"
+                placeholder="What was done to fix it..."
+                class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+              ></textarea>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (errorMsg()) {
+      <p class="text-sm text-red-600">{{ errorMsg() }}</p>
+    }
+
+    <div class="flex items-center justify-end gap-3">
+      <a
+        routerLink="/cm-records"
+        class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+        >Cancel</a
+      >
+      <button
+        type="submit"
+        [disabled]="saving()"
+        class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+      >
+        {{ editId ? 'Update Record' : 'Create Record' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -143,6 +143,19 @@
               }
             </select>
           </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1"
+              >Valve Test Type <span class="text-red-500">*</span></label
+            >
+            <select
+              formControlName="valveTestType"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              @for (opt of valveTestTypeOptions; track opt) {
+              <option [value]="opt">{{ opt }}</option>
+              }
+            </select>
+          </div>
           @if (showCompletedDate()) {
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1"
@@ -224,6 +237,11 @@
                   Function Test
                 </th>
                 <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Grease Vol. (kg)
+                </th>
+                <th
                   class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24"
                 >
                   Status
@@ -261,6 +279,7 @@
                   >
                   } @else { <span class="text-slate-400 text-xs">—</span> }
                 </td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
                 <td class="px-3 py-2 text-slate-400 text-xs">—</td>
                 <td class="px-3 py-2">
                   @if (xtBodyCalc().xtBody.status; as st) {
@@ -315,6 +334,13 @@
                   </select>
                 </td>
                 <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="greaseVolume"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
                   @if (xtBodyCalc().umv.status; as st) {
                   <span
                     [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
@@ -365,6 +391,13 @@
                     <option [value]="o">{{ o }}</option>
                     }
                   </select>
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="greaseVolume"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
                 </td>
                 <td class="px-3 py-2">
                   @if (xtBodyCalc().lmv.status; as st) {
@@ -419,6 +452,13 @@
                   </select>
                 </td>
                 <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="greaseVolume"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
                   @if (xtBodyCalc().wv.status; as st) {
                   <span
                     [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
@@ -469,6 +509,13 @@
                     <option [value]="o">{{ o }}</option>
                     }
                   </select>
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="greaseVolume"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
                 </td>
                 <td class="px-3 py-2">
                   @if (xtBodyCalc().kwv.status; as st) {
@@ -523,6 +570,13 @@
                   </select>
                 </td>
                 <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="greaseVolume"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
                   @if (xtBodyCalc().sv.status; as st) {
                   <span
                     [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
@@ -541,6 +595,7 @@
               <!-- Stuffing Box -->
               <tr formGroupName="stuffingBox" class="hover:bg-slate-50 bg-slate-50/50">
                 <td class="px-4 py-2 font-medium text-slate-700">Stuffing Box</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
                 <td class="px-3 py-2 text-slate-400 text-xs">—</td>
                 <td class="px-3 py-2 text-slate-400 text-xs">—</td>
                 <td class="px-3 py-2 text-slate-400 text-xs">—</td>
@@ -624,6 +679,11 @@
                   Function Test
                 </th>
                 <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
+                  Grease Vol. (kg)
+                </th>
+                <th
                   class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-24"
                 >
                   Status
@@ -639,7 +699,24 @@
               @for (row of wellheadRows; track row.key) {
               <tr [formGroupName]="row.key" class="hover:bg-slate-50">
                 <td class="px-4 py-2 font-medium text-slate-700 whitespace-nowrap">
-                  {{ row.label }}
+                  {{ row.label }} @if (row.secondKey; as addKey) { @if
+                  (!secondValveVisible()[addKey]) {
+                  <button
+                    type="button"
+                    (click)="toggleSecondValve(addKey)"
+                    title="Add second valve"
+                    class="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-600 hover:bg-blue-50 align-middle"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                  </button>
+                  } }
                 </td>
                 <td class="px-3 py-2">
                   <input
@@ -677,6 +754,15 @@
                   } @else { <span class="text-slate-400 text-xs">—</span> }
                 </td>
                 <td class="px-3 py-2">
+                  @if (row.hasFunc) {
+                  <input
+                    type="number"
+                    formControlName="greaseVolume"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
                   @if (wellheadCalc()[row.key].status; as st) {
                   <span
                     [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
@@ -692,7 +778,83 @@
                   />
                 </td>
               </tr>
-              }
+              @if (row.secondKey; as sk) { @if (secondValveVisible()[sk]) {
+              <tr [formGroupName]="sk" class="hover:bg-slate-50 bg-slate-50/50">
+                <td class="px-4 py-2 font-medium text-slate-700 whitespace-nowrap pl-8">
+                  {{ row.label }} (2nd)
+                  <button
+                    type="button"
+                    (click)="toggleSecondValve(sk)"
+                    title="Remove second valve"
+                    class="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full text-slate-400 hover:bg-red-50 hover:text-red-600 align-middle"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="initialPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="finalPressure"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (wellheadCalc()[sk].leakTest; as lt) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (lt === 'Pass' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ lt }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="functionTest"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option [value]="null">—</option>
+                    @for (o of functionTestOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="number"
+                    formControlName="greaseVolume"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+                <td class="px-3 py-2">
+                  @if (wellheadCalc()[sk].status; as st) {
+                  <span
+                    [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + (st === 'Good' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800')"
+                    >{{ st }}</span
+                  >
+                  } @else { <span class="text-slate-400 text-xs">—</span> }
+                </td>
+                <td class="px-3 py-2">
+                  <input
+                    type="text"
+                    formControlName="comment"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  />
+                </td>
+              </tr>
+              } } }
             </tbody>
           </table>
         </div>

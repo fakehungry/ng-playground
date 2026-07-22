@@ -1,11 +1,8 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { PmService, buildInspectionData, InspectionFormRaw } from '../../../core/services/pm.service';
-import { WellService } from '../../../core/services/well.service';
-import { WellDataService } from '../../../core/services/well-data.service';
 import {
   DhsvData,
   FunctionTestResult,
@@ -15,11 +12,31 @@ import {
   PmStatus,
   StuffingBoxStatus,
   TubingStatus,
+  ValveTestType,
 } from '../../../core/models/well-integrity.models';
+import {
+  buildInspectionData,
+  InspectionFormRaw,
+  PmService,
+} from '../../../core/services/pm.service';
+import { WellDataService } from '../../../core/services/well-data.service';
+import { WellService } from '../../../core/services/well.service';
 
 type SectionKey = 'xtBody' | 'wellhead' | 'tubing' | 'annulusPressure';
-type WellheadKey = 'xmtCarrierA' | 'tubingHangerCarrierB' | 'cavityC' | 'tbgHgrSealD' |
-  'csg7inPackOff' | 'csg9inPackOff' | 'aAnnCsgValve' | 'bAnnCsg' | 'cAnnCsg';
+type WellheadKey =
+  | 'xmtCarrierA'
+  | 'tubingHangerCarrierB'
+  | 'cavityC'
+  | 'tbgHgrSealD'
+  | 'csg7inPackOff'
+  | 'csg9inPackOff'
+  | 'aAnnCsgValve'
+  | 'bAnnCsg'
+  | 'cAnnCsg'
+  | 'aAnnCsgValve2'
+  | 'bAnnCsg2'
+  | 'cAnnCsg2';
+type SecondValveKey = 'aAnnCsgValve2' | 'bAnnCsg2' | 'cAnnCsg2';
 
 @Component({
   selector: 'app-pm-form',
@@ -48,31 +65,62 @@ export class PmForm implements OnInit {
   });
 
   protected readonly statusOptions: PmStatus[] = ['Planned', 'In Progress', 'Completed'];
+  protected readonly valveTestTypeOptions: ValveTestType[] = ['Positive', 'Inflow'];
   protected readonly functionTestOptions: FunctionTestResult[] = ['Pass', 'Fail'];
   protected readonly stuffingBoxOptions: StuffingBoxStatus[] = ['Clean', 'Dirty'];
   protected readonly tubingStatusOptions: TubingStatus[] = ['Shut-in', 'Flowing'];
 
-  protected readonly wellheadRows: Array<{ key: WellheadKey; label: string; hasFunc: boolean }> = [
-    { key: 'xmtCarrierA',          label: 'XMT Carrier (A)',          hasFunc: false },
+  protected readonly wellheadRows: Array<{
+    key: WellheadKey;
+    label: string;
+    hasFunc: boolean;
+    secondKey?: SecondValveKey;
+  }> = [
+    { key: 'xmtCarrierA', label: 'XMT Carrier (A)', hasFunc: false },
     { key: 'tubingHangerCarrierB', label: 'Tubing Hanger Carrier (B)', hasFunc: false },
-    { key: 'cavityC',              label: 'Cavity (C)',                hasFunc: false },
-    { key: 'tbgHgrSealD',          label: 'TBG HGR Seal (D)',          hasFunc: false },
-    { key: 'csg7inPackOff',        label: '7" CSG Pack-off',           hasFunc: false },
-    { key: 'csg9inPackOff',        label: '9-5/8" CSG Pack-off',       hasFunc: false },
-    { key: 'aAnnCsgValve',         label: 'A-ann CSG Valve',           hasFunc: true  },
-    { key: 'bAnnCsg',              label: 'B-ann CSG',                 hasFunc: true  },
-    { key: 'cAnnCsg',              label: 'C-ann CSG',                 hasFunc: true  },
+    { key: 'cavityC', label: 'Cavity (C)', hasFunc: false },
+    { key: 'tbgHgrSealD', label: 'TBG HGR Seal (D)', hasFunc: false },
+    { key: 'csg7inPackOff', label: '7" CSG Pack-off', hasFunc: false },
+    { key: 'csg9inPackOff', label: '9-5/8" CSG Pack-off', hasFunc: false },
+    { key: 'aAnnCsgValve', label: 'A-ann CSG Valve', hasFunc: true, secondKey: 'aAnnCsgValve2' },
+    { key: 'bAnnCsg', label: 'B-ann CSG Valve', hasFunc: true, secondKey: 'bAnnCsg2' },
+    { key: 'cAnnCsg', label: 'C-ann CSG Valve', hasFunc: true, secondKey: 'cAnnCsg2' },
   ];
 
+  protected readonly secondValveVisible = signal<Record<SecondValveKey, boolean>>({
+    aAnnCsgValve2: false,
+    bAnnCsg2: false,
+    cAnnCsg2: false,
+  });
+
   protected readonly form = new FormGroup({
-    assetId:        new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    platformId:     new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    wellId:         new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    jobDescription: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(500)] }),
-    plannedDate:    new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    operatorName:   new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    status:         new FormControl<PmStatus>('Planned', { nonNullable: true, validators: [Validators.required] }),
-    completedDate:  new FormControl<string>('', { nonNullable: true }),
+    assetId: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    platformId: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    wellId: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    jobDescription: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.maxLength(500)],
+    }),
+    plannedDate: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    operatorName: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    status: new FormControl<PmStatus>('Planned', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    valveTestType: new FormControl<ValveTestType>('Positive', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    completedDate: new FormControl<string>('', { nonNullable: true }),
   });
 
   protected readonly showCompletedDate = signal(false);
@@ -80,95 +128,102 @@ export class PmForm implements OnInit {
   private pressureGroup() {
     return new FormGroup({
       initialPressure: new FormControl<number | null>(null),
-      finalPressure:   new FormControl<number | null>(null),
-      comment:         new FormControl<string>('', { nonNullable: true }),
+      finalPressure: new FormControl<number | null>(null),
+      comment: new FormControl<string>('', { nonNullable: true }),
     });
   }
 
   private valveGroup() {
     return new FormGroup({
       initialPressure: new FormControl<number | null>(null),
-      finalPressure:   new FormControl<number | null>(null),
-      functionTest:    new FormControl<FunctionTestResult | null>(null),
-      comment:         new FormControl<string>('', { nonNullable: true }),
+      finalPressure: new FormControl<number | null>(null),
+      functionTest: new FormControl<FunctionTestResult | null>(null),
+      greaseVolume: new FormControl<number | null>(null),
+      comment: new FormControl<string>('', { nonNullable: true }),
     });
   }
 
   protected readonly inspectionForm = new FormGroup({
     xtBody: new FormGroup({
-      xtBody:      this.pressureGroup(),
-      umv:         this.valveGroup(),
-      lmv:         this.valveGroup(),
-      wv:          this.valveGroup(),
-      kwv:         this.valveGroup(),
-      sv:          this.valveGroup(),
+      xtBody: this.pressureGroup(),
+      umv: this.valveGroup(),
+      lmv: this.valveGroup(),
+      wv: this.valveGroup(),
+      kwv: this.valveGroup(),
+      sv: this.valveGroup(),
       stuffingBox: new FormGroup({
         currentStatus: new FormControl<StuffingBoxStatus>('Clean', { nonNullable: true }),
-        comment:       new FormControl<string>('', { nonNullable: true }),
+        comment: new FormControl<string>('', { nonNullable: true }),
       }),
     }),
     wellhead: new FormGroup({
-      xmtCarrierA:          this.pressureGroup(),
+      xmtCarrierA: this.pressureGroup(),
       tubingHangerCarrierB: this.pressureGroup(),
-      cavityC:              this.pressureGroup(),
-      tbgHgrSealD:          this.pressureGroup(),
-      csg7inPackOff:        this.pressureGroup(),
-      csg9inPackOff:        this.pressureGroup(),
-      aAnnCsgValve:         this.valveGroup(),
-      bAnnCsg:              this.valveGroup(),
-      cAnnCsg:              this.valveGroup(),
+      cavityC: this.pressureGroup(),
+      tbgHgrSealD: this.pressureGroup(),
+      csg7inPackOff: this.pressureGroup(),
+      csg9inPackOff: this.pressureGroup(),
+      aAnnCsgValve: this.valveGroup(),
+      bAnnCsg: this.valveGroup(),
+      cAnnCsg: this.valveGroup(),
+      aAnnCsgValve2: this.valveGroup(),
+      bAnnCsg2: this.valveGroup(),
+      cAnnCsg2: this.valveGroup(),
     }),
     tubing: new FormGroup({
       dhsv: new FormGroup({
-        pressureBeforeInflowTest:      new FormControl<number | null>(null),
+        pressureBeforeInflowTest: new FormControl<number | null>(null),
         initialPressureWhenInflowTest: new FormControl<number | null>(null),
-        finalPressure:                 new FormControl<number | null>(null),
-        hydraulicReturn:               new FormControl<number | null>(null),
-        functionTest:                  new FormControl<FunctionTestResult | null>(null),
-        constantForField:              new FormControl<number | null>(null), // pre-filled from API, not saved
-        comment:                       new FormControl<string>('', { nonNullable: true }),
+        finalPressure: new FormControl<number | null>(null),
+        hydraulicReturn: new FormControl<number | null>(null),
+        functionTest: new FormControl<FunctionTestResult | null>(null),
+        constantForField: new FormControl<number | null>(null), // pre-filled from API, not saved
+        comment: new FormControl<string>('', { nonNullable: true }),
       }),
       tubing: new FormGroup({
-        pressureBefore:    new FormControl<number | null>(null),
-        pressureAfter:     new FormControl<number | null>(null),
+        pressureBefore: new FormControl<number | null>(null),
+        pressureAfter: new FormControl<number | null>(null),
         temperatureBefore: new FormControl<number | null>(null),
-        temperatureAfter:  new FormControl<number | null>(null),
-        currentStatus:     new FormControl<TubingStatus>('Shut-in', { nonNullable: true }),
-        comment:           new FormControl<string>('', { nonNullable: true }),
+        temperatureAfter: new FormControl<number | null>(null),
+        currentStatus: new FormControl<TubingStatus>('Shut-in', { nonNullable: true }),
+        comment: new FormControl<string>('', { nonNullable: true }),
       }),
     }),
     annulusPressure: new FormGroup({
       aAnn: new FormGroup({
         currentPressure: new FormControl<number | null>(null),
-        pbuRate:         new FormControl<number | null>(null),
-        comment:         new FormControl<string>('', { nonNullable: true }),
+        pbuRate: new FormControl<number | null>(null),
+        comment: new FormControl<string>('', { nonNullable: true }),
       }),
       bAnn: new FormGroup({
         currentPressure: new FormControl<number | null>(null),
-        pbuRate:         new FormControl<number | null>(null),
-        comment:         new FormControl<string>('', { nonNullable: true }),
+        pbuRate: new FormControl<number | null>(null),
+        comment: new FormControl<string>('', { nonNullable: true }),
       }),
       cAnn: new FormGroup({
         currentPressure: new FormControl<number | null>(null),
-        pbuRate:         new FormControl<number | null>(null),
-        comment:         new FormControl<string>('', { nonNullable: true }),
+        pbuRate: new FormControl<number | null>(null),
+        comment: new FormControl<string>('', { nonNullable: true }),
       }),
     }),
   });
 
   // Converts form valueChanges into a signal so computed() tracks it reactively
   private readonly _formTick = toSignal(this.inspectionForm.valueChanges, { initialValue: null });
+  private readonly valveTestType = toSignal(this.form.controls.valveTestType.valueChanges, {
+    initialValue: this.form.controls.valveTestType.value,
+  });
 
   protected readonly xtBodyCalc = computed(() => {
     this._formTick();
     const f = this.inspectionForm.controls.xtBody.getRawValue();
     return {
       xtBody: this.calcPressure(f.xtBody.initialPressure, f.xtBody.finalPressure),
-      umv:    this.calcValve(f.umv.initialPressure, f.umv.finalPressure, f.umv.functionTest),
-      lmv:    this.calcValve(f.lmv.initialPressure, f.lmv.finalPressure, f.lmv.functionTest),
-      wv:     this.calcValve(f.wv.initialPressure, f.wv.finalPressure, f.wv.functionTest),
-      kwv:    this.calcValve(f.kwv.initialPressure, f.kwv.finalPressure, f.kwv.functionTest),
-      sv:     this.calcValve(f.sv.initialPressure, f.sv.finalPressure, f.sv.functionTest),
+      umv: this.calcValve(f.umv.initialPressure, f.umv.finalPressure, f.umv.functionTest),
+      lmv: this.calcValve(f.lmv.initialPressure, f.lmv.finalPressure, f.lmv.functionTest),
+      wv: this.calcValve(f.wv.initialPressure, f.wv.finalPressure, f.wv.functionTest),
+      kwv: this.calcValve(f.kwv.initialPressure, f.kwv.finalPressure, f.kwv.functionTest),
+      sv: this.calcValve(f.sv.initialPressure, f.sv.finalPressure, f.sv.functionTest),
     };
   });
 
@@ -176,15 +231,51 @@ export class PmForm implements OnInit {
     this._formTick();
     const f = this.inspectionForm.controls.wellhead.getRawValue();
     return {
-      xmtCarrierA:          this.calcPressure(f.xmtCarrierA.initialPressure, f.xmtCarrierA.finalPressure),
-      tubingHangerCarrierB: this.calcPressure(f.tubingHangerCarrierB.initialPressure, f.tubingHangerCarrierB.finalPressure),
-      cavityC:              this.calcPressure(f.cavityC.initialPressure, f.cavityC.finalPressure),
-      tbgHgrSealD:          this.calcPressure(f.tbgHgrSealD.initialPressure, f.tbgHgrSealD.finalPressure),
-      csg7inPackOff:        this.calcPressure(f.csg7inPackOff.initialPressure, f.csg7inPackOff.finalPressure),
-      csg9inPackOff:        this.calcPressure(f.csg9inPackOff.initialPressure, f.csg9inPackOff.finalPressure),
-      aAnnCsgValve:         this.calcValve(f.aAnnCsgValve.initialPressure, f.aAnnCsgValve.finalPressure, f.aAnnCsgValve.functionTest),
-      bAnnCsg:              this.calcValve(f.bAnnCsg.initialPressure, f.bAnnCsg.finalPressure, f.bAnnCsg.functionTest),
-      cAnnCsg:              this.calcValve(f.cAnnCsg.initialPressure, f.cAnnCsg.finalPressure, f.cAnnCsg.functionTest),
+      xmtCarrierA: this.calcPressure(f.xmtCarrierA.initialPressure, f.xmtCarrierA.finalPressure),
+      tubingHangerCarrierB: this.calcPressure(
+        f.tubingHangerCarrierB.initialPressure,
+        f.tubingHangerCarrierB.finalPressure,
+      ),
+      cavityC: this.calcPressure(f.cavityC.initialPressure, f.cavityC.finalPressure),
+      tbgHgrSealD: this.calcPressure(f.tbgHgrSealD.initialPressure, f.tbgHgrSealD.finalPressure),
+      csg7inPackOff: this.calcPressure(
+        f.csg7inPackOff.initialPressure,
+        f.csg7inPackOff.finalPressure,
+      ),
+      csg9inPackOff: this.calcPressure(
+        f.csg9inPackOff.initialPressure,
+        f.csg9inPackOff.finalPressure,
+      ),
+      aAnnCsgValve: this.calcValve(
+        f.aAnnCsgValve.initialPressure,
+        f.aAnnCsgValve.finalPressure,
+        f.aAnnCsgValve.functionTest,
+      ),
+      bAnnCsg: this.calcValve(
+        f.bAnnCsg.initialPressure,
+        f.bAnnCsg.finalPressure,
+        f.bAnnCsg.functionTest,
+      ),
+      cAnnCsg: this.calcValve(
+        f.cAnnCsg.initialPressure,
+        f.cAnnCsg.finalPressure,
+        f.cAnnCsg.functionTest,
+      ),
+      aAnnCsgValve2: this.calcValve(
+        f.aAnnCsgValve2.initialPressure,
+        f.aAnnCsgValve2.finalPressure,
+        f.aAnnCsgValve2.functionTest,
+      ),
+      bAnnCsg2: this.calcValve(
+        f.bAnnCsg2.initialPressure,
+        f.bAnnCsg2.finalPressure,
+        f.bAnnCsg2.functionTest,
+      ),
+      cAnnCsg2: this.calcValve(
+        f.cAnnCsg2.initialPressure,
+        f.cAnnCsg2.finalPressure,
+        f.cAnnCsg2.functionTest,
+      ),
     };
   });
 
@@ -201,14 +292,20 @@ export class PmForm implements OnInit {
       dhsv.constantForField != null
     ) {
       leakRate =
-        (config.topSectionId * config.topSectionId * config.dhsvDepth * dhsv.constantForField *
-          (dhsv.finalPressure - dhsv.initialPressureWhenInflowTest)) / 30;
+        (config.topSectionId *
+          config.topSectionId *
+          config.dhsvDepth *
+          dhsv.constantForField *
+          (dhsv.finalPressure - dhsv.initialPressureWhenInflowTest)) /
+        30;
       leakTest = leakRate <= 15 ? 'Pass' : 'Fail';
     }
     const dhsvStatus =
-      leakTest === 'Pass' && dhsv.functionTest === 'Pass' ? 'Good'
-      : leakTest != null || dhsv.functionTest != null ? 'Fail'
-      : null;
+      leakTest === 'Pass' && dhsv.functionTest === 'Pass'
+        ? 'Good'
+        : leakTest != null || dhsv.functionTest != null
+          ? 'Fail'
+          : null;
     return { leakRate, leakTest, dhsvStatus };
   });
 
@@ -223,14 +320,21 @@ export class PmForm implements OnInit {
     };
   });
 
-  private calcPressure(init: number | null, fin: number | null): { leakTest: LeakTestResult | null; status: 'Good' | 'Fail' | null } {
-    if (init == null || fin == null || init === 0) return { leakTest: null, status: null };
-    const pass = fin / init >= 0.97;
+  private calcPressure(
+    init: number | null,
+    fin: number | null,
+  ): { leakTest: LeakTestResult | null; status: 'Good' | 'Fail' | null } {
+    if (init == null || fin == null) return { leakTest: null, status: null };
+    const isInflow = this.valveTestType() === 'Inflow';
+    if (isInflow ? fin === 0 : init === 0) return { leakTest: null, status: null };
+    const pass = isInflow ? init / fin >= 0.97 : fin / init >= 0.97;
     return { leakTest: pass ? 'Pass' : 'Fail', status: pass ? 'Good' : 'Fail' };
   }
 
   private calcValve(
-    init: number | null, fin: number | null, ft: FunctionTestResult | null,
+    init: number | null,
+    fin: number | null,
+    ft: FunctionTestResult | null,
   ): { leakTest: LeakTestResult | null; status: 'Good' | 'Fail' | null } {
     const { leakTest } = this.calcPressure(init, fin);
     if (leakTest == null && ft == null) return { leakTest: null, status: null };
@@ -238,9 +342,7 @@ export class PmForm implements OnInit {
     return { leakTest, status };
   }
 
-  private calcAnnPressure(
-    cp: number | null, tow: number | null,
-  ): 'Good' | 'Fail' | null {
+  private calcAnnPressure(cp: number | null, tow: number | null): 'Good' | 'Fail' | null {
     if (cp == null || tow == null) return null;
     return cp <= tow ? 'Good' : 'Fail';
   }
@@ -249,16 +351,19 @@ export class PmForm implements OnInit {
     this.editId = this.route.snapshot.paramMap.get('id');
 
     if (this.editId) {
-      this.pmService.fetchById(this.editId).subscribe(record => {
+      this.pmService.fetchById(this.editId).subscribe((record) => {
         if (!record) return;
         const well = this.wellService.findWell(record.wellId);
         this.wellService.selectAsset(well?.assetId ?? null);
         this.wellService.selectPlatform(well?.platformId ?? null);
         this.wellService.selectWell(record.wellId);
         this.wellDataService.loadByWell(record.wellId);
-        this.pmService.fetchDhsvByWell(record.wellId).subscribe(d => {
+        this.pmService.fetchDhsvByWell(record.wellId).subscribe((d) => {
           this.dhsvData.set(d);
-          if (d) this.inspectionForm.controls.tubing.controls.dhsv.controls.constantForField.setValue(d.constantForField);
+          if (d)
+            this.inspectionForm.controls.tubing.controls.dhsv.controls.constantForField.setValue(
+              d.constantForField,
+            );
         });
         this.form.patchValue({
           assetId: well?.assetId ?? '',
@@ -268,6 +373,7 @@ export class PmForm implements OnInit {
           plannedDate: record.plannedDate,
           operatorName: record.operatorName,
           status: record.status,
+          valveTestType: record.valveTestType ?? 'Positive',
           completedDate: record.completedDate ?? '',
         });
         this.showCompletedDate.set(record.status === 'Completed');
@@ -281,24 +387,49 @@ export class PmForm implements OnInit {
   }
 
   private patchInspectionForm(data: PmInspectionData): void {
-    const pv = (c: { initialPressure: number | null; finalPressure: number | null; comment: string }) => ({
-      initialPressure: c.initialPressure, finalPressure: c.finalPressure, comment: c.comment,
+    const pv = (c: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      comment: string;
+    }) => ({
+      initialPressure: c.initialPressure,
+      finalPressure: c.finalPressure,
+      comment: c.comment,
     });
-    const vv = (c: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string }) => ({
-      initialPressure: c.initialPressure, finalPressure: c.finalPressure, functionTest: c.functionTest, comment: c.comment,
+    const vv = (c: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    }) => ({
+      initialPressure: c.initialPressure,
+      finalPressure: c.finalPressure,
+      functionTest: c.functionTest,
+      greaseVolume: c.greaseVolume,
+      comment: c.comment,
     });
 
     this.inspectionForm.patchValue({
       xtBody: {
-        xtBody: pv(data.xtBody.xtBody), umv: vv(data.xtBody.umv), lmv: vv(data.xtBody.lmv),
-        wv: vv(data.xtBody.wv), kwv: vv(data.xtBody.kwv), sv: vv(data.xtBody.sv),
+        xtBody: pv(data.xtBody.xtBody),
+        umv: vv(data.xtBody.umv),
+        lmv: vv(data.xtBody.lmv),
+        wv: vv(data.xtBody.wv),
+        kwv: vv(data.xtBody.kwv),
+        sv: vv(data.xtBody.sv),
         stuffingBox: data.xtBody.stuffingBox,
       },
       wellhead: {
-        xmtCarrierA: pv(data.wellhead.xmtCarrierA), tubingHangerCarrierB: pv(data.wellhead.tubingHangerCarrierB),
-        cavityC: pv(data.wellhead.cavityC), tbgHgrSealD: pv(data.wellhead.tbgHgrSealD),
-        csg7inPackOff: pv(data.wellhead.csg7inPackOff), csg9inPackOff: pv(data.wellhead.csg9inPackOff),
-        aAnnCsgValve: vv(data.wellhead.aAnnCsgValve), bAnnCsg: vv(data.wellhead.bAnnCsg), cAnnCsg: vv(data.wellhead.cAnnCsg),
+        xmtCarrierA: pv(data.wellhead.xmtCarrierA),
+        tubingHangerCarrierB: pv(data.wellhead.tubingHangerCarrierB),
+        cavityC: pv(data.wellhead.cavityC),
+        tbgHgrSealD: pv(data.wellhead.tbgHgrSealD),
+        csg7inPackOff: pv(data.wellhead.csg7inPackOff),
+        csg9inPackOff: pv(data.wellhead.csg9inPackOff),
+        aAnnCsgValve: vv(data.wellhead.aAnnCsgValve),
+        bAnnCsg: vv(data.wellhead.bAnnCsg),
+        cAnnCsg: vv(data.wellhead.cAnnCsg),
       },
       tubing: {
         dhsv: {
@@ -319,15 +450,48 @@ export class PmForm implements OnInit {
         },
       },
       annulusPressure: {
-        aAnn: { currentPressure: data.annulusPressure.aAnn.currentPressure, pbuRate: data.annulusPressure.aAnn.pbuRate, comment: data.annulusPressure.aAnn.comment },
-        bAnn: { currentPressure: data.annulusPressure.bAnn.currentPressure, pbuRate: data.annulusPressure.bAnn.pbuRate, comment: data.annulusPressure.bAnn.comment },
-        cAnn: { currentPressure: data.annulusPressure.cAnn.currentPressure, pbuRate: data.annulusPressure.cAnn.pbuRate, comment: data.annulusPressure.cAnn.comment },
+        aAnn: {
+          currentPressure: data.annulusPressure.aAnn.currentPressure,
+          pbuRate: data.annulusPressure.aAnn.pbuRate,
+          comment: data.annulusPressure.aAnn.comment,
+        },
+        bAnn: {
+          currentPressure: data.annulusPressure.bAnn.currentPressure,
+          pbuRate: data.annulusPressure.bAnn.pbuRate,
+          comment: data.annulusPressure.bAnn.comment,
+        },
+        cAnn: {
+          currentPressure: data.annulusPressure.cAnn.currentPressure,
+          pbuRate: data.annulusPressure.cAnn.pbuRate,
+          comment: data.annulusPressure.cAnn.comment,
+        },
       },
+    });
+
+    (['aAnnCsgValve2', 'bAnnCsg2', 'cAnnCsg2'] as const).forEach((key) => {
+      const secondValve = data.wellhead[key];
+      if (secondValve) {
+        this.inspectionForm.controls.wellhead.controls[key].patchValue(vv(secondValve));
+      }
+      this.secondValveVisible.update((s) => ({ ...s, [key]: !!secondValve }));
     });
   }
 
   protected toggleSection(key: SectionKey): void {
-    this.sectionExpanded.update(s => ({ ...s, [key]: !s[key] }));
+    this.sectionExpanded.update((s) => ({ ...s, [key]: !s[key] }));
+  }
+
+  protected toggleSecondValve(key: SecondValveKey): void {
+    const showing = this.secondValveVisible()[key];
+    if (showing) {
+      this.inspectionForm.controls.wellhead.controls[key].reset({
+        initialPressure: null,
+        finalPressure: null,
+        functionTest: null,
+        comment: '',
+      });
+    }
+    this.secondValveVisible.update((s) => ({ ...s, [key]: !showing }));
   }
 
   protected onAssetChange(event: Event): void {
@@ -353,7 +517,7 @@ export class PmForm implements OnInit {
     this.form.controls.wellId.setValue(id);
     if (id) {
       this.wellDataService.loadByWell(id);
-      this.pmService.fetchDhsvByWell(id).subscribe(d => {
+      this.pmService.fetchDhsvByWell(id).subscribe((d) => {
         this.dhsvData.set(d);
         this.inspectionForm.controls.tubing.controls.dhsv.controls.constantForField.setValue(
           d ? d.constantForField : null,
@@ -393,8 +557,15 @@ export class PmForm implements OnInit {
 
     const raw = this.form.getRawValue();
     const inspRaw = this.inspectionForm.getRawValue() as InspectionFormRaw;
-    const dhsvConstant = this.inspectionForm.controls.tubing.controls.dhsv.controls.constantForField.value;
-    const inspectionData = buildInspectionData(inspRaw, this.annulusRecord(), this.dhsvData(), dhsvConstant);
+    const dhsvConstant =
+      this.inspectionForm.controls.tubing.controls.dhsv.controls.constantForField.value;
+    const inspectionData = buildInspectionData(
+      inspRaw,
+      this.annulusRecord(),
+      this.dhsvData(),
+      dhsvConstant,
+      raw.valveTestType,
+    );
 
     const value: PmFormValue = {
       wellId: raw.wellId,
@@ -402,6 +573,7 @@ export class PmForm implements OnInit {
       plannedDate: raw.plannedDate,
       operatorName: raw.operatorName,
       status: raw.status,
+      valveTestType: raw.valveTestType,
       completedDate: raw.completedDate || null,
       inspectionData,
     };

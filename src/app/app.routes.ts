@@ -19,6 +19,18 @@ export const routes: Routes = [
         path: 'pm-records/edit/:id',
         loadComponent: () => import('./features/pm-records/pm-form/pm-form').then(m => m.PmForm),
       },
+      {
+        path: 'cm-records',
+        loadComponent: () => import('./features/cm-records/cm-list/cm-list').then(m => m.CmList),
+      },
+      {
+        path: 'cm-records/new',
+        loadComponent: () => import('./features/cm-records/cm-form/cm-form').then(m => m.CmForm),
+      },
+      {
+        path: 'cm-records/edit/:id',
+        loadComponent: () => import('./features/cm-records/cm-form/cm-form').then(m => m.CmForm),
+      },
       { path: 'well-data', redirectTo: 'well-data/engineering-data', pathMatch: 'full' },
       {
         path: 'well-data/engineering-data',

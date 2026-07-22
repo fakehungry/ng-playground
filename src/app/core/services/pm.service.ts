@@ -1,6 +1,6 @@
-import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, tap } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { map, Observable, tap } from 'rxjs';
 import {
   AnnulusPressureComponent,
   AnnulusPressureSection,
@@ -15,9 +15,10 @@ import {
   PressureComponent,
   TubingSection,
   ValveComponent,
+  ValveTestType,
   WellAnnulusRecord,
-  XtBodySection,
   WellheadSection,
+  XtBodySection,
 } from '../models/well-integrity.models';
 
 type DhsvConfig = Pick<DhsvData, 'topSectionId' | 'dhsvDepth'>;
@@ -28,8 +29,17 @@ function addOneYear(isoDate: string): string {
   return d.toISOString().slice(0, 10);
 }
 
-function leakTest(initial: number | null, final: number | null): LeakTestResult | null {
-  if (initial == null || final == null || initial === 0) return null;
+function leakTest(
+  initial: number | null,
+  final: number | null,
+  testType: ValveTestType,
+): LeakTestResult | null {
+  if (initial == null || final == null) return null;
+  if (testType === 'Inflow') {
+    if (final === 0) return null;
+    return initial / final >= 0.97 ? 'Pass' : 'Fail';
+  }
+  if (initial === 0) return null;
   return final / initial >= 0.97 ? 'Pass' : 'Fail';
 }
 
@@ -48,23 +58,104 @@ function sectionStatus(statuses: ComponentStatus[]): ComponentStatus {
 export interface InspectionFormRaw {
   xtBody: {
     xtBody: { initialPressure: number | null; finalPressure: number | null; comment: string };
-    umv: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string };
-    lmv: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string };
-    wv: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string };
-    kwv: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string };
-    sv: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string };
+    umv: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    lmv: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    wv: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    kwv: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    sv: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
     stuffingBox: { currentStatus: 'Clean' | 'Dirty'; comment: string };
   };
   wellhead: {
     xmtCarrierA: { initialPressure: number | null; finalPressure: number | null; comment: string };
-    tubingHangerCarrierB: { initialPressure: number | null; finalPressure: number | null; comment: string };
+    tubingHangerCarrierB: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      comment: string;
+    };
     cavityC: { initialPressure: number | null; finalPressure: number | null; comment: string };
     tbgHgrSealD: { initialPressure: number | null; finalPressure: number | null; comment: string };
-    csg7inPackOff: { initialPressure: number | null; finalPressure: number | null; comment: string };
-    csg9inPackOff: { initialPressure: number | null; finalPressure: number | null; comment: string };
-    aAnnCsgValve: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string };
-    bAnnCsg: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string };
-    cAnnCsg: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string };
+    csg7inPackOff: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      comment: string;
+    };
+    csg9inPackOff: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      comment: string;
+    };
+    aAnnCsgValve: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    bAnnCsg: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    cAnnCsg: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    aAnnCsgValve2: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    bAnnCsg2: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
+    cAnnCsg2: {
+      initialPressure: number | null;
+      finalPressure: number | null;
+      functionTest: FunctionTestResult | null;
+      greaseVolume: number | null;
+      comment: string;
+    };
   };
   tubing: {
     dhsv: {
@@ -92,9 +183,14 @@ export interface InspectionFormRaw {
 }
 
 function buildPressureComponent(
-  raw: { initialPressure: number | null; finalPressure: number | null; comment: string },
+  raw: {
+    initialPressure: number | null;
+    finalPressure: number | null;
+    comment: string;
+  },
+  testType: ValveTestType,
 ): PressureComponent {
-  const lt = leakTest(raw.initialPressure, raw.finalPressure);
+  const lt = leakTest(raw.initialPressure, raw.finalPressure, testType);
   return {
     initialPressure: raw.initialPressure,
     finalPressure: raw.finalPressure,
@@ -105,17 +201,41 @@ function buildPressureComponent(
 }
 
 function buildValveComponent(
-  raw: { initialPressure: number | null; finalPressure: number | null; functionTest: FunctionTestResult | null; comment: string },
+  raw: {
+    initialPressure: number | null;
+    finalPressure: number | null;
+    functionTest: FunctionTestResult | null;
+    greaseVolume: number | null;
+    comment: string;
+  },
+  testType: ValveTestType,
 ): ValveComponent {
-  const lt = leakTest(raw.initialPressure, raw.finalPressure);
+  const lt = leakTest(raw.initialPressure, raw.finalPressure, testType);
   return {
     initialPressure: raw.initialPressure,
     finalPressure: raw.finalPressure,
     leakTest: lt,
     functionTest: raw.functionTest,
+    greaseVolume: raw.greaseVolume,
     currentStatus: valveStatus(lt, raw.functionTest),
     comment: raw.comment,
   };
+}
+
+function hasValveInput(raw: {
+  initialPressure: number | null;
+  finalPressure: number | null;
+  functionTest: FunctionTestResult | null;
+  greaseVolume: number | null;
+  comment: string;
+}): boolean {
+  return (
+    raw.initialPressure != null ||
+    raw.finalPressure != null ||
+    raw.functionTest != null ||
+    raw.greaseVolume != null ||
+    raw.comment.trim() !== ''
+  );
 }
 
 export function buildInspectionData(
@@ -123,44 +243,81 @@ export function buildInspectionData(
   annulusRecord: WellAnnulusRecord | null,
   dhsvConfig?: DhsvConfig | null,
   dhsvConstantOverride?: number | null,
+  valveTestType: ValveTestType = 'Positive',
 ): PmInspectionData {
-  const xtBodyComp = buildPressureComponent(raw.xtBody.xtBody);
-  const umv = buildValveComponent(raw.xtBody.umv);
-  const lmv = buildValveComponent(raw.xtBody.lmv);
-  const wv = buildValveComponent(raw.xtBody.wv);
-  const kwv = buildValveComponent(raw.xtBody.kwv);
-  const sv = buildValveComponent(raw.xtBody.sv);
+  const xtBodyComp = buildPressureComponent(raw.xtBody.xtBody, valveTestType);
+  const umv = buildValveComponent(raw.xtBody.umv, valveTestType);
+  const lmv = buildValveComponent(raw.xtBody.lmv, valveTestType);
+  const wv = buildValveComponent(raw.xtBody.wv, valveTestType);
+  const kwv = buildValveComponent(raw.xtBody.kwv, valveTestType);
+  const sv = buildValveComponent(raw.xtBody.sv, valveTestType);
   const stuffingBox = raw.xtBody.stuffingBox;
 
   const xtBodySection: XtBodySection = {
     currentStatus: sectionStatus([
-      xtBodyComp.currentStatus, umv.currentStatus, lmv.currentStatus,
-      wv.currentStatus, kwv.currentStatus, sv.currentStatus,
+      xtBodyComp.currentStatus,
+      umv.currentStatus,
+      lmv.currentStatus,
+      wv.currentStatus,
+      kwv.currentStatus,
+      sv.currentStatus,
       stuffingBox.currentStatus === 'Dirty' ? 'Fail' : 'Good',
     ]),
-    xtBody: xtBodyComp, umv, lmv, wv, kwv, sv,
+    xtBody: xtBodyComp,
+    umv,
+    lmv,
+    wv,
+    kwv,
+    sv,
     stuffingBox,
   };
 
-  const xmtA = buildPressureComponent(raw.wellhead.xmtCarrierA);
-  const thcB = buildPressureComponent(raw.wellhead.tubingHangerCarrierB);
-  const cavC = buildPressureComponent(raw.wellhead.cavityC);
-  const tbgD = buildPressureComponent(raw.wellhead.tbgHgrSealD);
-  const csg7 = buildPressureComponent(raw.wellhead.csg7inPackOff);
-  const csg9 = buildPressureComponent(raw.wellhead.csg9inPackOff);
-  const aAnnValve = buildValveComponent(raw.wellhead.aAnnCsgValve);
-  const bAnn = buildValveComponent(raw.wellhead.bAnnCsg);
-  const cAnn = buildValveComponent(raw.wellhead.cAnnCsg);
+  const xmtA = buildPressureComponent(raw.wellhead.xmtCarrierA, valveTestType);
+  const thcB = buildPressureComponent(raw.wellhead.tubingHangerCarrierB, valveTestType);
+  const cavC = buildPressureComponent(raw.wellhead.cavityC, valveTestType);
+  const tbgD = buildPressureComponent(raw.wellhead.tbgHgrSealD, valveTestType);
+  const csg7 = buildPressureComponent(raw.wellhead.csg7inPackOff, valveTestType);
+  const csg9 = buildPressureComponent(raw.wellhead.csg9inPackOff, valveTestType);
+  const aAnnValve = buildValveComponent(raw.wellhead.aAnnCsgValve, valveTestType);
+  const bAnn = buildValveComponent(raw.wellhead.bAnnCsg, valveTestType);
+  const cAnn = buildValveComponent(raw.wellhead.cAnnCsg, valveTestType);
+  const aAnnValve2 = hasValveInput(raw.wellhead.aAnnCsgValve2)
+    ? buildValveComponent(raw.wellhead.aAnnCsgValve2, valveTestType)
+    : undefined;
+  const bAnn2 = hasValveInput(raw.wellhead.bAnnCsg2)
+    ? buildValveComponent(raw.wellhead.bAnnCsg2, valveTestType)
+    : undefined;
+  const cAnn2 = hasValveInput(raw.wellhead.cAnnCsg2)
+    ? buildValveComponent(raw.wellhead.cAnnCsg2, valveTestType)
+    : undefined;
 
   const wellheadSection: WellheadSection = {
     currentStatus: sectionStatus([
-      xmtA.currentStatus, thcB.currentStatus, cavC.currentStatus,
-      tbgD.currentStatus, csg7.currentStatus, csg9.currentStatus,
-      aAnnValve.currentStatus, bAnn.currentStatus, cAnn.currentStatus,
+      xmtA.currentStatus,
+      thcB.currentStatus,
+      cavC.currentStatus,
+      tbgD.currentStatus,
+      csg7.currentStatus,
+      csg9.currentStatus,
+      aAnnValve.currentStatus,
+      bAnn.currentStatus,
+      cAnn.currentStatus,
+      ...(aAnnValve2 ? [aAnnValve2.currentStatus] : []),
+      ...(bAnn2 ? [bAnn2.currentStatus] : []),
+      ...(cAnn2 ? [cAnn2.currentStatus] : []),
     ]),
-    xmtCarrierA: xmtA, tubingHangerCarrierB: thcB, cavityC: cavC,
-    tbgHgrSealD: tbgD, csg7inPackOff: csg7, csg9inPackOff: csg9,
-    aAnnCsgValve: aAnnValve, bAnnCsg: bAnn, cAnnCsg: cAnn,
+    xmtCarrierA: xmtA,
+    tubingHangerCarrierB: thcB,
+    cavityC: cavC,
+    tbgHgrSealD: tbgD,
+    csg7inPackOff: csg7,
+    csg9inPackOff: csg9,
+    aAnnCsgValve: aAnnValve,
+    bAnnCsg: bAnn,
+    cAnnCsg: cAnn,
+    ...(aAnnValve2 ? { aAnnCsgValve2: aAnnValve2 } : {}),
+    ...(bAnn2 ? { bAnnCsg2: bAnn2 } : {}),
+    ...(cAnn2 ? { cAnnCsg2: cAnn2 } : {}),
   };
 
   const dhsvRaw = raw.tubing.dhsv;
@@ -175,8 +332,12 @@ export function buildInspectionData(
   ) {
     const { topSectionId, dhsvDepth } = dhsvConfig;
     dhsvLeakRate =
-      (topSectionId * topSectionId * dhsvDepth * constant *
-        (dhsvRaw.finalPressure - dhsvRaw.initialPressureWhenInflowTest)) / 30;
+      (topSectionId *
+        topSectionId *
+        dhsvDepth *
+        constant *
+        (dhsvRaw.finalPressure - dhsvRaw.initialPressureWhenInflowTest)) /
+      30;
     dhsvLeakTest = dhsvLeakRate <= 15 ? 'Pass' : 'Fail';
   }
   const dhsvComp: DhsvComponent = {
@@ -206,7 +367,13 @@ export function buildInspectionData(
       rawAnn.currentPressure != null && tow != null && rawAnn.currentPressure <= tow
         ? 'Good'
         : 'Fail';
-    return { tow, currentPressure: rawAnn.currentPressure, pbuRate: rawAnn.pbuRate, currentStatus: cs, comment: rawAnn.comment };
+    return {
+      tow,
+      currentPressure: rawAnn.currentPressure,
+      pbuRate: rawAnn.pbuRate,
+      currentStatus: cs,
+      comment: rawAnn.comment,
+    };
   }
 
   const annulusPressureSection: AnnulusPressureSection = {
@@ -215,7 +382,12 @@ export function buildInspectionData(
     cAnn: annPressureComp(raw.annulusPressure.cAnn, annulusRecord?.annuli.C.tow ?? null),
   };
 
-  return { xtBody: xtBodySection, wellhead: wellheadSection, tubing: tubingSection, annulusPressure: annulusPressureSection };
+  return {
+    xtBody: xtBodySection,
+    wellhead: wellheadSection,
+    tubing: tubingSection,
+    annulusPressure: annulusPressureSection,
+  };
 }
 
 @Injectable({ providedIn: 'root' })
@@ -230,19 +402,19 @@ export class PmService {
   }
 
   loadAll(): void {
-    this.http.get<PmRecord[]>('/api/pmRecords').subscribe(records => {
+    this.http.get<PmRecord[]>('/api/pmRecords').subscribe((records) => {
       this._records.set(records);
     });
   }
 
   loadByWell(wellId: string): void {
-    this.http.get<PmRecord[]>(`/api/pmRecords?wellId=${wellId}`).subscribe(records => {
+    this.http.get<PmRecord[]>(`/api/pmRecords?wellId=${wellId}`).subscribe((records) => {
       this._records.set(records);
     });
   }
 
   getById(id: string): PmRecord | undefined {
-    return this._records().find(r => r.id === id);
+    return this._records().find((r) => r.id === id);
   }
 
   fetchById(id: string): Observable<PmRecord> {
@@ -252,7 +424,7 @@ export class PmService {
   fetchDhsvByWell(wellId: string): Observable<DhsvData | null> {
     return this.http
       .get<DhsvData[]>(`/api/dhsvData?wellId=${wellId}`)
-      .pipe(map(records => records[0] ?? null));
+      .pipe(map((records) => records[0] ?? null));
   }
 
   addRecord(value: PmFormValue): Observable<PmRecord> {
@@ -264,6 +436,7 @@ export class PmService {
       plannedDate: value.plannedDate,
       operatorName: value.operatorName,
       status: value.status,
+      valveTestType: value.valveTestType,
       createdAt: now,
       updatedAt: now,
       ...(value.status === 'Completed' && value.completedDate
@@ -285,8 +458,10 @@ export class PmService {
       plannedDate: value.plannedDate,
       operatorName: value.operatorName,
       status: value.status,
+      valveTestType: value.valveTestType,
       updatedAt: now,
-      completedDate: value.status === 'Completed' && value.completedDate ? value.completedDate : undefined,
+      completedDate:
+        value.status === 'Completed' && value.completedDate ? value.completedDate : undefined,
       nextPmDate:
         value.status === 'Completed' && value.completedDate
           ? addOneYear(value.completedDate)
