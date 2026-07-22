@@ -12,6 +12,7 @@ import {
   PmStatus,
   StuffingBoxStatus,
   TubingStatus,
+  ValveTestType,
 } from '../../../core/models/well-integrity.models';
 import {
   buildInspectionData,
@@ -64,6 +65,7 @@ export class PmForm implements OnInit {
   });
 
   protected readonly statusOptions: PmStatus[] = ['Planned', 'In Progress', 'Completed'];
+  protected readonly valveTestTypeOptions: ValveTestType[] = ['Positive', 'Inflow'];
   protected readonly functionTestOptions: FunctionTestResult[] = ['Pass', 'Fail'];
   protected readonly stuffingBoxOptions: StuffingBoxStatus[] = ['Clean', 'Dirty'];
   protected readonly tubingStatusOptions: TubingStatus[] = ['Shut-in', 'Flowing'];
@@ -111,6 +113,10 @@ export class PmForm implements OnInit {
       validators: [Validators.required],
     }),
     status: new FormControl<PmStatus>('Planned', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    valveTestType: new FormControl<ValveTestType>('Positive', {
       nonNullable: true,
       validators: [Validators.required],
     }),
@@ -204,6 +210,9 @@ export class PmForm implements OnInit {
 
   // Converts form valueChanges into a signal so computed() tracks it reactively
   private readonly _formTick = toSignal(this.inspectionForm.valueChanges, { initialValue: null });
+  private readonly valveTestType = toSignal(this.form.controls.valveTestType.valueChanges, {
+    initialValue: this.form.controls.valveTestType.value,
+  });
 
   protected readonly xtBodyCalc = computed(() => {
     this._formTick();
@@ -315,8 +324,10 @@ export class PmForm implements OnInit {
     init: number | null,
     fin: number | null,
   ): { leakTest: LeakTestResult | null; status: 'Good' | 'Fail' | null } {
-    if (init == null || fin == null || init === 0) return { leakTest: null, status: null };
-    const pass = fin / init >= 0.97;
+    if (init == null || fin == null) return { leakTest: null, status: null };
+    const isInflow = this.valveTestType() === 'Inflow';
+    if (isInflow ? fin === 0 : init === 0) return { leakTest: null, status: null };
+    const pass = isInflow ? init / fin >= 0.97 : fin / init >= 0.97;
     return { leakTest: pass ? 'Pass' : 'Fail', status: pass ? 'Good' : 'Fail' };
   }
 
@@ -362,6 +373,7 @@ export class PmForm implements OnInit {
           plannedDate: record.plannedDate,
           operatorName: record.operatorName,
           status: record.status,
+          valveTestType: record.valveTestType ?? 'Positive',
           completedDate: record.completedDate ?? '',
         });
         this.showCompletedDate.set(record.status === 'Completed');
@@ -552,6 +564,7 @@ export class PmForm implements OnInit {
       this.annulusRecord(),
       this.dhsvData(),
       dhsvConstant,
+      raw.valveTestType,
     );
 
     const value: PmFormValue = {
@@ -560,6 +573,7 @@ export class PmForm implements OnInit {
       plannedDate: raw.plannedDate,
       operatorName: raw.operatorName,
       status: raw.status,
+      valveTestType: raw.valveTestType,
       completedDate: raw.completedDate || null,
       inspectionData,
     };

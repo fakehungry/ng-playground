@@ -7,6 +7,7 @@ export type FunctionTestResult = 'Pass' | 'Fail';
 export type LeakTestResult = 'Pass' | 'Fail';
 export type StuffingBoxStatus = 'Clean' | 'Dirty';
 export type TubingStatus = 'Shut-in' | 'Flowing';
+export type ValveTestType = 'Positive' | 'Inflow';
 
 export interface Asset {
   id: string;
@@ -156,6 +157,7 @@ export interface PmRecord {
   plannedDate: string;
   operatorName: string;
   status: PmStatus;
+  valveTestType: ValveTestType;
   completedDate?: string;
   nextPmDate?: string;
   createdAt: string;
@@ -169,6 +171,7 @@ export interface PmFormValue {
   plannedDate: string;
   operatorName: string;
   status: PmStatus;
+  valveTestType: ValveTestType;
   completedDate: string | null;
   inspectionData?: PmInspectionData;
 }

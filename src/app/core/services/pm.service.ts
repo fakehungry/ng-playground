@@ -15,6 +15,7 @@ import {
   PressureComponent,
   TubingSection,
   ValveComponent,
+  ValveTestType,
   WellAnnulusRecord,
   WellheadSection,
   XtBodySection,
@@ -28,8 +29,17 @@ function addOneYear(isoDate: string): string {
   return d.toISOString().slice(0, 10);
 }
 
-function leakTest(initial: number | null, final: number | null): LeakTestResult | null {
-  if (initial == null || final == null || initial === 0) return null;
+function leakTest(
+  initial: number | null,
+  final: number | null,
+  testType: ValveTestType,
+): LeakTestResult | null {
+  if (initial == null || final == null) return null;
+  if (testType === 'Inflow') {
+    if (final === 0) return null;
+    return initial / final >= 0.97 ? 'Pass' : 'Fail';
+  }
+  if (initial === 0) return null;
   return final / initial >= 0.97 ? 'Pass' : 'Fail';
 }
 
@@ -172,12 +182,15 @@ export interface InspectionFormRaw {
   };
 }
 
-function buildPressureComponent(raw: {
-  initialPressure: number | null;
-  finalPressure: number | null;
-  comment: string;
-}): PressureComponent {
-  const lt = leakTest(raw.initialPressure, raw.finalPressure);
+function buildPressureComponent(
+  raw: {
+    initialPressure: number | null;
+    finalPressure: number | null;
+    comment: string;
+  },
+  testType: ValveTestType,
+): PressureComponent {
+  const lt = leakTest(raw.initialPressure, raw.finalPressure, testType);
   return {
     initialPressure: raw.initialPressure,
     finalPressure: raw.finalPressure,
@@ -187,14 +200,17 @@ function buildPressureComponent(raw: {
   };
 }
 
-function buildValveComponent(raw: {
-  initialPressure: number | null;
-  finalPressure: number | null;
-  functionTest: FunctionTestResult | null;
-  greaseVolume: number | null;
-  comment: string;
-}): ValveComponent {
-  const lt = leakTest(raw.initialPressure, raw.finalPressure);
+function buildValveComponent(
+  raw: {
+    initialPressure: number | null;
+    finalPressure: number | null;
+    functionTest: FunctionTestResult | null;
+    greaseVolume: number | null;
+    comment: string;
+  },
+  testType: ValveTestType,
+): ValveComponent {
+  const lt = leakTest(raw.initialPressure, raw.finalPressure, testType);
   return {
     initialPressure: raw.initialPressure,
     finalPressure: raw.finalPressure,
@@ -227,13 +243,14 @@ export function buildInspectionData(
   annulusRecord: WellAnnulusRecord | null,
   dhsvConfig?: DhsvConfig | null,
   dhsvConstantOverride?: number | null,
+  valveTestType: ValveTestType = 'Positive',
 ): PmInspectionData {
-  const xtBodyComp = buildPressureComponent(raw.xtBody.xtBody);
-  const umv = buildValveComponent(raw.xtBody.umv);
-  const lmv = buildValveComponent(raw.xtBody.lmv);
-  const wv = buildValveComponent(raw.xtBody.wv);
-  const kwv = buildValveComponent(raw.xtBody.kwv);
-  const sv = buildValveComponent(raw.xtBody.sv);
+  const xtBodyComp = buildPressureComponent(raw.xtBody.xtBody, valveTestType);
+  const umv = buildValveComponent(raw.xtBody.umv, valveTestType);
+  const lmv = buildValveComponent(raw.xtBody.lmv, valveTestType);
+  const wv = buildValveComponent(raw.xtBody.wv, valveTestType);
+  const kwv = buildValveComponent(raw.xtBody.kwv, valveTestType);
+  const sv = buildValveComponent(raw.xtBody.sv, valveTestType);
   const stuffingBox = raw.xtBody.stuffingBox;
 
   const xtBodySection: XtBodySection = {
@@ -255,23 +272,23 @@ export function buildInspectionData(
     stuffingBox,
   };
 
-  const xmtA = buildPressureComponent(raw.wellhead.xmtCarrierA);
-  const thcB = buildPressureComponent(raw.wellhead.tubingHangerCarrierB);
-  const cavC = buildPressureComponent(raw.wellhead.cavityC);
-  const tbgD = buildPressureComponent(raw.wellhead.tbgHgrSealD);
-  const csg7 = buildPressureComponent(raw.wellhead.csg7inPackOff);
-  const csg9 = buildPressureComponent(raw.wellhead.csg9inPackOff);
-  const aAnnValve = buildValveComponent(raw.wellhead.aAnnCsgValve);
-  const bAnn = buildValveComponent(raw.wellhead.bAnnCsg);
-  const cAnn = buildValveComponent(raw.wellhead.cAnnCsg);
+  const xmtA = buildPressureComponent(raw.wellhead.xmtCarrierA, valveTestType);
+  const thcB = buildPressureComponent(raw.wellhead.tubingHangerCarrierB, valveTestType);
+  const cavC = buildPressureComponent(raw.wellhead.cavityC, valveTestType);
+  const tbgD = buildPressureComponent(raw.wellhead.tbgHgrSealD, valveTestType);
+  const csg7 = buildPressureComponent(raw.wellhead.csg7inPackOff, valveTestType);
+  const csg9 = buildPressureComponent(raw.wellhead.csg9inPackOff, valveTestType);
+  const aAnnValve = buildValveComponent(raw.wellhead.aAnnCsgValve, valveTestType);
+  const bAnn = buildValveComponent(raw.wellhead.bAnnCsg, valveTestType);
+  const cAnn = buildValveComponent(raw.wellhead.cAnnCsg, valveTestType);
   const aAnnValve2 = hasValveInput(raw.wellhead.aAnnCsgValve2)
-    ? buildValveComponent(raw.wellhead.aAnnCsgValve2)
+    ? buildValveComponent(raw.wellhead.aAnnCsgValve2, valveTestType)
     : undefined;
   const bAnn2 = hasValveInput(raw.wellhead.bAnnCsg2)
-    ? buildValveComponent(raw.wellhead.bAnnCsg2)
+    ? buildValveComponent(raw.wellhead.bAnnCsg2, valveTestType)
     : undefined;
   const cAnn2 = hasValveInput(raw.wellhead.cAnnCsg2)
-    ? buildValveComponent(raw.wellhead.cAnnCsg2)
+    ? buildValveComponent(raw.wellhead.cAnnCsg2, valveTestType)
     : undefined;
 
   const wellheadSection: WellheadSection = {
@@ -419,6 +436,7 @@ export class PmService {
       plannedDate: value.plannedDate,
       operatorName: value.operatorName,
       status: value.status,
+      valveTestType: value.valveTestType,
       createdAt: now,
       updatedAt: now,
       ...(value.status === 'Completed' && value.completedDate
@@ -440,6 +458,7 @@ export class PmService {
       plannedDate: value.plannedDate,
       operatorName: value.operatorName,
       status: value.status,
+      valveTestType: value.valveTestType,
       updatedAt: now,
       completedDate:
         value.status === 'Completed' && value.completedDate ? value.completedDate : undefined,
