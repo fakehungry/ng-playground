@@ -1,0 +1,88 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-xl font-bold text-slate-900">CM Records</h1>
+      <p class="text-sm text-slate-500 mt-0.5">Corrective maintenance records for all wells</p>
+    </div>
+    <a routerLink="/cm-records/new"
+      class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      New CM Record
+    </a>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-4 flex flex-wrap gap-3">
+    <div class="flex-1 min-w-48">
+      <input
+        type="text"
+        placeholder="Search by well, element, or root cause..."
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+        class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+    <div>
+      <select
+        [value]="sectionFilter()"
+        (change)="sectionFilter.set($any($event.target).value)"
+        class="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      >
+        @for (opt of sectionOptions; track opt) {
+          <option [value]="opt">{{ opt === 'All' ? 'All Sections' : sectionLabel[opt] }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-slate-50 border-b border-slate-200">
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Well</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Platform</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Asset</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Section</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Element</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Event Date</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Result</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Root Cause</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        @for (record of filteredRecords(); track record.id) {
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="px-4 py-3 font-medium text-slate-900">{{ wellName(record.wellId) }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ platformName(record.wellId) }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ assetName(record.wellId) }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ sectionSummary(record) }}</td>
+            <td class="px-4 py-3 text-slate-700 max-w-60 truncate" [title]="elementSummary(record)">{{ elementSummary(record) }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ record.eventDate | dateFormat }}</td>
+            <td class="px-4 py-3"><app-status-badge [status]="overallResult(record)" /></td>
+            <td class="px-4 py-3 text-slate-700 max-w-60 truncate" [title]="rootCauseSummary(record)">{{ rootCauseSummary(record) || '—' }}</td>
+            <td class="px-4 py-3">
+              <a [routerLink]="['/cm-records/edit', record.id]"
+                class="text-blue-600 hover:text-blue-800 font-medium text-xs">Edit</a>
+            </td>
+          </tr>
+        }
+        @empty {
+          <tr>
+            <td colspan="9" class="px-4 py-10 text-center text-slate-400">No records found.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (filteredRecords().length > 0) {
+      <div class="px-4 py-2.5 bg-slate-50 border-t border-slate-200 text-xs text-slate-500">
+        {{ filteredRecords().length }} record(s)
+      </div>
+    }
+  </div>
+</div>

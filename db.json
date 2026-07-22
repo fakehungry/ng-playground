@@ -3229,7 +3229,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -4685,7 +4685,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -6141,7 +6141,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -7597,7 +7597,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -9053,7 +9053,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -10509,7 +10509,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -11965,7 +11965,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -13421,7 +13421,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -14877,7 +14877,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -16333,7 +16333,7 @@
             "currentPressure": 2800,
             "pbuRate": 6.1,
             "currentStatus": "Good",
-            "comment": "Pressure elevated \u2014 monitor"
+            "comment": "Pressure elevated — monitor"
           },
           "bAnn": {
             "tow": 1800,
@@ -17807,6 +17807,112 @@
           }
         }
       }
+    }
+  ],
+  "cmRecords": [
+    {
+      "id": "cm1",
+      "wellId": "w1",
+      "eventDate": "2025-03-10",
+      "reportedBy": "Somchai Thammasit",
+      "createdAt": "2025-03-10T09:00:00Z",
+      "updatedAt": "2025-03-10T09:00:00Z",
+      "elements": [
+        {
+          "elementKey": "umv",
+          "section": "xtBody",
+          "kind": "valve",
+          "elementData": {
+            "initialPressure": 210,
+            "finalPressure": 150,
+            "leakTest": "Fail",
+            "functionTest": "Fail",
+            "greaseVolume": 0.5,
+            "currentStatus": "Fail",
+            "rootCause": "Seat seal degraded, valve stem seized due to corrosion",
+            "correctiveAction": "Replaced UMV cartridge assembly and re-greased; re-tested to Pass"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cm2",
+      "wellId": "w1",
+      "eventDate": "2025-05-02",
+      "reportedBy": "Nattaya Srisuwan",
+      "createdAt": "2025-05-02T08:30:00Z",
+      "updatedAt": "2025-05-02T08:30:00Z",
+      "elements": [
+        {
+          "elementKey": "dhsv",
+          "section": "dhsv",
+          "kind": "dhsv",
+          "elementData": {
+            "pressureBeforeInflowTest": 3050,
+            "initialPressureWhenInflowTest": 2950,
+            "finalPressure": 3005,
+            "leakRate": 229.4,
+            "leakTest": "Fail",
+            "hydraulicReturn": 12,
+            "functionTest": "Fail",
+            "constantForField": 0.14,
+            "currentStatus": "Fail",
+            "rootCause": "DHSV failed function test - suspected control line leak",
+            "correctiveAction": "Wireline intervention performed to replace DHSV; re-tested to Pass"
+          }
+        },
+        {
+          "elementKey": "xmtCarrierA",
+          "section": "wellhead",
+          "kind": "pressure",
+          "elementData": {
+            "initialPressure": 1000,
+            "finalPressure": 990,
+            "leakTest": "Pass",
+            "currentStatus": "Good",
+            "rootCause": "",
+            "correctiveAction": "Checked during same intervention; no action required"
+          }
+        }
+      ]
+    },
+    {
+      "id": "OmO3Uu0EnCg",
+      "wellId": "w2",
+      "eventDate": "2026-07-22",
+      "reportedBy": "Chaikit Ruangsakulpat",
+      "createdAt": "2026-07-22T02:31:05.320Z",
+      "updatedAt": "2026-07-22T02:31:05.320Z",
+      "elements": [
+        {
+          "elementKey": "xtBody",
+          "section": "xtBody",
+          "kind": "pressure",
+          "elementData": {
+            "initialPressure": 100,
+            "finalPressure": 97,
+            "leakTest": "Pass",
+            "currentStatus": "Good",
+            "rootCause": "root-1",
+            "correctiveAction": "action-1"
+          }
+        },
+        {
+          "elementKey": "umv",
+          "section": "xtBody",
+          "kind": "valve",
+          "elementData": {
+            "initialPressure": 100,
+            "finalPressure": 97,
+            "leakTest": "Pass",
+            "functionTest": "Pass",
+            "greaseVolume": null,
+            "currentStatus": "Good",
+            "rootCause": "root-2",
+            "correctiveAction": "action-2"
+          }
+        }
+      ]
     }
   ],
   "wellAnnulusRecords": [
@@ -22459,7 +22565,7 @@
       "wellId": "w20",
       "issue": "",
       "action": "",
-      "remark": "High priority \u2014 escalated to Superintendent"
+      "remark": "High priority — escalated to Superintendent"
     },
     {
       "id": "rem4",
@@ -22493,7 +22599,7 @@
       "id": "rem8",
       "wellId": "w25",
       "issue": "",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": "Flagged for asset integrity team review"
     },
     {
@@ -22515,14 +22621,14 @@
       "wellId": "w28",
       "issue": "DHSV closing time exceeded 15 s specification",
       "action": "",
-      "remark": "High priority \u2014 escalated to Superintendent"
+      "remark": "High priority — escalated to Superintendent"
     },
     {
       "id": "rem12",
       "wellId": "w29",
       "issue": "B-annulus pressure buildup rate high",
       "action": "Bleed off B-annulus to operating pressure band",
-      "remark": "Low risk \u2014 continue routine monitoring"
+      "remark": "Low risk — continue routine monitoring"
     },
     {
       "id": "rem13",
@@ -22548,8 +22654,8 @@
     {
       "id": "rem16",
       "wellId": "w33",
-      "issue": "UMV leak test marginal \u2014 pressure drop 8 psi/min",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "issue": "UMV leak test marginal — pressure drop 8 psi/min",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": ""
     },
     {
@@ -22578,7 +22684,7 @@
       "wellId": "w37",
       "issue": "B-annulus pressure buildup rate high",
       "action": "Bleed off B-annulus to operating pressure band",
-      "remark": "Low risk \u2014 continue routine monitoring"
+      "remark": "Low risk — continue routine monitoring"
     },
     {
       "id": "rem21",
@@ -22604,8 +22710,8 @@
     {
       "id": "rem24",
       "wellId": "w41",
-      "issue": "UMV leak test marginal \u2014 pressure drop 8 psi/min",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "issue": "UMV leak test marginal — pressure drop 8 psi/min",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": "Flagged for asset integrity team review"
     },
     {
@@ -22627,7 +22733,7 @@
       "wellId": "w44",
       "issue": "DHSV closing time exceeded 15 s specification",
       "action": "",
-      "remark": "High priority \u2014 escalated to Superintendent"
+      "remark": "High priority — escalated to Superintendent"
     },
     {
       "id": "rem28",
@@ -22660,8 +22766,8 @@
     {
       "id": "rem32",
       "wellId": "w49",
-      "issue": "UMV leak test marginal \u2014 pressure drop 8 psi/min",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "issue": "UMV leak test marginal — pressure drop 8 psi/min",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": "Flagged for asset integrity team review"
     },
     {
@@ -22683,14 +22789,14 @@
       "wellId": "w52",
       "issue": "DHSV closing time exceeded 15 s specification",
       "action": "",
-      "remark": "High priority \u2014 escalated to Superintendent"
+      "remark": "High priority — escalated to Superintendent"
     },
     {
       "id": "rem36",
       "wellId": "w53",
       "issue": "B-annulus pressure buildup rate high",
       "action": "Bleed off B-annulus to operating pressure band",
-      "remark": "Low risk \u2014 continue routine monitoring"
+      "remark": "Low risk — continue routine monitoring"
     },
     {
       "id": "rem37",
@@ -22716,8 +22822,8 @@
     {
       "id": "rem40",
       "wellId": "w57",
-      "issue": "UMV leak test marginal \u2014 pressure drop 8 psi/min",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "issue": "UMV leak test marginal — pressure drop 8 psi/min",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": ""
     },
     {
@@ -22746,7 +22852,7 @@
       "wellId": "w61",
       "issue": "B-annulus pressure buildup rate high",
       "action": "Bleed off B-annulus to operating pressure band",
-      "remark": "Low risk \u2014 continue routine monitoring"
+      "remark": "Low risk — continue routine monitoring"
     },
     {
       "id": "rem45",
@@ -22773,7 +22879,7 @@
       "id": "rem48",
       "wellId": "w65",
       "issue": "",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": "Flagged for asset integrity team review"
     },
     {
@@ -22795,7 +22901,7 @@
       "wellId": "w68",
       "issue": "DHSV closing time exceeded 15 s specification",
       "action": "",
-      "remark": "High priority \u2014 escalated to Superintendent"
+      "remark": "High priority — escalated to Superintendent"
     },
     {
       "id": "rem52",
@@ -22828,8 +22934,8 @@
     {
       "id": "rem56",
       "wellId": "w73",
-      "issue": "UMV leak test marginal \u2014 pressure drop 8 psi/min",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "issue": "UMV leak test marginal — pressure drop 8 psi/min",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": "Flagged for asset integrity team review"
     },
     {
@@ -22851,14 +22957,14 @@
       "wellId": "w76",
       "issue": "DHSV closing time exceeded 15 s specification",
       "action": "",
-      "remark": "High priority \u2014 escalated to Superintendent"
+      "remark": "High priority — escalated to Superintendent"
     },
     {
       "id": "rem60",
       "wellId": "w77",
       "issue": "B-annulus pressure buildup rate high",
       "action": "Bleed off B-annulus to operating pressure band",
-      "remark": "Low risk \u2014 continue routine monitoring"
+      "remark": "Low risk — continue routine monitoring"
     },
     {
       "id": "rem61",
@@ -22884,8 +22990,8 @@
     {
       "id": "rem64",
       "wellId": "w81",
-      "issue": "UMV leak test marginal \u2014 pressure drop 8 psi/min",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "issue": "UMV leak test marginal — pressure drop 8 psi/min",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": ""
     },
     {
@@ -22914,7 +23020,7 @@
       "wellId": "w85",
       "issue": "",
       "action": "Bleed off B-annulus to operating pressure band",
-      "remark": "Low risk \u2014 continue routine monitoring"
+      "remark": "Low risk — continue routine monitoring"
     },
     {
       "id": "rem69",
@@ -22940,8 +23046,8 @@
     {
       "id": "rem72",
       "wellId": "w89",
-      "issue": "UMV leak test marginal \u2014 pressure drop 8 psi/min",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "issue": "UMV leak test marginal — pressure drop 8 psi/min",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": "Flagged for asset integrity team review"
     },
     {
@@ -22963,7 +23069,7 @@
       "wellId": "w92",
       "issue": "DHSV closing time exceeded 15 s specification",
       "action": "",
-      "remark": "High priority \u2014 escalated to Superintendent"
+      "remark": "High priority — escalated to Superintendent"
     },
     {
       "id": "rem76",
@@ -22996,8 +23102,8 @@
     {
       "id": "rem80",
       "wellId": "w97",
-      "issue": "UMV leak test marginal \u2014 pressure drop 8 psi/min",
-      "action": "Schedule UMV repair \u2014 targeted Q3 2026",
+      "issue": "UMV leak test marginal — pressure drop 8 psi/min",
+      "action": "Schedule UMV repair — targeted Q3 2026",
       "remark": "Flagged for asset integrity team review"
     },
     {
@@ -23019,7 +23125,7 @@
       "wellId": "w100",
       "issue": "",
       "action": "",
-      "remark": "High priority \u2014 escalated to Superintendent"
+      "remark": "High priority — escalated to Superintendent"
     }
   ],
   "failureReports": [

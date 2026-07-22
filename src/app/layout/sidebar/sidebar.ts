@@ -22,6 +22,7 @@ interface NavItem {
 export class Sidebar {
   protected readonly navItems: NavItem[] = [
     { label: 'PM Records',       icon: 'wrench',  route: '/pm-records' },
+    { label: 'CM Records',       icon: 'wrench-repair', route: '/cm-records' },
     {
       label: 'Well Integrity',   icon: 'database',
       children: [

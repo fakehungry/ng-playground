@@ -274,3 +274,66 @@ export interface FailureReport {
   createdAt: string;
   updatedAt: string;
 }
+
+export type CmSection = 'xtBody' | 'wellhead' | 'dhsv';
+export type CmElementKind = 'pressure' | 'valve' | 'stuffingBox' | 'dhsv';
+
+export interface CmPressureData {
+  initialPressure: number | null;
+  finalPressure: number | null;
+  leakTest: LeakTestResult | null;
+  currentStatus: ComponentStatus;
+  rootCause: string;
+  correctiveAction: string;
+}
+
+export interface CmValveData extends CmPressureData {
+  functionTest: FunctionTestResult | null;
+  greaseVolume: number | null;
+}
+
+export interface CmStuffingBoxData {
+  currentStatus: StuffingBoxStatus;
+  rootCause: string;
+  correctiveAction: string;
+}
+
+export interface CmDhsvData {
+  pressureBeforeInflowTest: number | null;
+  initialPressureWhenInflowTest: number | null;
+  finalPressure: number | null;
+  leakRate: number | null;
+  leakTest: LeakTestResult | null;
+  hydraulicReturn: number | null;
+  functionTest: FunctionTestResult | null;
+  constantForField: number | null;
+  currentStatus: ComponentStatus;
+  rootCause: string;
+  correctiveAction: string;
+}
+
+export type CmElementData = CmPressureData | CmValveData | CmStuffingBoxData | CmDhsvData;
+
+export interface CmElementEntry {
+  elementKey: string;
+  section: CmSection;
+  kind: CmElementKind;
+  elementData: CmElementData;
+}
+
+export interface CmRecord {
+  id: string;
+  wellId: string;
+  eventDate: string;
+  reportedBy: string;
+  createdAt: string;
+  updatedAt: string;
+  elements: CmElementEntry[];
+}
+
+export interface CmFormValue {
+  wellId: string;
+  eventDate: string;
+  reportedBy: string;
+  elements: CmElementEntry[];
+}
