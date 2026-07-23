@@ -251,8 +251,8 @@ export interface WellStatusRow {
   issueText: string;
 }
 
-export interface FailureReportItem {
-  status: ComponentStatus;
+export interface FailureReportElementEntry {
+  key: string;
   comment: string;
 }
 
@@ -261,19 +261,7 @@ export interface FailureReport {
   wellId: string;
   reportDate: string;
   reportedBy: string;
-  xt: {
-    body: FailureReportItem;
-    umv: FailureReportItem;
-    lmv: FailureReportItem;
-    wv: FailureReportItem;
-    kwv: FailureReportItem;
-    sv: FailureReportItem;
-  };
-  annulusPressure: {
-    aAnn: FailureReportItem;
-    bAnn: FailureReportItem;
-    cAnn: FailureReportItem;
-  };
+  elements: FailureReportElementEntry[];
   createdAt: string;
   updatedAt: string;
 }

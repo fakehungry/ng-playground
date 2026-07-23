@@ -1,14 +1,24 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { WellService } from '../../../core/services/well.service';
 import { FailureReportService } from '../../../core/services/failure-report.service';
-import { ComponentStatus, FailureReport } from '../../../core/models/well-integrity.models';
+import { FailureReport, FailureReportElementEntry } from '../../../core/models/well-integrity.models';
+import {
+  FAILURE_REPORT_ELEMENTS,
+  FailureReportElementDef,
+  findFailureReportElement,
+} from '../../../core/constants/failure-report-elements';
 
-function itemGroup() {
-  return new FormGroup({
-    status: new FormControl<ComponentStatus>('Good', { nonNullable: true }),
-    comment: new FormControl<string>('', { nonNullable: true }),
-  });
+type ElementGroup = FormGroup<{
+  elementKey: FormControl<string>;
+  comment: FormControl<string>;
+}>;
+
+interface ElementRow {
+  index: number;
+  group: ElementGroup;
+  def: FailureReportElementDef | undefined;
 }
 
 @Component({
@@ -29,19 +39,26 @@ export class FailureReportForm implements OnInit {
   protected readonly form = new FormGroup({
     reportDate: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
     reportedBy: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    xt: new FormGroup({
-      body: itemGroup(),
-      umv:  itemGroup(),
-      lmv:  itemGroup(),
-      wv:   itemGroup(),
-      kwv:  itemGroup(),
-      sv:   itemGroup(),
-    }),
-    annulusPressure: new FormGroup({
-      aAnn: itemGroup(),
-      bAnn: itemGroup(),
-      cAnn: itemGroup(),
-    }),
+  });
+
+  private createElementGroup(): ElementGroup {
+    return new FormGroup({
+      elementKey: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+      comment: new FormControl<string>('', { nonNullable: true }),
+    });
+  }
+
+  protected readonly elementsArray = new FormArray<ElementGroup>([]);
+
+  private readonly _elementsTick = toSignal(this.elementsArray.valueChanges, { initialValue: null });
+
+  protected readonly elementRows = computed<ElementRow[]>(() => {
+    this._elementsTick();
+    return this.elementsArray.controls.map((group, index) => ({
+      index,
+      group,
+      def: findFailureReportElement(group.getRawValue().elementKey),
+    }));
   });
 
   protected readonly wellReports = computed(() =>
@@ -114,32 +131,45 @@ export class FailureReportForm implements OnInit {
     this._resetForm();
   }
 
+  /** Elements already chosen in other rows, excluded from this row's dropdown to avoid duplicates. */
+  protected availableElements(rowIndex: number): FailureReportElementDef[] {
+    const chosenElsewhere = new Set(
+      this.elementsArray.controls
+        .map((g, i) => (i === rowIndex ? null : g.controls.elementKey.value))
+        .filter((k): k is string => !!k),
+    );
+    return FAILURE_REPORT_ELEMENTS.filter(e => !chosenElsewhere.has(e.key));
+  }
+
+  protected addElement(): void {
+    this.elementsArray.push(this.createElementGroup());
+  }
+
+  protected removeElement(index: number): void {
+    this.elementsArray.removeAt(index);
+  }
+
   protected onSave(): void {
     const wellId = this.wellService.selectedWellId();
-    if (!wellId || this.form.invalid) return;
+    this.form.markAllAsTouched();
+    this.elementsArray.markAllAsTouched();
+    if (!wellId || this.form.invalid || this.elementsArray.invalid) return;
 
     const now = new Date().toISOString();
     const existing = this.selectedReport();
     const raw = this.form.getRawValue();
+
+    const elements: FailureReportElementEntry[] = this.elementsArray.controls.map(g => {
+      const groupRaw = g.getRawValue();
+      return { key: groupRaw.elementKey, comment: groupRaw.comment };
+    });
 
     const payload: FailureReport = {
       id: existing?.id ?? crypto.randomUUID(),
       wellId,
       reportDate: raw.reportDate,
       reportedBy: raw.reportedBy,
-      xt: {
-        body: raw.xt.body,
-        umv:  raw.xt.umv,
-        lmv:  raw.xt.lmv,
-        wv:   raw.xt.wv,
-        kwv:  raw.xt.kwv,
-        sv:   raw.xt.sv,
-      },
-      annulusPressure: {
-        aAnn: raw.annulusPressure.aAnn,
-        bAnn: raw.annulusPressure.bAnn,
-        cAnn: raw.annulusPressure.cAnn,
-      },
+      elements,
       createdAt: existing?.createdAt ?? now,
       updatedAt: now,
     };
@@ -170,28 +200,20 @@ export class FailureReportForm implements OnInit {
     this.form.patchValue({
       reportDate: r.reportDate,
       reportedBy: r.reportedBy,
-      xt: r.xt,
-      annulusPressure: r.annulusPressure,
     });
+    this.elementsArray.clear();
+    for (const entry of r.elements) {
+      const group = this.createElementGroup();
+      group.patchValue({ elementKey: entry.key, comment: entry.comment });
+      this.elementsArray.push(group);
+    }
   }
 
   private _resetForm(): void {
     this.form.reset({
       reportDate: '',
       reportedBy: '',
-      xt: {
-        body: { status: 'Good', comment: '' },
-        umv:  { status: 'Good', comment: '' },
-        lmv:  { status: 'Good', comment: '' },
-        wv:   { status: 'Good', comment: '' },
-        kwv:  { status: 'Good', comment: '' },
-        sv:   { status: 'Good', comment: '' },
-      },
-      annulusPressure: {
-        aAnn: { status: 'Good', comment: '' },
-        bAnn: { status: 'Good', comment: '' },
-        cAnn: { status: 'Good', comment: '' },
-      },
     });
+    this.elementsArray.clear();
   }
 }

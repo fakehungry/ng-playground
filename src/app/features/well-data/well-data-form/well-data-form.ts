@@ -14,6 +14,7 @@ import {
 } from '../../../core/models/well-integrity.models';
 import { PmService } from '../../../core/services/pm.service';
 import { FailureReportService } from '../../../core/services/failure-report.service';
+import { findFailureReportElement } from '../../../core/constants/failure-report-elements';
 import { AnnulusTab } from '../annulus-tab/annulus-tab';
 import { PmInspectionView } from '../pm-inspection-view/pm-inspection-view';
 import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
@@ -135,6 +136,10 @@ export class WellDataForm implements OnInit {
 
   protected annulusDataFor(type: AnnulusType) {
     return this.wellDataService.record()?.annuli[type] ?? null;
+  }
+
+  protected failureElementLabel(key: string): string {
+    return findFailureReportElement(key)?.label ?? key;
   }
 
   protected onAssetChange(event: Event): void {
