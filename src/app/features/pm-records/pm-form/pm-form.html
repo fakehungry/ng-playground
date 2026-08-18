@@ -143,19 +143,6 @@
               }
             </select>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1"
-              >Valve Test Type <span class="text-red-500">*</span></label
-            >
-            <select
-              formControlName="valveTestType"
-              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            >
-              @for (opt of valveTestTypeOptions; track opt) {
-              <option [value]="opt">{{ opt }}</option>
-              }
-            </select>
-          </div>
           @if (showCompletedDate()) {
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1"
@@ -219,6 +206,11 @@
                 <th
                   class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
                 >
+                  Test Type
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
                   Init P (psi)
                 </th>
                 <th
@@ -257,6 +249,16 @@
               <!-- XTBody -->
               <tr formGroupName="xtBody" class="hover:bg-slate-50">
                 <td class="px-4 py-2 font-medium text-slate-700">Body</td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="testType"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of testTypeOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
                 <td class="px-3 py-2">
                   <input
                     type="number"
@@ -300,6 +302,16 @@
               <!-- UMV -->
               <tr formGroupName="umv" class="hover:bg-slate-50">
                 <td class="px-4 py-2 font-medium text-slate-700">UMV</td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="testType"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of testTypeOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
                 <td class="px-3 py-2">
                   <input
                     type="number"
@@ -360,6 +372,16 @@
               <tr formGroupName="lmv" class="hover:bg-slate-50">
                 <td class="px-4 py-2 font-medium text-slate-700">LMV</td>
                 <td class="px-3 py-2">
+                  <select
+                    formControlName="testType"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of testTypeOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
                   <input
                     type="number"
                     formControlName="initialPressure"
@@ -418,6 +440,16 @@
               <!-- WV -->
               <tr formGroupName="wv" class="hover:bg-slate-50">
                 <td class="px-4 py-2 font-medium text-slate-700">WV</td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="testType"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of testTypeOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
                 <td class="px-3 py-2">
                   <input
                     type="number"
@@ -478,6 +510,16 @@
               <tr formGroupName="kwv" class="hover:bg-slate-50">
                 <td class="px-4 py-2 font-medium text-slate-700">KWV</td>
                 <td class="px-3 py-2">
+                  <select
+                    formControlName="testType"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of testTypeOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
                   <input
                     type="number"
                     formControlName="initialPressure"
@@ -537,6 +579,16 @@
               <tr formGroupName="sv" class="hover:bg-slate-50">
                 <td class="px-4 py-2 font-medium text-slate-700">SV</td>
                 <td class="px-3 py-2">
+                  <select
+                    formControlName="testType"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of testTypeOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-3 py-2">
                   <input
                     type="number"
                     formControlName="initialPressure"
@@ -595,6 +647,7 @@
               <!-- Stuffing Box -->
               <tr formGroupName="stuffingBox" class="hover:bg-slate-50 bg-slate-50/50">
                 <td class="px-4 py-2 font-medium text-slate-700">Stuffing Box</td>
+                <td class="px-3 py-2 text-slate-400 text-xs">—</td>
                 <td class="px-3 py-2 text-slate-400 text-xs">—</td>
                 <td class="px-3 py-2 text-slate-400 text-xs">—</td>
                 <td class="px-3 py-2 text-slate-400 text-xs">—</td>
@@ -661,6 +714,11 @@
                 <th
                   class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
                 >
+                  Test Type
+                </th>
+                <th
+                  class="px-3 py-2 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide w-28"
+                >
                   Init P (psi)
                 </th>
                 <th
@@ -717,6 +775,16 @@
                     </svg>
                   </button>
                   } }
+                </td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="testType"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of testTypeOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
                 </td>
                 <td class="px-3 py-2">
                   <input
@@ -797,6 +865,16 @@
                       />
                     </svg>
                   </button>
+                </td>
+                <td class="px-3 py-2">
+                  <select
+                    formControlName="testType"
+                    class="w-full border border-slate-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500 focus:outline-none"
+                  >
+                    @for (o of testTypeOptions; track o) {
+                    <option [value]="o">{{ o }}</option>
+                    }
+                  </select>
                 </td>
                 <td class="px-3 py-2">
                   <input
