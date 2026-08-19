@@ -21,20 +21,21 @@ interface NavItem {
 })
 export class Sidebar {
   protected readonly navItems: NavItem[] = [
-    { label: 'PM Records',       icon: 'wrench',  route: '/pm-records' },
-    { label: 'CM Records',       icon: 'wrench-repair', route: '/cm-records' },
+    { label: 'PM Records', icon: 'wrench', route: '/pm-records' },
+    { label: 'CM Records', icon: 'wrench-repair', route: '/cm-records' },
     {
-      label: 'Well Integrity',   icon: 'database',
+      label: 'Well Integrity',
+      icon: 'database',
       children: [
         { label: 'Engineering Data', route: '/well-data/engineering-data' },
-        { label: 'Failure Report',   route: '/well-data/failure-report' },
+        { label: 'Observation Report', route: '/well-data/failure-report' },
       ],
     },
-    { label: 'Integrity Report', icon: 'chart',   route: '/report' },
+    { label: 'Integrity Report', icon: 'chart', route: '/report' },
   ];
 
   protected readonly expandedGroups = signal<ReadonlySet<string>>(
-    new Set(this.navItems.filter(i => i.children).map(i => i.label)),
+    new Set(this.navItems.filter((i) => i.children).map((i) => i.label)),
   );
 
   protected toggleGroup(label: string): void {

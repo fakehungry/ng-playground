@@ -164,7 +164,7 @@
     </button>
   </div>
 
-  <!-- History (PM Records + Failure Reports) -->
+  <!-- History (PM Records + Observation Reports) -->
   <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
     <div class="px-6 py-4 border-b border-slate-200">
       <h2 class="text-sm font-semibold text-slate-700">Well History</h2>
@@ -191,7 +191,7 @@
       @if (selectedItem(); as item) { @if (item.type === 'pm') {
       <app-pm-inspection-view [record]="item.record" />
       } @else {
-      <!-- Inline Failure Report view -->
+      <!-- Inline Observation Report view -->
       @let fr = item.record;
       <div class="space-y-1 text-sm text-slate-600 mb-4 grid grid-cols-2 gap-x-8 gap-y-2">
         <div>
