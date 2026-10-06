@@ -225,10 +225,17 @@ export interface WellIntegrityReport {
   overallStatus: IntegrityStatus;
 }
 
+export interface IssueEntry {
+  element: string;
+  comment: string;
+}
+
 export interface WellRemark {
   id: string;
   wellId: string;
-  issue: string;
+  /** Legacy free-text issue; superseded by per-element `issues`. */
+  issue?: string;
+  issues?: IssueEntry[];
   action: string;
   remark: string;
 }

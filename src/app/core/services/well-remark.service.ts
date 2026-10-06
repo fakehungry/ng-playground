@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { WellRemark } from '../models/well-integrity.models';
+import { IssueEntry, WellRemark } from '../models/well-integrity.models';
 
 @Injectable({ providedIn: 'root' })
 export class WellRemarkService {
@@ -14,7 +14,7 @@ export class WellRemarkService {
     this.http.get<WellRemark[]>('/api/wellRemarks').subscribe(r => this._remarks.set(r));
   }
 
-  upsert(wellId: string, data: { issue: string; action: string; remark: string }): Observable<WellRemark> {
+  upsert(wellId: string, data: { issues: IssueEntry[]; action: string; remark: string }): Observable<WellRemark> {
     const existing = this._remarks().find(r => r.wellId === wellId);
     if (existing) {
       const body: WellRemark = { ...existing, ...data };

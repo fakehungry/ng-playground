@@ -5,8 +5,14 @@ import {
   RigSchedule,
   WellStatusRow,
 } from '../../core/models/well-integrity.models';
-import { MocEntry } from '../../core/models/well-integrity.models';
-import { findCmElement } from '../../core/constants/cm-elements';
+import { IssueEntry, MocEntry } from '../../core/models/well-integrity.models';
+import {
+  CM_DHSV_ELEMENTS,
+  CM_WELLHEAD_ELEMENTS,
+  CM_XT_ELEMENTS,
+  CmElementDef,
+  findCmElement,
+} from '../../core/constants/cm-elements';
 import { PmService } from '../../core/services/pm.service';
 import { ReportService } from '../../core/services/report.service';
 import { RigScheduleService } from '../../core/services/rig-schedule.service';
@@ -26,7 +32,7 @@ interface PieSlice {
 }
 
 interface RowEdit {
-  issue: string;
+  issues: IssueEntry[];
   action: string;
   remark: string;
 }
@@ -316,30 +322,103 @@ export class Report implements OnInit {
 
   // --- Edit state helpers ---
 
-  protected getEdit(wellId: string, field: keyof RowEdit): string {
-    const local = this.editState()[wellId];
-    if (local) return local[field];
+  protected readonly xtElements = CM_XT_ELEMENTS;
+  protected readonly wellheadElements = CM_WELLHEAD_ELEMENTS;
+  protected readonly dhsvElements = CM_DHSV_ELEMENTS;
+
+  private savedEdit(wellId: string): RowEdit {
     const saved = this.remarkService.remarks().find((r) => r.wellId === wellId);
-    return saved?.[field] ?? '';
+    return {
+      issues: saved?.issues ?? [],
+      action: saved?.action ?? '',
+      remark: saved?.remark ?? '',
+    };
   }
 
-  protected setEdit(wellId: string, field: keyof RowEdit, value: string): void {
-    const current = this.editState()[wellId] ?? {
-      issue: this.remarkService.remarks().find((r) => r.wellId === wellId)?.issue ?? '',
-      action: this.remarkService.remarks().find((r) => r.wellId === wellId)?.action ?? '',
-      remark: this.remarkService.remarks().find((r) => r.wellId === wellId)?.remark ?? '',
-    };
+  protected getEdit(wellId: string, field: 'action' | 'remark'): string {
+    return (this.editState()[wellId] ?? this.savedEdit(wellId))[field];
+  }
+
+  protected setEdit(wellId: string, field: 'action' | 'remark', value: string): void {
+    const current = this.editState()[wellId] ?? this.savedEdit(wellId);
     this.editState.update((s) => ({ ...s, [wellId]: { ...current, [field]: value } }));
+  }
+
+  protected getIssues(wellId: string): IssueEntry[] {
+    return (this.editState()[wellId] ?? this.savedEdit(wellId)).issues;
+  }
+
+  protected legacyIssue(wellId: string): string {
+    return this.remarkService.remarks().find((r) => r.wellId === wellId)?.issue ?? '';
+  }
+
+  private setIssues(wellId: string, issues: IssueEntry[]): void {
+    const current = this.editState()[wellId] ?? this.savedEdit(wellId);
+    this.editState.update((s) => ({ ...s, [wellId]: { ...current, issues } }));
+  }
+
+  protected issueAvailable(
+    wellId: string,
+    current: string | null,
+    defs: readonly CmElementDef[],
+  ): CmElementDef[] {
+    const taken = this.getIssues(wellId).map((i) => i.element);
+    return defs.filter((d) => d.key === current || !taken.includes(d.key));
+  }
+
+  protected issueHasOptions(wellId: string): boolean {
+    const all = [...this.xtElements, ...this.wellheadElements, ...this.dhsvElements];
+    return this.issueAvailable(wellId, null, all).length > 0;
+  }
+
+  protected addIssue(wellId: string, event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    if (select.value) {
+      this.setIssues(wellId, [...this.getIssues(wellId), { element: select.value, comment: '' }]);
+    }
+    select.value = '';
+  }
+
+  protected changeIssueElement(wellId: string, index: number, event: Event): void {
+    const element = (event.target as HTMLSelectElement).value;
+    this.setIssues(
+      wellId,
+      this.getIssues(wellId).map((e, i) => (i === index ? { ...e, element } : e)),
+    );
+  }
+
+  protected changeIssueComment(wellId: string, index: number, event: Event): void {
+    const comment = (event.target as HTMLInputElement).value;
+    this.setIssues(
+      wellId,
+      this.getIssues(wellId).map((e, i) => (i === index ? { ...e, comment } : e)),
+    );
+  }
+
+  protected removeIssue(wellId: string, index: number): void {
+    this.setIssues(
+      wellId,
+      this.getIssues(wellId).filter((_, i) => i !== index),
+    );
+  }
+
+  protected issuesLabel(wellId: string): string {
+    return this.getIssues(wellId)
+      .map((e) => {
+        const label = findCmElement(e.element)?.label ?? e.element;
+        return e.comment ? `${label}: ${e.comment}` : label;
+      })
+      .join('; ');
   }
 
   protected isDirty(wellId: string): boolean {
     const local = this.editState()[wellId];
     if (!local) return false;
-    const saved = this.remarkService.remarks().find((r) => r.wellId === wellId);
+    const saved = this.savedEdit(wellId);
     return (
-      local.issue !== (saved?.issue ?? '') ||
-      local.action !== (saved?.action ?? '') ||
-      local.remark !== (saved?.remark ?? '')
+      JSON.stringify(local.issues) !== JSON.stringify(saved.issues) ||
+      local.action !== saved.action ||
+      local.remark !== saved.remark
     );
   }
 
@@ -528,7 +607,7 @@ export class Report implements OnInit {
           r.annulusPressure,
           this.mocLabel(r.mocElements),
           r.finalStatus,
-          this.getEdit(r.well.id, 'issue'),
+          this.issuesLabel(r.well.id) || this.legacyIssue(r.well.id),
           this.getEdit(r.well.id, 'action'),
           this.getEdit(r.well.id, 'remark'),
         ]

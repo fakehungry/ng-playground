@@ -23564,7 +23564,17 @@
       "wellId": "w1",
       "issue": "",
       "action": "test2",
-      "remark": ""
+      "remark": "",
+      "issues": [
+        {
+          "element": "xtBody",
+          "comment": "testddd"
+        },
+        {
+          "element": "wv",
+          "comment": ""
+        }
+      ]
     },
     {
       "id": "Pc2HMkLHRMg",

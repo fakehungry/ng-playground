@@ -229,13 +229,13 @@
                   Well
                 </th>
                 <th
-                  colspan="4"
+                  colspan="3"
                   class="px-3 py-2 text-center font-semibold text-slate-600 border-r border-slate-200"
                 >
                   External Envelope
                 </th>
                 <th
-                  colspan="3"
+                  colspan="4"
                   class="px-3 py-2 text-center font-semibold text-slate-600 border-r border-slate-200"
                 >
                   Internal Envelope
@@ -287,7 +287,7 @@
                 <th class="px-3 py-1.5 text-center font-medium">WH</th>
                 <th class="px-3 py-1.5 text-center font-medium">XT</th>
                 <th class="px-3 py-1.5 text-center font-medium">THGHGR</th>
-                <th class="px-3 py-1.5 text-center font-medium border-r border-slate-200">DHSV</th>
+                <th class="px-3 py-1.5 text-center font-medium">DHSV</th>
                 <th class="px-3 py-1.5 text-center font-medium">A Barr.</th>
                 <th class="px-3 py-1.5 text-center font-medium">B Barr.</th>
                 <th class="px-3 py-1.5 text-center font-medium border-r border-slate-200">TBG</th>
@@ -308,19 +308,19 @@
                 <td class="px-3 py-2 text-center">
                   <span class="inline-block w-4 h-4 rounded-full" [class]="dotClass(row.xt)"></span>
                 </td>
-                <td class="px-3 py-2 text-center">
+                <td class="px-3 py-2 text-center border-r border-slate-100">
                   <span
                     class="inline-block w-4 h-4 rounded-full"
                     [class]="dotClass(row.thgr)"
                   ></span>
                 </td>
-                <td class="px-3 py-2 text-center border-r border-slate-100">
+                <!-- Internal Envelope -->
+                <td class="px-3 py-2 text-center">
                   <span
                     class="inline-block w-4 h-4 rounded-full"
                     [class]="dotClass(row.dhsv)"
                   ></span>
                 </td>
-                <!-- Internal Envelope -->
                 <td class="px-3 py-2 text-center">
                   <span
                     class="inline-block w-4 h-4 rounded-full"
@@ -367,14 +367,91 @@
                   ></span>
                 </td>
                 <!-- Issue (editable) -->
-                <td class="px-2 py-1.5 border-r border-slate-100">
-                  <input
-                    type="text"
-                    [value]="getEdit(row.well.id, 'issue')"
-                    (input)="setEdit(row.well.id, 'issue', $any($event.target).value)"
-                    [placeholder]="row.issueText || 'Enter issue…'"
-                    class="w-full bg-transparent border border-slate-200 rounded px-2 py-1 text-xs text-slate-700 placeholder:text-slate-300 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors"
-                  />
+                <td class="px-2 py-1.5 border-r border-slate-100 align-top min-w-80">
+                  <div class="space-y-1">
+                    @if (legacyIssue(row.well.id); as legacy) {
+                    <p class="text-slate-400 italic whitespace-normal">{{ legacy }}</p>
+                    } @if (!getIssues(row.well.id).length && row.issueText) {
+                    <p class="text-slate-400 whitespace-normal">Detected: {{ row.issueText }}</p>
+                    } @for (entry of getIssues(row.well.id); track entry.element; let j = $index) {
+                    <div class="flex items-center gap-1">
+                      <select
+                        (change)="changeIssueElement(row.well.id, j, $event)"
+                        class="w-32 border border-slate-200 rounded px-1 py-1 text-xs text-slate-700 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                      >
+                        <optgroup label="XT">
+                          @for (el of issueAvailable(row.well.id, entry.element, xtElements); track
+                          el.key) {
+                          <option [value]="el.key" [selected]="el.key === entry.element">
+                            {{ el.label }}
+                          </option>
+                          }
+                        </optgroup>
+                        <optgroup label="Wellhead">
+                          @for (el of issueAvailable(row.well.id, entry.element, wellheadElements);
+                          track el.key) {
+                          <option [value]="el.key" [selected]="el.key === entry.element">
+                            {{ el.label }}
+                          </option>
+                          }
+                        </optgroup>
+                        <optgroup label="DHSV">
+                          @for (el of issueAvailable(row.well.id, entry.element, dhsvElements);
+                          track el.key) {
+                          <option [value]="el.key" [selected]="el.key === entry.element">
+                            {{ el.label }}
+                          </option>
+                          }
+                        </optgroup>
+                      </select>
+                      <input
+                        type="text"
+                        [value]="entry.comment"
+                        (input)="changeIssueComment(row.well.id, j, $event)"
+                        placeholder="Comment…"
+                        class="flex-1 min-w-32 bg-transparent border border-slate-200 rounded px-2 py-1 text-xs text-slate-700 placeholder:text-slate-300 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-colors"
+                      />
+                      <button
+                        type="button"
+                        (click)="removeIssue(row.well.id, j)"
+                        class="text-slate-400 hover:text-red-600 transition-colors"
+                        title="Remove issue"
+                      >
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    } @if (issueHasOptions(row.well.id)) {
+                    <select
+                      (change)="addIssue(row.well.id, $event)"
+                      class="w-32 border border-slate-200 rounded px-1 py-1 text-xs text-slate-500 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                    >
+                      <option value="">+ Add issue</option>
+                      <optgroup label="XT">
+                        @for (el of issueAvailable(row.well.id, null, xtElements); track el.key) {
+                        <option [value]="el.key">{{ el.label }}</option>
+                        }
+                      </optgroup>
+                      <optgroup label="Wellhead">
+                        @for (el of issueAvailable(row.well.id, null, wellheadElements); track
+                        el.key) {
+                        <option [value]="el.key">{{ el.label }}</option>
+                        }
+                      </optgroup>
+                      <optgroup label="DHSV">
+                        @for (el of issueAvailable(row.well.id, null, dhsvElements); track el.key) {
+                        <option [value]="el.key">{{ el.label }}</option>
+                        }
+                      </optgroup>
+                    </select>
+                    }
+                  </div>
                 </td>
                 <!-- Action (editable) -->
                 <td class="px-2 py-1.5 border-r border-slate-100">
