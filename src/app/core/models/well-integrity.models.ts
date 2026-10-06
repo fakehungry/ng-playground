@@ -1,5 +1,13 @@
 export type AnnulusType = 'A' | 'B' | 'C';
 export type CompletionType = 'Monobore' | 'Conventional';
+export interface MocEntry {
+  element: string;
+  link: string;
+}
+export type PmOverrideMonths = 3 | 6 | 9;
+export const PM_OVERRIDE_MONTHS: PmOverrideMonths[] = [3, 6, 9];
+export type FlowMechanism = 'BP' | 'IGL' | 'ESP' | 'GL' | 'JP' | 'N' | 'PCP';
+export const FLOW_MECHANISMS: FlowMechanism[] = ['BP', 'IGL', 'ESP', 'GL', 'JP', 'N', 'PCP'];
 export type PmStatus = 'Planned' | 'In Progress' | 'Completed';
 export type IntegrityStatus = 'pass' | 'fail' | 'warning' | 'no-data';
 export type ComponentStatus = 'Good' | 'Fail';
@@ -26,6 +34,7 @@ export interface Well {
   assetId: string;
   name: string;
   type: 'producer' | 'injector' | 'observation';
+  flowMechanism: FlowMechanism;
 }
 
 export interface AnnulusData {
@@ -44,7 +53,8 @@ export interface WellAnnulusRecord {
   id: string;
   wellId: string;
   completionType: CompletionType;
-  mocRecord: boolean;
+  mocElements: MocEntry[];
+  overrideNextPmMonths: PmOverrideMonths | null;
   topPerforation: number | null;
   mesp: number | null;
   annuli: Record<AnnulusType, AnnulusData>;
@@ -191,7 +201,8 @@ export interface AnnulusFormValue {
 
 export interface WellConfigFormValue {
   completionType: CompletionType;
-  mocRecord: boolean;
+  mocElements: MocEntry[];
+  overrideNextPmMonths: PmOverrideMonths | null;
   topPerforation: number | null;
   mesp: number | null;
 }
@@ -247,7 +258,7 @@ export interface WellStatusRow {
   internalStatus: IntegrityStatus;
   extIntCombined: IntegrityStatus;
   annulusPressure: IntegrityStatus;
-  mocRecord: boolean | null;
+  mocElements: MocEntry[] | null;
   finalStatus: IntegrityStatus;
   isOverdue: boolean;
   nextPmDate: string | null;

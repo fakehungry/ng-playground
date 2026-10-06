@@ -1,7 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Asset, Platform, Well } from '../models/well-integrity.models';
+import { tap } from 'rxjs';
+import { Asset, FlowMechanism, Platform, Well } from '../models/well-integrity.models';
 
 @Injectable({ providedIn: 'root' })
 export class WellService {
@@ -9,7 +10,12 @@ export class WellService {
 
   readonly assets = toSignal(this.http.get<Asset[]>('/api/assets'), { initialValue: [] });
   readonly platforms = toSignal(this.http.get<Platform[]>('/api/platforms'), { initialValue: [] });
-  readonly wells = toSignal(this.http.get<Well[]>('/api/wells'), { initialValue: [] });
+  private readonly _wells = signal<Well[]>([]);
+  readonly wells = this._wells.asReadonly();
+
+  constructor() {
+    this.http.get<Well[]>('/api/wells').subscribe(wells => this._wells.set(wells));
+  }
 
   readonly selectedAssetId = signal<string | null>(null);
   readonly selectedPlatformId = signal<string | null>(null);
@@ -36,6 +42,12 @@ export class WellService {
 
   selectWell(id: string | null): void {
     this.selectedWellId.set(id);
+  }
+
+  updateFlowMechanism(wellId: string, flowMechanism: FlowMechanism) {
+    return this.http.patch<Well>(`/api/wells/${wellId}`, { flowMechanism }).pipe(
+      tap(updated => this._wells.update(ws => ws.map(w => (w.id === wellId ? updated : w)))),
+    );
   }
 
   findWell(id: string): Well | undefined {

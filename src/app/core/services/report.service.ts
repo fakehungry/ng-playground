@@ -21,6 +21,12 @@ import { WellService } from './well.service';
 const ANNULUS_TYPES: AnnulusType[] = ['A', 'B', 'C'];
 const STATUS_RANK: Record<IntegrityStatus, number> = { fail: 3, warning: 2, 'no-data': 1, pass: 0 };
 
+function addMonths(isoDate: string, months: number): string {
+  const d = new Date(isoDate);
+  d.setMonth(d.getMonth() + months);
+  return d.toISOString().slice(0, 10);
+}
+
 export function worstStatus(...statuses: IntegrityStatus[]): IntegrityStatus {
   return statuses.reduce(
     (worst, s) => (STATUS_RANK[s] > STATUS_RANK[worst] ? s : worst),
@@ -240,7 +246,11 @@ export class ReportService {
     const finalStatus = worstStatus(extIntCombined, annulusPressure);
 
     const today = new Date().toISOString().slice(0, 10);
-    const nextPmDate = latestPm?.nextPmDate ?? null;
+    const overrideMonths = annulusRecord?.overrideNextPmMonths ?? null;
+    const nextPmDate =
+      overrideMonths && latestPm?.completedDate
+        ? addMonths(latestPm.completedDate, overrideMonths)
+        : (latestPm?.nextPmDate ?? null);
     const isOverdue = !!nextPmDate && today > nextPmDate;
 
     return {
@@ -260,7 +270,7 @@ export class ReportService {
       internalStatus,
       extIntCombined,
       annulusPressure,
-      mocRecord: annulusRecord?.mocRecord ?? null,
+      mocElements: annulusRecord?.mocElements ?? null,
       finalStatus,
       isOverdue,
       nextPmDate,

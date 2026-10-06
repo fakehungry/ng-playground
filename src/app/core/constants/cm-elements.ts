@@ -8,7 +8,7 @@ export interface CmElementDef {
 }
 
 export const CM_ELEMENTS: readonly CmElementDef[] = [
-  { key: 'xtBody', label: 'Body', section: 'xtBody', kind: 'pressure' },
+  { key: 'xtBody', label: 'Top Cap', section: 'xtBody', kind: 'pressure' },
   { key: 'umv', label: 'UMV', section: 'xtBody', kind: 'valve' },
   { key: 'lmv', label: 'LMV', section: 'xtBody', kind: 'valve' },
   { key: 'wv', label: 'WV', section: 'xtBody', kind: 'valve' },

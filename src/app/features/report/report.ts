@@ -5,6 +5,8 @@ import {
   RigSchedule,
   WellStatusRow,
 } from '../../core/models/well-integrity.models';
+import { MocEntry } from '../../core/models/well-integrity.models';
+import { findCmElement } from '../../core/constants/cm-elements';
 import { PmService } from '../../core/services/pm.service';
 import { ReportService } from '../../core/services/report.service';
 import { RigScheduleService } from '../../core/services/rig-schedule.service';
@@ -435,6 +437,10 @@ export class Report implements OnInit {
     return rigs.map((r) => r.rigName).join(', ');
   }
 
+  protected mocLabel(entries: MocEntry[] | null): string {
+    return (entries ?? []).map(e => findCmElement(e.element)?.label ?? e.element).join(', ');
+  }
+
   protected dotClass(status: IntegrityStatus): string {
     switch (status) {
       case 'pass':
@@ -520,7 +526,7 @@ export class Report implements OnInit {
           r.tbg,
           r.extIntCombined,
           r.annulusPressure,
-          r.mocRecord === null ? '' : r.mocRecord ? 'Yes' : 'No',
+          this.mocLabel(r.mocElements),
           r.finalStatus,
           this.getEdit(r.well.id, 'issue'),
           this.getEdit(r.well.id, 'action'),

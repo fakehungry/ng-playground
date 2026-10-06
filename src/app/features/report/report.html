@@ -355,9 +355,9 @@
                 </td>
                 <!-- MOC -->
                 <td class="px-3 py-2 text-center border-r border-slate-100">
-                  @if (row.mocRecord === null) { <span class="text-slate-300">—</span> } @else if
-                  (row.mocRecord) { <span class="text-green-600 font-bold text-sm">✓</span> } @else
-                  { <span class="text-slate-400">—</span> }
+                  @if (mocLabel(row.mocElements); as label) {
+                  <span class="text-green-700 text-xs font-medium">{{ label }}</span>
+                  } @else { <span class="text-slate-300">—</span> }
                 </td>
                 <!-- Final -->
                 <td class="px-3 py-2 text-center border-r border-slate-100">

@@ -89,700 +89,800 @@
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w2",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w3",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-B01",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w4",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-B02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w5",
       "platformId": "p2",
       "assetId": "a1",
       "name": "ASL-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w6",
       "platformId": "p2",
       "assetId": "a1",
       "name": "ASL-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w7",
       "platformId": "p2",
       "assetId": "a1",
       "name": "ASL-C01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "N"
     },
     {
       "id": "w8",
       "platformId": "p3",
       "assetId": "a1",
       "name": "AEL-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w9",
       "platformId": "p3",
       "assetId": "a1",
       "name": "AEL-B01",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w10",
       "platformId": "p4",
       "assetId": "a2",
       "name": "ZWT-1A-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w11",
       "platformId": "p4",
       "assetId": "a2",
       "name": "ZWT-1A-B01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w12",
       "platformId": "p4",
       "assetId": "a2",
       "name": "ZWT-1A-C01",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w13",
       "platformId": "p5",
       "assetId": "a2",
       "name": "ZWT-1B-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w14",
       "platformId": "p5",
       "assetId": "a2",
       "name": "ZWT-1B-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w15",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w16",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w17",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-B01",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w18",
       "platformId": "p7",
       "assetId": "a3",
       "name": "BKS-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w19",
       "platformId": "p7",
       "assetId": "a3",
       "name": "BKS-B01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w20",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w21",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-A04",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w22",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-B03",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w23",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w24",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-C02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w25",
       "platformId": "p1",
       "assetId": "a1",
       "name": "ANL-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "GL"
     },
     {
       "id": "w26",
       "platformId": "p2",
       "assetId": "a1",
       "name": "ASL-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w27",
       "platformId": "p2",
       "assetId": "a1",
       "name": "ASL-B01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w28",
       "platformId": "p2",
       "assetId": "a1",
       "name": "ASL-B02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w29",
       "platformId": "p2",
       "assetId": "a1",
       "name": "ASL-B03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w30",
       "platformId": "p2",
       "assetId": "a1",
       "name": "ASL-D01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w31",
       "platformId": "p3",
       "assetId": "a1",
       "name": "AEL-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w32",
       "platformId": "p3",
       "assetId": "a1",
       "name": "AEL-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w33",
       "platformId": "p3",
       "assetId": "a1",
       "name": "AEL-B02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w34",
       "platformId": "p3",
       "assetId": "a1",
       "name": "AEL-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w35",
       "platformId": "p3",
       "assetId": "a1",
       "name": "AEL-C02",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "N"
     },
     {
       "id": "w36",
       "platformId": "p4",
       "assetId": "a2",
       "name": "ZWT-1A-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w37",
       "platformId": "p4",
       "assetId": "a2",
       "name": "ZWT-1A-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w38",
       "platformId": "p4",
       "assetId": "a2",
       "name": "ZWT-1A-B02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w39",
       "platformId": "p4",
       "assetId": "a2",
       "name": "ZWT-1A-C02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w40",
       "platformId": "p4",
       "assetId": "a2",
       "name": "ZWT-1A-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w41",
       "platformId": "p5",
       "assetId": "a2",
       "name": "ZWT-1B-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w42",
       "platformId": "p5",
       "assetId": "a2",
       "name": "ZWT-1B-B01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w43",
       "platformId": "p5",
       "assetId": "a2",
       "name": "ZWT-1B-B02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w44",
       "platformId": "p5",
       "assetId": "a2",
       "name": "ZWT-1B-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w45",
       "platformId": "p5",
       "assetId": "a2",
       "name": "ZWT-1B-C02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w46",
       "platformId": "p5",
       "assetId": "a2",
       "name": "ZWT-1B-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "GL"
     },
     {
       "id": "w47",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w48",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-A04",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w49",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-B02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w50",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-B03",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w51",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w52",
       "platformId": "p6",
       "assetId": "a3",
       "name": "BKN-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "BP"
     },
     {
       "id": "w53",
       "platformId": "p7",
       "assetId": "a3",
       "name": "BKS-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w54",
       "platformId": "p7",
       "assetId": "a3",
       "name": "BKS-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w55",
       "platformId": "p7",
       "assetId": "a3",
       "name": "BKS-B02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w56",
       "platformId": "p7",
       "assetId": "a3",
       "name": "BKS-B03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w57",
       "platformId": "p7",
       "assetId": "a3",
       "name": "BKS-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w58",
       "platformId": "p7",
       "assetId": "a3",
       "name": "BKS-C02",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "JP"
     },
     {
       "id": "w59",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w60",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w61",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w62",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-A04",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w63",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-B01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w64",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-B02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w65",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-B03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w66",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w67",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-C02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w68",
       "platformId": "p8",
       "assetId": "a4",
       "name": "MJA-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w69",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w70",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w71",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w72",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-A04",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w73",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-B01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w74",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-B02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w75",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-B03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w76",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w77",
       "platformId": "p9",
       "assetId": "a4",
       "name": "MJB-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "N"
     },
     {
       "id": "w78",
       "platformId": "p10",
       "assetId": "a4",
       "name": "MJC-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w79",
       "platformId": "p10",
       "assetId": "a4",
       "name": "MJC-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w80",
       "platformId": "p10",
       "assetId": "a4",
       "name": "MJC-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w81",
       "platformId": "p10",
       "assetId": "a4",
       "name": "MJC-B01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w82",
       "platformId": "p10",
       "assetId": "a4",
       "name": "MJC-B02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w83",
       "platformId": "p10",
       "assetId": "a4",
       "name": "MJC-B03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "ESP"
     },
     {
       "id": "w84",
       "platformId": "p10",
       "assetId": "a4",
       "name": "MJC-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w85",
       "platformId": "p10",
       "assetId": "a4",
       "name": "MJC-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w86",
       "platformId": "p11",
       "assetId": "a5",
       "name": "SNE-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "JP"
     },
     {
       "id": "w87",
       "platformId": "p11",
       "assetId": "a5",
       "name": "SNE-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w88",
       "platformId": "p11",
       "assetId": "a5",
       "name": "SNE-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w89",
       "platformId": "p11",
       "assetId": "a5",
       "name": "SNE-B01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w90",
       "platformId": "p11",
       "assetId": "a5",
       "name": "SNE-B02",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w91",
       "platformId": "p11",
       "assetId": "a5",
       "name": "SNE-B03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w92",
       "platformId": "p11",
       "assetId": "a5",
       "name": "SNE-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w93",
       "platformId": "p11",
       "assetId": "a5",
       "name": "SNE-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "JP"
     },
     {
       "id": "w94",
       "platformId": "p12",
       "assetId": "a5",
       "name": "SSW-A01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "BP"
     },
     {
       "id": "w95",
       "platformId": "p12",
       "assetId": "a5",
       "name": "SSW-A02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "GL"
     },
     {
       "id": "w96",
       "platformId": "p12",
       "assetId": "a5",
       "name": "SSW-A03",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "PCP"
     },
     {
       "id": "w97",
       "platformId": "p12",
       "assetId": "a5",
       "name": "SSW-B01",
-      "type": "injector"
+      "type": "injector",
+      "flowMechanism": "N"
     },
     {
       "id": "w98",
       "platformId": "p12",
       "assetId": "a5",
       "name": "SSW-B02",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "N"
     },
     {
       "id": "w99",
       "platformId": "p12",
       "assetId": "a5",
       "name": "SSW-C01",
-      "type": "producer"
+      "type": "producer",
+      "flowMechanism": "IGL"
     },
     {
       "id": "w100",
       "platformId": "p12",
       "assetId": "a5",
       "name": "SSW-D01",
-      "type": "observation"
+      "type": "observation",
+      "flowMechanism": "JP"
     }
   ],
   "pmRecords": [
@@ -18021,7 +18121,13 @@
       "id": "wr1",
       "wellId": "w1",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xtBody",
+          "link": "https://moc.example.com/records/W1-XTBODY"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3200,
       "mesp": 180,
       "annuli": {
@@ -18066,7 +18172,17 @@
       "id": "wr2",
       "wellId": "w2",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W2-SV"
+        },
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W2-CSG9INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3050,
       "mesp": 170,
       "annuli": {
@@ -18111,7 +18227,8 @@
       "id": "wr3",
       "wellId": "w10",
       "completionType": "Monobore",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2650,
       "mesp": 150,
       "annuli": {
@@ -18156,7 +18273,13 @@
       "id": "wr4",
       "wellId": "w11",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W11-CANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2900,
       "mesp": 140,
       "annuli": {
@@ -18201,7 +18324,17 @@
       "id": "wr5",
       "wellId": "w15",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W15-WV"
+        },
+        {
+          "element": "tbgHgrSealD",
+          "link": "https://moc.example.com/records/W15-TBGHGRSEALD"
+        }
+      ],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3100,
       "mesp": 160,
       "annuli": {
@@ -18246,7 +18379,8 @@
       "id": "wr6",
       "wellId": "w16",
       "completionType": "Monobore",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": null,
       "topPerforation": 3150,
       "mesp": 155,
       "annuli": {
@@ -18291,7 +18425,13 @@
       "id": "wr7",
       "wellId": "w5",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W5-AANNCSGVALVE"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3350,
       "mesp": 190,
       "annuli": {
@@ -18336,7 +18476,8 @@
       "id": "wr8",
       "wellId": "w18",
       "completionType": "Monobore",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2900,
       "mesp": 145,
       "annuli": {
@@ -18381,7 +18522,21 @@
       "id": "wr9",
       "wellId": "w3",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W3-STUFFINGBOX"
+        },
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W3-AANNCSGVALVE"
+        },
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W3-WV"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2741,
       "mesp": 1911,
       "annuli": {
@@ -18426,7 +18581,13 @@
       "id": "wr10",
       "wellId": "w4",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W4-CSG7INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": 9,
       "topPerforation": 2788,
       "mesp": 1948,
       "annuli": {
@@ -18471,7 +18632,17 @@
       "id": "wr11",
       "wellId": "w6",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W6-DHSV"
+        },
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W6-STUFFINGBOX"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2882,
       "mesp": 2022,
       "annuli": {
@@ -18516,7 +18687,21 @@
       "id": "wr12",
       "wellId": "w7",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W7-KWV"
+        },
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W7-CSG7INPACKOFF"
+        },
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W7-UMV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2929,
       "mesp": 2059,
       "annuli": {
@@ -18561,7 +18746,13 @@
       "id": "wr13",
       "wellId": "w8",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W8-CAVITYC"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2976,
       "mesp": 2096,
       "annuli": {
@@ -18606,7 +18797,17 @@
       "id": "wr14",
       "wellId": "w9",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W9-BANNCSG"
+        },
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W9-KWV"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3023,
       "mesp": 2133,
       "annuli": {
@@ -18651,7 +18852,21 @@
       "id": "wr15",
       "wellId": "w12",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W12-LMV"
+        },
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W12-CAVITYC"
+        },
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W12-DHSV"
+        }
+      ],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3164,
       "mesp": 2244,
       "annuli": {
@@ -18696,7 +18911,13 @@
       "id": "wr16",
       "wellId": "w13",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xmtCarrierA",
+          "link": "https://moc.example.com/records/W13-XMTCARRIERA"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3211,
       "mesp": 2281,
       "annuli": {
@@ -18741,7 +18962,17 @@
       "id": "wr17",
       "wellId": "w14",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W14-CSG9INPACKOFF"
+        },
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W14-LMV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3258,
       "mesp": 2318,
       "annuli": {
@@ -18786,7 +19017,21 @@
       "id": "wr18",
       "wellId": "w17",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xtBody",
+          "link": "https://moc.example.com/records/W17-XTBODY"
+        },
+        {
+          "element": "xmtCarrierA",
+          "link": "https://moc.example.com/records/W17-XMTCARRIERA"
+        },
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W17-BANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3399,
       "mesp": 2429,
       "annuli": {
@@ -18831,7 +19076,13 @@
       "id": "wr19",
       "wellId": "w19",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W19-SV"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3493,
       "mesp": 1803,
       "annuli": {
@@ -18876,7 +19127,8 @@
       "id": "wr20",
       "wellId": "w20",
       "completionType": "Monobore",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3540,
       "mesp": 1840,
       "annuli": {
@@ -18921,7 +19173,21 @@
       "id": "wr21",
       "wellId": "w21",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W21-CANNCSG"
+        },
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W21-SV"
+        },
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W21-CSG9INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3587,
       "mesp": 1877,
       "annuli": {
@@ -18966,7 +19232,13 @@
       "id": "wr22",
       "wellId": "w22",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W22-WV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2634,
       "mesp": 1914,
       "annuli": {
@@ -19011,7 +19283,17 @@
       "id": "wr23",
       "wellId": "w23",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W23-TUBINGHANGERCARRIERB"
+        },
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W23-CANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2681,
       "mesp": 1951,
       "annuli": {
@@ -19056,7 +19338,21 @@
       "id": "wr24",
       "wellId": "w24",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W24-AANNCSGVALVE"
+        },
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W24-WV"
+        },
+        {
+          "element": "tbgHgrSealD",
+          "link": "https://moc.example.com/records/W24-TBGHGRSEALD"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2728,
       "mesp": 1988,
       "annuli": {
@@ -19101,7 +19397,8 @@
       "id": "wr25",
       "wellId": "w25",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 2775,
       "mesp": 2025,
       "annuli": {
@@ -19146,7 +19443,17 @@
       "id": "wr26",
       "wellId": "w26",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W26-STUFFINGBOX"
+        },
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W26-AANNCSGVALVE"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2822,
       "mesp": 2062,
       "annuli": {
@@ -19191,7 +19498,21 @@
       "id": "wr27",
       "wellId": "w27",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W27-CSG7INPACKOFF"
+        },
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W27-UMV"
+        },
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W27-TUBINGHANGERCARRIERB"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2869,
       "mesp": 2099,
       "annuli": {
@@ -19236,7 +19557,13 @@
       "id": "wr28",
       "wellId": "w28",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W28-DHSV"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2916,
       "mesp": 2136,
       "annuli": {
@@ -19281,7 +19608,17 @@
       "id": "wr29",
       "wellId": "w29",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W29-KWV"
+        },
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W29-CSG7INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2963,
       "mesp": 2173,
       "annuli": {
@@ -19326,7 +19663,8 @@
       "id": "wr30",
       "wellId": "w30",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3010,
       "mesp": 2210,
       "annuli": {
@@ -19371,7 +19709,13 @@
       "id": "wr31",
       "wellId": "w31",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W31-BANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3057,
       "mesp": 2247,
       "annuli": {
@@ -19416,7 +19760,17 @@
       "id": "wr32",
       "wellId": "w32",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W32-LMV"
+        },
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W32-CAVITYC"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3104,
       "mesp": 2284,
       "annuli": {
@@ -19461,7 +19815,21 @@
       "id": "wr33",
       "wellId": "w33",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xmtCarrierA",
+          "link": "https://moc.example.com/records/W33-XMTCARRIERA"
+        },
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W33-BANNCSG"
+        },
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W33-KWV"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3151,
       "mesp": 2321,
       "annuli": {
@@ -19506,7 +19874,13 @@
       "id": "wr34",
       "wellId": "w34",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W34-CSG9INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3198,
       "mesp": 2358,
       "annuli": {
@@ -19551,7 +19925,8 @@
       "id": "wr35",
       "wellId": "w35",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3245,
       "mesp": 2395,
       "annuli": {
@@ -19596,7 +19971,21 @@
       "id": "wr36",
       "wellId": "w36",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W36-SV"
+        },
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W36-CSG9INPACKOFF"
+        },
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W36-LMV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3292,
       "mesp": 2432,
       "annuli": {
@@ -19641,7 +20030,13 @@
       "id": "wr37",
       "wellId": "w37",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "tbgHgrSealD",
+          "link": "https://moc.example.com/records/W37-TBGHGRSEALD"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3339,
       "mesp": 2469,
       "annuli": {
@@ -19686,7 +20081,17 @@
       "id": "wr38",
       "wellId": "w38",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W38-CANNCSG"
+        },
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W38-SV"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3386,
       "mesp": 1806,
       "annuli": {
@@ -19731,7 +20136,21 @@
       "id": "wr39",
       "wellId": "w39",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W39-WV"
+        },
+        {
+          "element": "tbgHgrSealD",
+          "link": "https://moc.example.com/records/W39-TBGHGRSEALD"
+        },
+        {
+          "element": "xtBody",
+          "link": "https://moc.example.com/records/W39-XTBODY"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3433,
       "mesp": 1843,
       "annuli": {
@@ -19776,7 +20195,8 @@
       "id": "wr40",
       "wellId": "w40",
       "completionType": "Monobore",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3480,
       "mesp": 1880,
       "annuli": {
@@ -19821,7 +20241,17 @@
       "id": "wr41",
       "wellId": "w41",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W41-AANNCSGVALVE"
+        },
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W41-WV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3527,
       "mesp": 1917,
       "annuli": {
@@ -19866,7 +20296,21 @@
       "id": "wr42",
       "wellId": "w42",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W42-UMV"
+        },
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W42-TUBINGHANGERCARRIERB"
+        },
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W42-CANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3574,
       "mesp": 1954,
       "annuli": {
@@ -19911,7 +20355,13 @@
       "id": "wr43",
       "wellId": "w43",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W43-STUFFINGBOX"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2621,
       "mesp": 1991,
       "annuli": {
@@ -19956,7 +20406,17 @@
       "id": "wr44",
       "wellId": "w44",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W44-CSG7INPACKOFF"
+        },
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W44-UMV"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2668,
       "mesp": 2028,
       "annuli": {
@@ -20001,7 +20461,8 @@
       "id": "wr45",
       "wellId": "w45",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 2715,
       "mesp": 2065,
       "annuli": {
@@ -20046,7 +20507,13 @@
       "id": "wr46",
       "wellId": "w46",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W46-KWV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2762,
       "mesp": 2102,
       "annuli": {
@@ -20091,7 +20558,17 @@
       "id": "wr47",
       "wellId": "w47",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W47-CAVITYC"
+        },
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W47-DHSV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2809,
       "mesp": 2139,
       "annuli": {
@@ -20136,7 +20613,21 @@
       "id": "wr48",
       "wellId": "w48",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W48-BANNCSG"
+        },
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W48-KWV"
+        },
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W48-CSG7INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2856,
       "mesp": 2176,
       "annuli": {
@@ -20181,7 +20672,13 @@
       "id": "wr49",
       "wellId": "w49",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W49-LMV"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2903,
       "mesp": 2213,
       "annuli": {
@@ -20226,7 +20723,8 @@
       "id": "wr50",
       "wellId": "w50",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 2950,
       "mesp": 2250,
       "annuli": {
@@ -20271,7 +20769,21 @@
       "id": "wr51",
       "wellId": "w51",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W51-CSG9INPACKOFF"
+        },
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W51-LMV"
+        },
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W51-CAVITYC"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2997,
       "mesp": 2287,
       "annuli": {
@@ -20316,7 +20828,13 @@
       "id": "wr52",
       "wellId": "w52",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xtBody",
+          "link": "https://moc.example.com/records/W52-XTBODY"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3044,
       "mesp": 2324,
       "annuli": {
@@ -20361,7 +20879,17 @@
       "id": "wr53",
       "wellId": "w53",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W53-SV"
+        },
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W53-CSG9INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3091,
       "mesp": 2361,
       "annuli": {
@@ -20406,7 +20934,21 @@
       "id": "wr54",
       "wellId": "w54",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "tbgHgrSealD",
+          "link": "https://moc.example.com/records/W54-TBGHGRSEALD"
+        },
+        {
+          "element": "xtBody",
+          "link": "https://moc.example.com/records/W54-XTBODY"
+        },
+        {
+          "element": "xmtCarrierA",
+          "link": "https://moc.example.com/records/W54-XMTCARRIERA"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3138,
       "mesp": 2398,
       "annuli": {
@@ -20451,7 +20993,8 @@
       "id": "wr55",
       "wellId": "w55",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3185,
       "mesp": 2435,
       "annuli": {
@@ -20496,7 +21039,17 @@
       "id": "wr56",
       "wellId": "w56",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W56-WV"
+        },
+        {
+          "element": "tbgHgrSealD",
+          "link": "https://moc.example.com/records/W56-TBGHGRSEALD"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3232,
       "mesp": 2472,
       "annuli": {
@@ -20541,7 +21094,21 @@
       "id": "wr57",
       "wellId": "w57",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W57-TUBINGHANGERCARRIERB"
+        },
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W57-CANNCSG"
+        },
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W57-SV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3279,
       "mesp": 1809,
       "annuli": {
@@ -20586,7 +21153,13 @@
       "id": "wr58",
       "wellId": "w58",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W58-AANNCSGVALVE"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3326,
       "mesp": 1846,
       "annuli": {
@@ -20631,7 +21204,17 @@
       "id": "wr59",
       "wellId": "w59",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W59-UMV"
+        },
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W59-TUBINGHANGERCARRIERB"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3373,
       "mesp": 1883,
       "annuli": {
@@ -20676,7 +21259,8 @@
       "id": "wr60",
       "wellId": "w60",
       "completionType": "Monobore",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3420,
       "mesp": 1920,
       "annuli": {
@@ -20721,7 +21305,13 @@
       "id": "wr61",
       "wellId": "w61",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W61-CSG7INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3467,
       "mesp": 1957,
       "annuli": {
@@ -20766,7 +21356,17 @@
       "id": "wr62",
       "wellId": "w62",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W62-DHSV"
+        },
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W62-STUFFINGBOX"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3514,
       "mesp": 1994,
       "annuli": {
@@ -20811,7 +21411,21 @@
       "id": "wr63",
       "wellId": "w63",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W63-KWV"
+        },
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W63-CSG7INPACKOFF"
+        },
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W63-UMV"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3561,
       "mesp": 2031,
       "annuli": {
@@ -20856,7 +21470,13 @@
       "id": "wr64",
       "wellId": "w64",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W64-CAVITYC"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2608,
       "mesp": 2068,
       "annuli": {
@@ -20901,7 +21521,8 @@
       "id": "wr65",
       "wellId": "w65",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 2655,
       "mesp": 2105,
       "annuli": {
@@ -20946,7 +21567,21 @@
       "id": "wr66",
       "wellId": "w66",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W66-LMV"
+        },
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W66-CAVITYC"
+        },
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W66-DHSV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2702,
       "mesp": 2142,
       "annuli": {
@@ -20991,7 +21626,13 @@
       "id": "wr67",
       "wellId": "w67",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xmtCarrierA",
+          "link": "https://moc.example.com/records/W67-XMTCARRIERA"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2749,
       "mesp": 2179,
       "annuli": {
@@ -21036,7 +21677,17 @@
       "id": "wr68",
       "wellId": "w68",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W68-CSG9INPACKOFF"
+        },
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W68-LMV"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2796,
       "mesp": 2216,
       "annuli": {
@@ -21081,7 +21732,21 @@
       "id": "wr69",
       "wellId": "w69",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xtBody",
+          "link": "https://moc.example.com/records/W69-XTBODY"
+        },
+        {
+          "element": "xmtCarrierA",
+          "link": "https://moc.example.com/records/W69-XMTCARRIERA"
+        },
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W69-BANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2843,
       "mesp": 2253,
       "annuli": {
@@ -21126,7 +21791,8 @@
       "id": "wr70",
       "wellId": "w70",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 2890,
       "mesp": 2290,
       "annuli": {
@@ -21171,7 +21837,17 @@
       "id": "wr71",
       "wellId": "w71",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "tbgHgrSealD",
+          "link": "https://moc.example.com/records/W71-TBGHGRSEALD"
+        },
+        {
+          "element": "xtBody",
+          "link": "https://moc.example.com/records/W71-XTBODY"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2937,
       "mesp": 2327,
       "annuli": {
@@ -21216,7 +21892,21 @@
       "id": "wr72",
       "wellId": "w72",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W72-CANNCSG"
+        },
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W72-SV"
+        },
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W72-CSG9INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2984,
       "mesp": 2364,
       "annuli": {
@@ -21261,7 +21951,13 @@
       "id": "wr73",
       "wellId": "w73",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W73-WV"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3031,
       "mesp": 2401,
       "annuli": {
@@ -21306,7 +22002,17 @@
       "id": "wr74",
       "wellId": "w74",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W74-TUBINGHANGERCARRIERB"
+        },
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W74-CANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3078,
       "mesp": 2438,
       "annuli": {
@@ -21351,7 +22057,8 @@
       "id": "wr75",
       "wellId": "w75",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3125,
       "mesp": 2475,
       "annuli": {
@@ -21396,7 +22103,13 @@
       "id": "wr76",
       "wellId": "w76",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W76-UMV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3172,
       "mesp": 1812,
       "annuli": {
@@ -21441,7 +22154,17 @@
       "id": "wr77",
       "wellId": "w77",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W77-STUFFINGBOX"
+        },
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W77-AANNCSGVALVE"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3219,
       "mesp": 1849,
       "annuli": {
@@ -21486,7 +22209,21 @@
       "id": "wr78",
       "wellId": "w78",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W78-CSG7INPACKOFF"
+        },
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W78-UMV"
+        },
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W78-TUBINGHANGERCARRIERB"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3266,
       "mesp": 1886,
       "annuli": {
@@ -21531,7 +22268,13 @@
       "id": "wr79",
       "wellId": "w79",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W79-DHSV"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3313,
       "mesp": 1923,
       "annuli": {
@@ -21576,7 +22319,8 @@
       "id": "wr80",
       "wellId": "w80",
       "completionType": "Monobore",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3360,
       "mesp": 1960,
       "annuli": {
@@ -21621,7 +22365,21 @@
       "id": "wr81",
       "wellId": "w81",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W81-CAVITYC"
+        },
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W81-DHSV"
+        },
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W81-STUFFINGBOX"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3407,
       "mesp": 1997,
       "annuli": {
@@ -21666,7 +22424,13 @@
       "id": "wr82",
       "wellId": "w82",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W82-BANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3454,
       "mesp": 2034,
       "annuli": {
@@ -21711,7 +22475,17 @@
       "id": "wr83",
       "wellId": "w83",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W83-LMV"
+        },
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W83-CAVITYC"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3501,
       "mesp": 2071,
       "annuli": {
@@ -21756,7 +22530,21 @@
       "id": "wr84",
       "wellId": "w84",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xmtCarrierA",
+          "link": "https://moc.example.com/records/W84-XMTCARRIERA"
+        },
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W84-BANNCSG"
+        },
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W84-KWV"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3548,
       "mesp": 2108,
       "annuli": {
@@ -21801,7 +22589,8 @@
       "id": "wr85",
       "wellId": "w85",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3595,
       "mesp": 2145,
       "annuli": {
@@ -21846,7 +22635,17 @@
       "id": "wr86",
       "wellId": "w86",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "xtBody",
+          "link": "https://moc.example.com/records/W86-XTBODY"
+        },
+        {
+          "element": "xmtCarrierA",
+          "link": "https://moc.example.com/records/W86-XMTCARRIERA"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2642,
       "mesp": 2182,
       "annuli": {
@@ -21891,7 +22690,21 @@
       "id": "wr87",
       "wellId": "w87",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W87-SV"
+        },
+        {
+          "element": "csg9inPackOff",
+          "link": "https://moc.example.com/records/W87-CSG9INPACKOFF"
+        },
+        {
+          "element": "lmv",
+          "link": "https://moc.example.com/records/W87-LMV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2689,
       "mesp": 2219,
       "annuli": {
@@ -21936,7 +22749,13 @@
       "id": "wr88",
       "wellId": "w88",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "tbgHgrSealD",
+          "link": "https://moc.example.com/records/W88-TBGHGRSEALD"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2736,
       "mesp": 2256,
       "annuli": {
@@ -21981,7 +22800,17 @@
       "id": "wr89",
       "wellId": "w89",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W89-CANNCSG"
+        },
+        {
+          "element": "sv",
+          "link": "https://moc.example.com/records/W89-SV"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 2783,
       "mesp": 2293,
       "annuli": {
@@ -22026,7 +22855,8 @@
       "id": "wr90",
       "wellId": "w90",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 2830,
       "mesp": 2330,
       "annuli": {
@@ -22071,7 +22901,13 @@
       "id": "wr91",
       "wellId": "w91",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W91-TUBINGHANGERCARRIERB"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2877,
       "mesp": 2367,
       "annuli": {
@@ -22116,7 +22952,17 @@
       "id": "wr92",
       "wellId": "w92",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W92-AANNCSGVALVE"
+        },
+        {
+          "element": "wv",
+          "link": "https://moc.example.com/records/W92-WV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 2924,
       "mesp": 2404,
       "annuli": {
@@ -22161,7 +23007,21 @@
       "id": "wr93",
       "wellId": "w93",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "umv",
+          "link": "https://moc.example.com/records/W93-UMV"
+        },
+        {
+          "element": "tubingHangerCarrierB",
+          "link": "https://moc.example.com/records/W93-TUBINGHANGERCARRIERB"
+        },
+        {
+          "element": "cAnnCsg",
+          "link": "https://moc.example.com/records/W93-CANNCSG"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 2971,
       "mesp": 2441,
       "annuli": {
@@ -22206,7 +23066,13 @@
       "id": "wr94",
       "wellId": "w94",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W94-STUFFINGBOX"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3018,
       "mesp": 2478,
       "annuli": {
@@ -22251,7 +23117,8 @@
       "id": "wr95",
       "wellId": "w95",
       "completionType": "Conventional",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3065,
       "mesp": 1815,
       "annuli": {
@@ -22296,7 +23163,21 @@
       "id": "wr96",
       "wellId": "w96",
       "completionType": "Monobore",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W96-DHSV"
+        },
+        {
+          "element": "stuffingBox",
+          "link": "https://moc.example.com/records/W96-STUFFINGBOX"
+        },
+        {
+          "element": "aAnnCsgValve",
+          "link": "https://moc.example.com/records/W96-AANNCSGVALVE"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3112,
       "mesp": 1852,
       "annuli": {
@@ -22341,7 +23222,13 @@
       "id": "wr97",
       "wellId": "w97",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W97-KWV"
+        }
+      ],
+      "overrideNextPmMonths": null,
       "topPerforation": 3159,
       "mesp": 1889,
       "annuli": {
@@ -22386,7 +23273,17 @@
       "id": "wr98",
       "wellId": "w98",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "cavityC",
+          "link": "https://moc.example.com/records/W98-CAVITYC"
+        },
+        {
+          "element": "dhsv",
+          "link": "https://moc.example.com/records/W98-DHSV"
+        }
+      ],
+      "overrideNextPmMonths": 3,
       "topPerforation": 3206,
       "mesp": 1926,
       "annuli": {
@@ -22431,7 +23328,21 @@
       "id": "wr99",
       "wellId": "w99",
       "completionType": "Conventional",
-      "mocRecord": true,
+      "mocElements": [
+        {
+          "element": "bAnnCsg",
+          "link": "https://moc.example.com/records/W99-BANNCSG"
+        },
+        {
+          "element": "kwv",
+          "link": "https://moc.example.com/records/W99-KWV"
+        },
+        {
+          "element": "csg7inPackOff",
+          "link": "https://moc.example.com/records/W99-CSG7INPACKOFF"
+        }
+      ],
+      "overrideNextPmMonths": 6,
       "topPerforation": 3253,
       "mesp": 1963,
       "annuli": {
@@ -22476,7 +23387,8 @@
       "id": "wr100",
       "wellId": "w100",
       "completionType": "Monobore",
-      "mocRecord": false,
+      "mocElements": [],
+      "overrideNextPmMonths": 9,
       "topPerforation": 3300,
       "mesp": 2000,
       "annuli": {

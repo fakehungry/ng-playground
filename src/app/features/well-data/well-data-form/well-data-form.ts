@@ -1,5 +1,12 @@
 import { Component, computed, effect, inject, OnInit, QueryList, signal, ViewChildren } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  CM_DHSV_ELEMENTS,
+  CM_WELLHEAD_ELEMENTS,
+  CM_XT_ELEMENTS,
+  CmElementDef,
+} from '../../../core/constants/cm-elements';
+import { forkJoin, Observable, of } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { WellService } from '../../../core/services/well.service';
 import { WellDataService, computeAnnulusStatus } from '../../../core/services/well-data.service';
@@ -11,6 +18,11 @@ import {
   IntegrityStatus,
   PmRecord,
   WellConfigFormValue,
+  FLOW_MECHANISMS,
+  MocEntry,
+  PM_OVERRIDE_MONTHS,
+  PmOverrideMonths,
+  FlowMechanism,
 } from '../../../core/models/well-integrity.models';
 import { PmService } from '../../../core/services/pm.service';
 import { FailureReportService } from '../../../core/services/failure-report.service';
@@ -45,14 +57,65 @@ export class WellDataForm implements OnInit {
 
   protected readonly annulusTypes: AnnulusType[] = ['A', 'B', 'C'];
   protected readonly activeTab = signal<AnnulusType>('A');
+  protected mocAvailable(current: string | null, defs: readonly CmElementDef[]): CmElementDef[] {
+    const taken = this.configForm.controls.mocElements.value.map(m => m.element);
+    return defs.filter(e => e.key === current || !taken.includes(e.key));
+  }
+
+  protected mocHasOptions(): boolean {
+    const all = [...this.xtElements, ...this.wellheadElements, ...this.dhsvElements];
+    return this.mocAvailable(null, all).length > 0;
+  }
+
+  private setMocElements(next: MocEntry[]): void {
+    const ctrl = this.configForm.controls.mocElements;
+    ctrl.setValue(next);
+    ctrl.markAsDirty();
+  }
+
+  protected onMocElementAdd(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    if (select.value) {
+      this.setMocElements([...this.configForm.controls.mocElements.value, { element: select.value, link: '' }]);
+    }
+    select.value = '';
+  }
+
+  protected onMocElementChange(index: number, event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.setMocElements(this.configForm.controls.mocElements.value.map((m, i) => (i === index ? { ...m, element: value } : m)));
+  }
+
+  protected onMocLinkChange(index: number, event: Event): void {
+    const link = (event.target as HTMLInputElement).value;
+    this.setMocElements(this.configForm.controls.mocElements.value.map((m, i) => (i === index ? { ...m, link } : m)));
+  }
+
+  protected removeMocElement(index: number): void {
+    this.setMocElements(this.configForm.controls.mocElements.value.filter((_, i) => i !== index));
+  }
+
+  protected onOverrideChange(event: Event): void {
+    const v = (event.target as HTMLSelectElement).value;
+    this.configForm.controls.overrideNextPmMonths.setValue(v ? (Number(v) as PmOverrideMonths) : null);
+  }
+
   protected readonly saving = signal(false);
   protected readonly saveSuccess = signal(false);
   protected readonly errorMsg = signal('');
   protected readonly selectedItemId = signal<string | null>(null);
 
+  protected readonly flowMechanisms = FLOW_MECHANISMS;
+  protected readonly xtElements = CM_XT_ELEMENTS;
+  protected readonly wellheadElements = CM_WELLHEAD_ELEMENTS;
+  protected readonly dhsvElements = CM_DHSV_ELEMENTS;
+  protected readonly pmOverrideOptions = PM_OVERRIDE_MONTHS;
+
   protected readonly configForm = new FormGroup({
+    flowMechanism: new FormControl<FlowMechanism>('N', { nonNullable: true }),
     completionType: new FormControl<CompletionType>('Conventional', { nonNullable: true }),
-    mocRecord: new FormControl<boolean>(false, { nonNullable: true }),
+    mocElements: new FormControl<MocEntry[]>([], { nonNullable: true }),
+    overrideNextPmMonths: new FormControl<PmOverrideMonths | null>(null),
     topPerforation: new FormControl<number | null>(null),
     mesp: new FormControl<number | null>(null, [Validators.min(0)]),
   });
@@ -115,11 +178,18 @@ export class WellDataForm implements OnInit {
 
   constructor() {
     effect(() => {
+      const wellId = this.wellService.selectedWellId();
+      const well = wellId ? this.wellService.findWell(wellId) : undefined;
+      this.configForm.controls.flowMechanism.setValue(well?.flowMechanism ?? 'N');
+    });
+
+    effect(() => {
       const record = this.wellDataService.record();
       if (record) {
         this.configForm.patchValue({
           completionType: record.completionType ?? 'Conventional',
-          mocRecord: record.mocRecord ?? false,
+          mocElements: record.mocElements ?? [],
+          overrideNextPmMonths: record.overrideNextPmMonths ?? null,
           topPerforation: record.topPerforation ?? null,
           mesp: record.mesp ?? null,
         });
@@ -128,7 +198,7 @@ export class WellDataForm implements OnInit {
           this.selectedItemId.set(items[0].id);
         }
       } else {
-        this.configForm.reset({ completionType: 'Conventional', mocRecord: false, topPerforation: null, mesp: null });
+        this.configForm.patchValue({ completionType: 'Conventional', mocElements: [], overrideNextPmMonths: null, topPerforation: null, mesp: null });
       }
     });
   }
@@ -184,13 +254,20 @@ export class WellDataForm implements OnInit {
       annuliValues[type] = raw ?? { toc: null, cblToc: null, shoeDepth: null, masp: null, mop: null, tow: null, updatedBy: '' };
     });
 
-    const config: WellConfigFormValue = this.configForm.getRawValue();
+    const { flowMechanism, ...config }: WellConfigFormValue & { flowMechanism: FlowMechanism } =
+      this.configForm.getRawValue();
 
     this.saving.set(true);
     this.saveSuccess.set(false);
     this.errorMsg.set('');
 
-    this.wellDataService.saveAll(wellId, config, annuliValues).subscribe({
+    const currentFlow = this.wellService.findWell(wellId)?.flowMechanism;
+    const flow$: Observable<unknown> =
+      flowMechanism !== currentFlow
+        ? this.wellService.updateFlowMechanism(wellId, flowMechanism)
+        : of(null);
+
+    forkJoin([this.wellDataService.saveAll(wellId, config, annuliValues), flow$]).subscribe({
       next: () => {
         this.saving.set(false);
         this.saveSuccess.set(true);
