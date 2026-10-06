@@ -35,6 +35,7 @@ function leakTest(
   testType: ValveTestType,
 ): LeakTestResult | null {
   if (initial == null || final == null) return null;
+  if (testType === 'Observe') return initial === 0 && final === 0 ? 'Pass' : 'Fail';
   if (testType === 'Inflow') {
     if (final === 0) return null;
     return initial / final >= 0.97 ? 'Pass' : 'Fail';
@@ -57,103 +58,142 @@ function sectionStatus(statuses: ComponentStatus[]): ComponentStatus {
 
 export interface InspectionFormRaw {
   xtBody: {
-    xtBody: { initialPressure: number | null; finalPressure: number | null; comment: string };
+    xtBody: { testType: ValveTestType; initialPressure: number | null; finalPressure: number | null; testTime: number | null; comment: string };
     umv: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     lmv: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     wv: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     kwv: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     sv: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     stuffingBox: { currentStatus: 'Clean' | 'Dirty'; comment: string };
   };
   wellhead: {
-    xmtCarrierA: { initialPressure: number | null; finalPressure: number | null; comment: string };
+    xmtCarrierA: { testType: ValveTestType; initialPressure: number | null; finalPressure: number | null; testTime: number | null; comment: string };
     tubingHangerCarrierB: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       comment: string;
     };
-    cavityC: { initialPressure: number | null; finalPressure: number | null; comment: string };
-    tbgHgrSealD: { initialPressure: number | null; finalPressure: number | null; comment: string };
+    cavityC: { testType: ValveTestType; initialPressure: number | null; finalPressure: number | null; testTime: number | null; comment: string };
+    tbgHgrSealD: { testType: ValveTestType; initialPressure: number | null; finalPressure: number | null; testTime: number | null; comment: string };
     csg7inPackOff: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       comment: string;
     };
     csg9inPackOff: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       comment: string;
     };
     aAnnCsgValve: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     bAnnCsg: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     cAnnCsg: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     aAnnCsgValve2: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     bAnnCsg2: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
     cAnnCsg2: {
+      testType: ValveTestType;
       initialPressure: number | null;
       finalPressure: number | null;
+      testTime: number | null;
       functionTest: FunctionTestResult | null;
       greaseVolume: number | null;
+      turns: number | null;
       comment: string;
     };
   };
@@ -184,16 +224,19 @@ export interface InspectionFormRaw {
 
 function buildPressureComponent(
   raw: {
+    testType: ValveTestType;
     initialPressure: number | null;
     finalPressure: number | null;
+    testTime: number | null;
     comment: string;
   },
-  testType: ValveTestType,
 ): PressureComponent {
-  const lt = leakTest(raw.initialPressure, raw.finalPressure, testType);
+  const lt = leakTest(raw.initialPressure, raw.finalPressure, raw.testType);
   return {
+    testType: raw.testType,
     initialPressure: raw.initialPressure,
     finalPressure: raw.finalPressure,
+    testTime: raw.testTime,
     leakTest: lt,
     currentStatus: pressureStatus(lt),
     comment: raw.comment,
@@ -202,31 +245,39 @@ function buildPressureComponent(
 
 function buildValveComponent(
   raw: {
+    testType: ValveTestType;
     initialPressure: number | null;
     finalPressure: number | null;
+    testTime: number | null;
     functionTest: FunctionTestResult | null;
     greaseVolume: number | null;
+    turns: number | null;
     comment: string;
   },
-  testType: ValveTestType,
 ): ValveComponent {
-  const lt = leakTest(raw.initialPressure, raw.finalPressure, testType);
+  const lt = leakTest(raw.initialPressure, raw.finalPressure, raw.testType);
   return {
+    testType: raw.testType,
     initialPressure: raw.initialPressure,
     finalPressure: raw.finalPressure,
+    testTime: raw.testTime,
     leakTest: lt,
     functionTest: raw.functionTest,
     greaseVolume: raw.greaseVolume,
+    turns: raw.turns,
     currentStatus: valveStatus(lt, raw.functionTest),
     comment: raw.comment,
   };
 }
 
 function hasValveInput(raw: {
+  testType: ValveTestType;
   initialPressure: number | null;
   finalPressure: number | null;
+  testTime: number | null;
   functionTest: FunctionTestResult | null;
   greaseVolume: number | null;
+  turns: number | null;
   comment: string;
 }): boolean {
   return (
@@ -234,6 +285,7 @@ function hasValveInput(raw: {
     raw.finalPressure != null ||
     raw.functionTest != null ||
     raw.greaseVolume != null ||
+    raw.turns != null ||
     raw.comment.trim() !== ''
   );
 }
@@ -243,14 +295,13 @@ export function buildInspectionData(
   annulusRecord: WellAnnulusRecord | null,
   dhsvConfig?: DhsvConfig | null,
   dhsvConstantOverride?: number | null,
-  valveTestType: ValveTestType = 'Positive',
 ): PmInspectionData {
-  const xtBodyComp = buildPressureComponent(raw.xtBody.xtBody, valveTestType);
-  const umv = buildValveComponent(raw.xtBody.umv, valveTestType);
-  const lmv = buildValveComponent(raw.xtBody.lmv, valveTestType);
-  const wv = buildValveComponent(raw.xtBody.wv, valveTestType);
-  const kwv = buildValveComponent(raw.xtBody.kwv, valveTestType);
-  const sv = buildValveComponent(raw.xtBody.sv, valveTestType);
+  const xtBodyComp = buildPressureComponent(raw.xtBody.xtBody);
+  const umv = buildValveComponent(raw.xtBody.umv);
+  const lmv = buildValveComponent(raw.xtBody.lmv);
+  const wv = buildValveComponent(raw.xtBody.wv);
+  const kwv = buildValveComponent(raw.xtBody.kwv);
+  const sv = buildValveComponent(raw.xtBody.sv);
   const stuffingBox = raw.xtBody.stuffingBox;
 
   const xtBodySection: XtBodySection = {
@@ -272,23 +323,23 @@ export function buildInspectionData(
     stuffingBox,
   };
 
-  const xmtA = buildPressureComponent(raw.wellhead.xmtCarrierA, valveTestType);
-  const thcB = buildPressureComponent(raw.wellhead.tubingHangerCarrierB, valveTestType);
-  const cavC = buildPressureComponent(raw.wellhead.cavityC, valveTestType);
-  const tbgD = buildPressureComponent(raw.wellhead.tbgHgrSealD, valveTestType);
-  const csg7 = buildPressureComponent(raw.wellhead.csg7inPackOff, valveTestType);
-  const csg9 = buildPressureComponent(raw.wellhead.csg9inPackOff, valveTestType);
-  const aAnnValve = buildValveComponent(raw.wellhead.aAnnCsgValve, valveTestType);
-  const bAnn = buildValveComponent(raw.wellhead.bAnnCsg, valveTestType);
-  const cAnn = buildValveComponent(raw.wellhead.cAnnCsg, valveTestType);
+  const xmtA = buildPressureComponent(raw.wellhead.xmtCarrierA);
+  const thcB = buildPressureComponent(raw.wellhead.tubingHangerCarrierB);
+  const cavC = buildPressureComponent(raw.wellhead.cavityC);
+  const tbgD = buildPressureComponent(raw.wellhead.tbgHgrSealD);
+  const csg7 = buildPressureComponent(raw.wellhead.csg7inPackOff);
+  const csg9 = buildPressureComponent(raw.wellhead.csg9inPackOff);
+  const aAnnValve = buildValveComponent(raw.wellhead.aAnnCsgValve);
+  const bAnn = buildValveComponent(raw.wellhead.bAnnCsg);
+  const cAnn = buildValveComponent(raw.wellhead.cAnnCsg);
   const aAnnValve2 = hasValveInput(raw.wellhead.aAnnCsgValve2)
-    ? buildValveComponent(raw.wellhead.aAnnCsgValve2, valveTestType)
+    ? buildValveComponent(raw.wellhead.aAnnCsgValve2)
     : undefined;
   const bAnn2 = hasValveInput(raw.wellhead.bAnnCsg2)
-    ? buildValveComponent(raw.wellhead.bAnnCsg2, valveTestType)
+    ? buildValveComponent(raw.wellhead.bAnnCsg2)
     : undefined;
   const cAnn2 = hasValveInput(raw.wellhead.cAnnCsg2)
-    ? buildValveComponent(raw.wellhead.cAnnCsg2, valveTestType)
+    ? buildValveComponent(raw.wellhead.cAnnCsg2)
     : undefined;
 
   const wellheadSection: WellheadSection = {
@@ -436,7 +487,6 @@ export class PmService {
       plannedDate: value.plannedDate,
       operatorName: value.operatorName,
       status: value.status,
-      valveTestType: value.valveTestType,
       createdAt: now,
       updatedAt: now,
       ...(value.status === 'Completed' && value.completedDate
@@ -458,7 +508,6 @@ export class PmService {
       plannedDate: value.plannedDate,
       operatorName: value.operatorName,
       status: value.status,
-      valveTestType: value.valveTestType,
       updatedAt: now,
       completedDate:
         value.status === 'Completed' && value.completedDate ? value.completedDate : undefined,

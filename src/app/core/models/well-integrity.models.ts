@@ -7,7 +7,7 @@ export type FunctionTestResult = 'Pass' | 'Fail';
 export type LeakTestResult = 'Pass' | 'Fail';
 export type StuffingBoxStatus = 'Clean' | 'Dirty';
 export type TubingStatus = 'Shut-in' | 'Flowing';
-export type ValveTestType = 'Positive' | 'Inflow';
+export type ValveTestType = 'Positive' | 'Inflow' | 'Observe';
 
 export interface Asset {
   id: string;
@@ -53,8 +53,10 @@ export interface WellAnnulusRecord {
 }
 
 export interface PressureComponent {
+  testType: ValveTestType;
   initialPressure: number | null;
   finalPressure: number | null;
+  testTime: number | null; // minutes
   leakTest: LeakTestResult | null;
   currentStatus: ComponentStatus;
   comment: string;
@@ -63,6 +65,7 @@ export interface PressureComponent {
 export interface ValveComponent extends PressureComponent {
   functionTest: FunctionTestResult | null;
   greaseVolume: number | null;
+  turns: number | null;
 }
 
 export interface DhsvComponent {
@@ -157,7 +160,8 @@ export interface PmRecord {
   plannedDate: string;
   operatorName: string;
   status: PmStatus;
-  valveTestType: ValveTestType;
+  /** @deprecated legacy record-level value; test type is now per component */
+  valveTestType?: ValveTestType;
   completedDate?: string;
   nextPmDate?: string;
   createdAt: string;
@@ -171,7 +175,6 @@ export interface PmFormValue {
   plannedDate: string;
   operatorName: string;
   status: PmStatus;
-  valveTestType: ValveTestType;
   completedDate: string | null;
   inspectionData?: PmInspectionData;
 }
