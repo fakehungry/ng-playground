@@ -1,0 +1,207 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="p-6 max-w-4xl mx-auto space-y-5 pb-24">
+  <div>
+    <h1 class="text-xl font-bold text-slate-900">Integrity Logic Configuration</h1>
+    <p class="text-sm text-slate-500 mt-0.5">
+      Thresholds and severities used for leak tests and the report traffic lights. Changes apply to
+      all existing PM records in the Integrity Report; PM/CM forms use the new leak-test criteria
+      for results entered or saved from now on.
+    </p>
+    @if (!persisted()) {
+      <p class="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+        No saved configuration yet — the built-in defaults are in effect.
+      </p>
+    }
+  </div>
+
+  <!-- Leak test criteria -->
+  <section formGroupName="leakTest" class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+    <h2 class="text-sm font-semibold text-slate-800">Leak test criteria</h2>
+    <p class="text-xs text-slate-500 mb-4">Decides Pass/Fail for every pressure and valve test.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Pass ratio (Positive / Inflow)</label>
+        <input type="number" step="0.001" formControlName="passRatio"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <p class="text-xs text-slate-500 mt-1">
+          Positive: final ÷ initial ≥ ratio. Inflow: initial ÷ final ≥ ratio. Currently allows a
+          {{ percentDrop() }}% pressure change.
+        </p>
+        @if (form.controls.leakTest.controls.passRatio.invalid) {
+          <p class="text-xs text-red-600 mt-1">Enter a value between 0 and 1.</p>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Observe: max pressure (psi)</label>
+        <input type="number" step="any" formControlName="observeMaxPressure"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <p class="text-xs text-slate-500 mt-1">Observe test passes only if initial and final are both ≤ this value.</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">DHSV leak rate limit</label>
+        <input type="number" step="any" formControlName="dhsvLeakRateLimit"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <p class="text-xs text-slate-500 mt-1">DHSV leak test passes when leak rate ≤ this value.</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">DHSV leak rate divisor</label>
+        <input type="number" step="any" formControlName="dhsvLeakRateDivisor"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+        <p class="text-xs text-slate-500 mt-1">Leak rate = (ID² × depth × constant × ΔP) ÷ divisor.</p>
+        @if (form.controls.leakTest.controls.dhsvLeakRateDivisor.invalid) {
+          <p class="text-xs text-red-600 mt-1">Must be greater than 0.</p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Severity rules -->
+  <section formGroupName="rules" class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+    <h2 class="text-sm font-semibold text-slate-800">Traffic-light rules</h2>
+    <p class="text-xs text-slate-500 mb-4">
+      Colour assigned to a component when its tests fail. The worst component decides each light.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs text-slate-500 border-b border-slate-200">
+            <th class="py-2 pr-3 font-medium">Component</th>
+            <th class="py-2 px-2 font-medium">Leak fails only</th>
+            <th class="py-2 px-2 font-medium">Function fails only</th>
+            <th class="py-2 pl-2 font-medium">Both fail</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (rule of leakFnRules; track rule.key) {
+            <tr [formGroupName]="rule.key" class="border-b border-slate-100">
+              <td class="py-2 pr-3">
+                <p class="font-medium text-slate-800">{{ rule.label }}</p>
+                <p class="text-xs text-slate-500">{{ rule.hint }}</p>
+              </td>
+              @for (col of leakFnColumns; track col) {
+                <td class="py-2 px-2">
+                  <select [formControlName]="col"
+                    class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    @for (s of severities; track s.value) {
+                      <option [value]="s.value">{{ s.label }}</option>
+                    }
+                  </select>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+      @for (rule of singleRules; track rule.key) {
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-0.5">{{ rule.label }}</label>
+          <p class="text-xs text-slate-500 mb-1">{{ rule.hint }}</p>
+          <select [formControlName]="rule.key"
+            class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            @for (s of severities; track s.value) {
+              <option [value]="s.value">{{ s.label }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Pressure ratios -->
+  <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+    <h2 class="text-sm font-semibold text-slate-800">Pressure limits</h2>
+    <p class="text-xs text-slate-500 mb-4">
+      Ratio = measured ÷ limit. Above the warning ratio the light turns yellow; above the fail ratio it turns red.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div formGroupName="annulusPressure">
+        <p class="text-sm font-medium text-slate-700 mb-2">Annulus pressure ÷ TOW</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Warning above</label>
+            <input type="number" step="0.01" formControlName="warningRatio"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Fail above</label>
+            <input type="number" step="0.01" formControlName="failRatio"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
+        </div>
+        @if (form.controls.annulusPressure.hasError('warningNotBelowFail')) {
+          <p class="text-xs text-red-600 mt-1">Warning ratio must be lower than the fail ratio.</p>
+        }
+      </div>
+
+      <div formGroupName="mesp">
+        <p class="text-sm font-medium text-slate-700 mb-2">MESP ÷ MASP</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Warning above</label>
+            <input type="number" step="0.01" formControlName="warningRatio"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-500 mb-1">Fail above</label>
+            <input type="number" step="0.01" formControlName="failRatio"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
+        </div>
+        @if (form.controls.mesp.hasError('warningNotBelowFail')) {
+          <p class="text-xs text-red-600 mt-1">Warning ratio must be lower than the fail ratio.</p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Barrier -->
+  <section formGroupName="barrier" class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+    <h2 class="text-sm font-semibold text-slate-800">Annulus barrier (Monobore)</h2>
+    <p class="text-xs text-slate-500 mb-4">
+      A-annulus passes when top perforation ≥ CBL TOC + margin, or ≥ volumetric TOC + margin.
+    </p>
+    <div class="grid grid-cols-2 gap-4 max-w-md">
+      <div>
+        <label class="block text-xs text-slate-500 mb-1">CBL TOC margin</label>
+        <input type="number" step="any" formControlName="cblTocMargin"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-500 mb-1">Volumetric TOC margin</label>
+        <input type="number" step="any" formControlName="volTocMargin"
+          class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 max-w-md">
+    <label class="block text-sm font-medium text-slate-700 mb-1">Updated by</label>
+    <input type="text" formControlName="updatedBy" placeholder="Your name"
+      class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+    @if (updatedAt()) {
+      <p class="text-xs text-slate-500 mt-1">Last saved {{ updatedAt() }}</p>
+    }
+  </section>
+
+  <!-- Fixed action bar -->
+  <div class="fixed bottom-0 right-0 left-64 bg-white border-t border-slate-200 px-6 py-3 flex items-center gap-3 justify-end">
+    @if (message(); as m) {
+      <span [class]="m.kind === 'ok' ? 'text-sm text-green-700 mr-auto' : 'text-sm text-red-600 mr-auto'">{{ m.text }}</span>
+    }
+    <button type="button" (click)="resetToDefaults()"
+      class="px-4 py-2 text-sm rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50">
+      Reset to defaults
+    </button>
+    <button type="submit" [disabled]="saving() || form.invalid || !dirty()"
+      class="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+      {{ saving() ? 'Saving…' : 'Save configuration' }}
+    </button>
+  </div>
+</form>

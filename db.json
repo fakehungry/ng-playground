@@ -24201,6 +24201,7 @@
       "updatedAt": "2026-06-24T08:44:22.188Z"
     }
   ],
+  "integrityConfigs": [],
   "rigSchedules": [
     {
       "id": "rig1",

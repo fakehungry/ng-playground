@@ -361,3 +361,47 @@ export interface CmFormValue {
   reportedBy: string;
   elements: CmElementEntry[];
 }
+
+// --- Admin-configurable integrity logic ---
+
+/** Traffic-light outcome a rule can assign (no-data is derived, never configured). */
+export type RuleSeverity = 'pass' | 'warning' | 'fail';
+
+export interface LeakTestConfig {
+  /** Positive / Inflow: pass when the pressure ratio is >= this (e.g. 0.97 = max 3% drop). */
+  passRatio: number;
+  /** Observe: pass only when both initial and final pressure are <= this (normally 0). */
+  observeMaxPressure: number;
+  /** DHSV: pass when leakRate <= this. */
+  dhsvLeakRateLimit: number;
+  /** DHSV: leakRate = (ID² × depth × constant × ΔP) / divisor. */
+  dhsvLeakRateDivisor: number;
+}
+
+/** Severity by which of the two tests failed on a valve-like component. */
+export interface LeakFnSeverity {
+  leakOnly: RuleSeverity;
+  fnOnly: RuleSeverity;
+  both: RuleSeverity;
+}
+
+export interface IntegrityConfig {
+  id: string;
+  leakTest: LeakTestConfig;
+  /** Annulus pressure vs TOW: > failRatio fails, > warningRatio warns. */
+  annulusPressure: { warningRatio: number; failRatio: number };
+  /** MESP vs MASP: > failRatio fails, > warningRatio warns. */
+  mesp: { warningRatio: number; failRatio: number };
+  /** Monobore barrier: topPerf >= CBL TOC + cblTocMargin, or >= volumetric TOC + volTocMargin. */
+  barrier: { cblTocMargin: number; volTocMargin: number };
+  rules: {
+    xtValve: LeakFnSeverity;
+    annulusValve: LeakFnSeverity;
+    dhsv: LeakFnSeverity;
+    packoffLeak: RuleSeverity;
+    thgrPortLeak: RuleSeverity;
+    tubingFail: RuleSeverity;
+  };
+  updatedAt: string;
+  updatedBy: string;
+}

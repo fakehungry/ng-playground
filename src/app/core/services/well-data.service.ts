@@ -25,13 +25,14 @@ export function computeAnnulusStatus(
   aAnnVolToc: number | null,
   aAnnCblToc: number | null,
   bAnnShoeDepth: number | null,
+  margins: { cblTocMargin: number; volTocMargin: number } = { cblTocMargin: 30, volTocMargin: 50 },
 ): IntegrityStatus {
   if (completionType === 'Conventional') return 'pass';
 
   // Monobore: TOC condition based on A-annulus values
   const tocCondition =
-    (topPerforation != null && aAnnCblToc != null && topPerforation >= aAnnCblToc + 30) ||
-    (topPerforation != null && aAnnVolToc != null && topPerforation >= aAnnVolToc + 50);
+    (topPerforation != null && aAnnCblToc != null && topPerforation >= aAnnCblToc + margins.cblTocMargin) ||
+    (topPerforation != null && aAnnVolToc != null && topPerforation >= aAnnVolToc + margins.volTocMargin);
 
   if (annulusType === 'A') {
     if (topPerforation == null || (aAnnCblToc == null && aAnnVolToc == null)) return 'no-data';

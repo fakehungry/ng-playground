@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
+import { DEFAULT_INTEGRITY_CONFIG } from '../constants/integrity-defaults';
+import { computeDhsvLeakRate, evaluateDhsvLeakRate, evaluateLeakTest } from '../utils/leak-test';
 import {
   AnnulusPressureComponent,
   AnnulusPressureSection,
@@ -8,6 +10,7 @@ import {
   DhsvComponent,
   DhsvData,
   FunctionTestResult,
+  LeakTestConfig,
   LeakTestResult,
   PmFormValue,
   PmInspectionData,
@@ -33,15 +36,9 @@ function leakTest(
   initial: number | null,
   final: number | null,
   testType: ValveTestType,
+  cfg: LeakTestConfig,
 ): LeakTestResult | null {
-  if (initial == null || final == null) return null;
-  if (testType === 'Observe') return initial === 0 && final === 0 ? 'Pass' : 'Fail';
-  if (testType === 'Inflow') {
-    if (final === 0) return null;
-    return initial / final >= 0.97 ? 'Pass' : 'Fail';
-  }
-  if (initial === 0) return null;
-  return final / initial >= 0.97 ? 'Pass' : 'Fail';
+  return evaluateLeakTest(testType, initial, final, cfg);
 }
 
 function pressureStatus(lt: LeakTestResult | null): ComponentStatus {
@@ -230,8 +227,9 @@ function buildPressureComponent(
     testTime: number | null;
     comment: string;
   },
+  cfg: LeakTestConfig,
 ): PressureComponent {
-  const lt = leakTest(raw.initialPressure, raw.finalPressure, raw.testType);
+  const lt = leakTest(raw.initialPressure, raw.finalPressure, raw.testType, cfg);
   return {
     testType: raw.testType,
     initialPressure: raw.initialPressure,
@@ -254,8 +252,9 @@ function buildValveComponent(
     turns: number | null;
     comment: string;
   },
+  cfg: LeakTestConfig,
 ): ValveComponent {
-  const lt = leakTest(raw.initialPressure, raw.finalPressure, raw.testType);
+  const lt = leakTest(raw.initialPressure, raw.finalPressure, raw.testType, cfg);
   return {
     testType: raw.testType,
     initialPressure: raw.initialPressure,
@@ -295,13 +294,14 @@ export function buildInspectionData(
   annulusRecord: WellAnnulusRecord | null,
   dhsvConfig?: DhsvConfig | null,
   dhsvConstantOverride?: number | null,
+  cfg: LeakTestConfig = DEFAULT_INTEGRITY_CONFIG.leakTest,
 ): PmInspectionData {
-  const xtBodyComp = buildPressureComponent(raw.xtBody.xtBody);
-  const umv = buildValveComponent(raw.xtBody.umv);
-  const lmv = buildValveComponent(raw.xtBody.lmv);
-  const wv = buildValveComponent(raw.xtBody.wv);
-  const kwv = buildValveComponent(raw.xtBody.kwv);
-  const sv = buildValveComponent(raw.xtBody.sv);
+  const xtBodyComp = buildPressureComponent(raw.xtBody.xtBody, cfg);
+  const umv = buildValveComponent(raw.xtBody.umv, cfg);
+  const lmv = buildValveComponent(raw.xtBody.lmv, cfg);
+  const wv = buildValveComponent(raw.xtBody.wv, cfg);
+  const kwv = buildValveComponent(raw.xtBody.kwv, cfg);
+  const sv = buildValveComponent(raw.xtBody.sv, cfg);
   const stuffingBox = raw.xtBody.stuffingBox;
 
   const xtBodySection: XtBodySection = {
@@ -323,23 +323,23 @@ export function buildInspectionData(
     stuffingBox,
   };
 
-  const xmtA = buildPressureComponent(raw.wellhead.xmtCarrierA);
-  const thcB = buildPressureComponent(raw.wellhead.tubingHangerCarrierB);
-  const cavC = buildPressureComponent(raw.wellhead.cavityC);
-  const tbgD = buildPressureComponent(raw.wellhead.tbgHgrSealD);
-  const csg7 = buildPressureComponent(raw.wellhead.csg7inPackOff);
-  const csg9 = buildPressureComponent(raw.wellhead.csg9inPackOff);
-  const aAnnValve = buildValveComponent(raw.wellhead.aAnnCsgValve);
-  const bAnn = buildValveComponent(raw.wellhead.bAnnCsg);
-  const cAnn = buildValveComponent(raw.wellhead.cAnnCsg);
+  const xmtA = buildPressureComponent(raw.wellhead.xmtCarrierA, cfg);
+  const thcB = buildPressureComponent(raw.wellhead.tubingHangerCarrierB, cfg);
+  const cavC = buildPressureComponent(raw.wellhead.cavityC, cfg);
+  const tbgD = buildPressureComponent(raw.wellhead.tbgHgrSealD, cfg);
+  const csg7 = buildPressureComponent(raw.wellhead.csg7inPackOff, cfg);
+  const csg9 = buildPressureComponent(raw.wellhead.csg9inPackOff, cfg);
+  const aAnnValve = buildValveComponent(raw.wellhead.aAnnCsgValve, cfg);
+  const bAnn = buildValveComponent(raw.wellhead.bAnnCsg, cfg);
+  const cAnn = buildValveComponent(raw.wellhead.cAnnCsg, cfg);
   const aAnnValve2 = hasValveInput(raw.wellhead.aAnnCsgValve2)
-    ? buildValveComponent(raw.wellhead.aAnnCsgValve2)
+    ? buildValveComponent(raw.wellhead.aAnnCsgValve2, cfg)
     : undefined;
   const bAnn2 = hasValveInput(raw.wellhead.bAnnCsg2)
-    ? buildValveComponent(raw.wellhead.bAnnCsg2)
+    ? buildValveComponent(raw.wellhead.bAnnCsg2, cfg)
     : undefined;
   const cAnn2 = hasValveInput(raw.wellhead.cAnnCsg2)
-    ? buildValveComponent(raw.wellhead.cAnnCsg2)
+    ? buildValveComponent(raw.wellhead.cAnnCsg2, cfg)
     : undefined;
 
   const wellheadSection: WellheadSection = {
@@ -382,14 +382,15 @@ export function buildInspectionData(
     constant != null
   ) {
     const { topSectionId, dhsvDepth } = dhsvConfig;
-    dhsvLeakRate =
-      (topSectionId *
-        topSectionId *
-        dhsvDepth *
-        constant *
-        (dhsvRaw.finalPressure - dhsvRaw.initialPressureWhenInflowTest)) /
-      30;
-    dhsvLeakTest = dhsvLeakRate <= 15 ? 'Pass' : 'Fail';
+    dhsvLeakRate = computeDhsvLeakRate(
+      topSectionId,
+      dhsvDepth,
+      constant,
+      dhsvRaw.initialPressureWhenInflowTest,
+      dhsvRaw.finalPressure,
+      cfg,
+    );
+    dhsvLeakTest = evaluateDhsvLeakRate(dhsvLeakRate, cfg);
   }
   const dhsvComp: DhsvComponent = {
     pressureBeforeInflowTest: dhsvRaw.pressureBeforeInflowTest,

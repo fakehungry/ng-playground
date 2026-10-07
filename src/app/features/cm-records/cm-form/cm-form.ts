@@ -23,7 +23,13 @@ import {
   StuffingBoxStatus,
 } from '../../../core/models/well-integrity.models';
 import { buildElementData, CmElementFormRaw, CmService } from '../../../core/services/cm.service';
+import { IntegrityConfigService } from '../../../core/services/integrity-config.service';
 import { PmService } from '../../../core/services/pm.service';
+import {
+  computeDhsvLeakRate,
+  evaluateDhsvLeakRate,
+  evaluateLeakTest,
+} from '../../../core/utils/leak-test';
 import { WellService } from '../../../core/services/well.service';
 
 type ElementGroup = FormGroup<{
@@ -63,6 +69,7 @@ interface ElementRow {
 export class CmForm implements OnInit {
   private readonly cmService = inject(CmService);
   private readonly pmService = inject(PmService);
+  private readonly integrityConfig = inject(IntegrityConfigService);
   protected readonly wellService = inject(WellService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -159,9 +166,9 @@ export class CmForm implements OnInit {
     init: number | null,
     fin: number | null,
   ): { leakTest: LeakTestResult | null; status: 'Good' | 'Fail' | null } {
-    if (init == null || fin == null || init === 0) return { leakTest: null, status: null };
-    const pass = fin / init >= 0.97;
-    return { leakTest: pass ? 'Pass' : 'Fail', status: pass ? 'Good' : 'Fail' };
+    const leakTest = evaluateLeakTest('Positive', init, fin, this.integrityConfig.config().leakTest);
+    if (leakTest == null) return { leakTest: null, status: null };
+    return { leakTest, status: leakTest === 'Pass' ? 'Good' : 'Fail' };
   }
 
   private calcValve(
@@ -190,14 +197,16 @@ export class CmForm implements OnInit {
       finalPressure != null &&
       constantForField != null
     ) {
-      leakRate =
-        (config.topSectionId *
-          config.topSectionId *
-          config.dhsvDepth *
-          constantForField *
-          (finalPressure - initialPressureWhenInflowTest)) /
-        30;
-      leakTest = leakRate <= 15 ? 'Pass' : 'Fail';
+      const lc = this.integrityConfig.config().leakTest;
+      leakRate = computeDhsvLeakRate(
+        config.topSectionId,
+        config.dhsvDepth,
+        constantForField,
+        initialPressureWhenInflowTest,
+        finalPressure,
+        lc,
+      );
+      leakTest = evaluateDhsvLeakRate(leakRate, lc);
     }
     const status =
       leakTest === 'Pass' && ft === 'Pass' ? 'Good' : leakTest != null || ft != null ? 'Fail' : null;
@@ -384,7 +393,12 @@ export class CmForm implements OnInit {
         elementKey: def.key,
         section: def.section,
         kind: def.kind,
-        elementData: buildElementData(def.kind, groupRaw, this.dhsvData()),
+        elementData: buildElementData(
+          def.kind,
+          groupRaw,
+          this.dhsvData(),
+          this.integrityConfig.config().leakTest,
+        ),
       };
     });
 

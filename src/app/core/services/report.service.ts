@@ -1,10 +1,17 @@
 import { inject, Injectable } from '@angular/core';
+import { DEFAULT_INTEGRITY_CONFIG } from '../constants/integrity-defaults';
 import {
   AnnulusData,
   AnnulusIntegrityResult,
   AnnulusPressureSection,
   AnnulusType,
+  DhsvComponent,
+  IntegrityConfig,
   IntegrityStatus,
+  LeakFnSeverity,
+  LeakTestResult,
+  PressureComponent,
+  RuleSeverity,
   PmInspectionData,
   TubingSection,
   ValveComponent,
@@ -14,6 +21,8 @@ import {
   WellStatusRow,
   XtBodySection,
 } from '../models/well-integrity.models';
+import { evaluateDhsvLeakRate, evaluateLeakTest, leakFnSeverity } from '../utils/leak-test';
+import { IntegrityConfigService } from './integrity-config.service';
 import { PmService } from './pm.service';
 import { computeAnnulusStatus, WellDataService } from './well-data.service';
 import { WellService } from './well.service';
@@ -39,24 +48,63 @@ function checkMopVsMasp(data: AnnulusData): IntegrityStatus {
   return data.mop > data.masp ? 'fail' : 'pass';
 }
 
-function checkMespVsMasp(mesp: number | null, data: AnnulusData): IntegrityStatus {
+function checkMespVsMasp(
+  mesp: number | null,
+  data: AnnulusData,
+  cfg: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
+): IntegrityStatus {
   if (mesp === null || data.masp === null) return 'no-data';
-  if (mesp > data.masp) return 'fail';
-  if (mesp / data.masp > 0.85) return 'warning';
+  const ratio = mesp / data.masp;
+  if (ratio > cfg.mesp.failRatio) return 'fail';
+  if (ratio > cfg.mesp.warningRatio) return 'warning';
   return 'pass';
+}
+
+// --- Leak results are re-evaluated from the stored pressures so config changes apply to
+// existing PM records; the stored result is the fallback when pressures are missing. ---
+
+function pressureLeak(c: PressureComponent, cfg: IntegrityConfig): LeakTestResult | null {
+  return (
+    evaluateLeakTest(c.testType ?? 'Positive', c.initialPressure, c.finalPressure, cfg.leakTest) ??
+    c.leakTest
+  );
+}
+
+function dhsvLeak(d: DhsvComponent, cfg: IntegrityConfig): LeakTestResult | null {
+  return evaluateDhsvLeakRate(d.leakRate, cfg.leakTest) ?? d.leakTest;
+}
+
+function valveSeverity(
+  v: ValveComponent,
+  rule: LeakFnSeverity,
+  cfg: IntegrityConfig,
+): IntegrityStatus {
+  return leakFnSeverity(pressureLeak(v, cfg), v.functionTest, rule);
+}
+
+function leakSeverity(
+  c: PressureComponent,
+  severity: RuleSeverity,
+  cfg: IntegrityConfig,
+): IntegrityStatus {
+  return pressureLeak(c, cfg) === 'Fail' ? severity : 'pass';
 }
 
 // --- Per-component status functions ---
 
-export function computeXtStatus(xt?: XtBodySection): IntegrityStatus {
+export function computeXtStatus(
+  xt?: XtBodySection,
+  cfg: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
+): IntegrityStatus {
   if (!xt) return 'no-data';
   const valves = [xt.umv, xt.lmv, xt.wv, xt.kwv, xt.sv];
-  if (valves.some((v) => v.leakTest === 'Fail' && v.functionTest === 'Fail')) return 'fail';
-  if (valves.some((v) => v.leakTest === 'Fail' || v.functionTest === 'Fail')) return 'warning';
-  return 'pass';
+  return worstStatus(...valves.map((v) => valveSeverity(v, cfg.rules.xtValve, cfg)));
 }
 
-export function computeWhStatus(wh?: WellheadSection): IntegrityStatus {
+export function computeWhStatus(
+  wh?: WellheadSection,
+  cfg: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
+): IntegrityStatus {
   if (!wh) return 'no-data';
   const packoffs = [wh.csg7inPackOff, wh.csg9inPackOff];
   const annValves = [
@@ -67,39 +115,49 @@ export function computeWhStatus(wh?: WellheadSection): IntegrityStatus {
     wh.bAnnCsg2,
     wh.cAnnCsg2,
   ].filter((v): v is ValveComponent => v != null);
-  if (packoffs.some((p) => p.leakTest === 'Fail')) return 'fail';
-  if (annValves.some((v) => v.leakTest === 'Fail' && v.functionTest === 'Fail')) return 'fail';
-  if (annValves.some((v) => v.leakTest === 'Fail' || v.functionTest === 'Fail')) return 'warning';
-  return 'pass';
+  return worstStatus(
+    ...packoffs.map((p) => leakSeverity(p, cfg.rules.packoffLeak, cfg)),
+    ...annValves.map((v) => valveSeverity(v, cfg.rules.annulusValve, cfg)),
+  );
 }
 
 // THGR = Tubing Hanger ports: XMT Carrier A, TBG Hanger B, Cavity C, Seal D
-export function computeThgrStatus(wh?: WellheadSection): IntegrityStatus {
+export function computeThgrStatus(
+  wh?: WellheadSection,
+  cfg: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
+): IntegrityStatus {
   if (!wh) return 'no-data';
   const ports = [wh.xmtCarrierA, wh.tubingHangerCarrierB, wh.cavityC, wh.tbgHgrSealD];
-  if (ports.some((p) => p.leakTest === 'Fail')) return 'fail';
-  return 'pass';
+  return worstStatus(...ports.map((p) => leakSeverity(p, cfg.rules.thgrPortLeak, cfg)));
 }
 
-export function computeDhsvStatus(tubing?: TubingSection): IntegrityStatus {
+export function computeDhsvStatus(
+  tubing?: TubingSection,
+  cfg: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
+): IntegrityStatus {
   if (!tubing?.dhsv) return 'no-data';
-  const { leakTest, functionTest } = tubing.dhsv;
-  if (leakTest === 'Fail' && functionTest === 'Fail') return 'fail';
-  if (leakTest === 'Fail' || functionTest === 'Fail') return 'warning';
-  return 'pass';
+  return leakFnSeverity(dhsvLeak(tubing.dhsv, cfg), tubing.dhsv.functionTest, cfg.rules.dhsv);
 }
 
-export function computeTbgStatus(tubing?: TubingSection): IntegrityStatus {
+export function computeTbgStatus(
+  tubing?: TubingSection,
+  cfg: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
+): IntegrityStatus {
   if (!tubing) return 'no-data';
-  return tubing.currentStatus === 'Fail' ? 'fail' : 'pass';
+  return tubing.currentStatus === 'Fail' ? cfg.rules.tubingFail : 'pass';
 }
 
-export function computeAnnPressureStatus(annP?: AnnulusPressureSection): IntegrityStatus {
+export function computeAnnPressureStatus(
+  annP?: AnnulusPressureSection,
+  cfg: IntegrityConfig = DEFAULT_INTEGRITY_CONFIG,
+): IntegrityStatus {
   if (!annP) return 'no-data';
+  const { warningRatio, failRatio } = cfg.annulusPressure;
   const statuses: IntegrityStatus[] = [annP.aAnn, annP.bAnn, annP.cAnn].map((a) => {
     if (a.tow != null && a.currentPressure != null) {
-      if (a.currentPressure > a.tow) return 'fail';
-      if (a.currentPressure / a.tow > 0.85) return 'warning';
+      const ratio = a.currentPressure / a.tow;
+      if (ratio > failRatio) return 'fail';
+      if (ratio > warningRatio) return 'warning';
       return 'pass';
     }
     return a.currentStatus === 'Fail' ? 'fail' : 'pass';
@@ -151,6 +209,7 @@ export function buildIssueText(insp?: PmInspectionData): string {
 function barrierStatus(
   annType: AnnulusType,
   rec: WellAnnulusRecord | null | undefined,
+  cfg: IntegrityConfig,
 ): IntegrityStatus {
   if (!rec) return 'no-data';
   const aAnn = rec.annuli.A;
@@ -162,6 +221,7 @@ function barrierStatus(
     aAnn.toc,
     aAnn.cblToc,
     bAnn.shoeDepth,
+    cfg.barrier,
   );
 }
 
@@ -170,6 +230,7 @@ export class ReportService {
   private readonly wellService = inject(WellService);
   private readonly pmService = inject(PmService);
   private readonly wellDataService = inject(WellDataService);
+  private readonly integrityConfig = inject(IntegrityConfigService);
 
   // Existing single-well report (unchanged — used by export)
   generateReport(wellId: string): WellIntegrityReport | null {
@@ -199,7 +260,7 @@ export class ReportService {
       }
 
       const mopVsMaspStatus = checkMopVsMasp(data);
-      const mespVsMaspStatus = checkMespVsMasp(mesp, data);
+      const mespVsMaspStatus = checkMespVsMasp(mesp, data, this.integrityConfig.config());
       return {
         annulusType: type,
         data,
@@ -229,16 +290,17 @@ export class ReportService {
     const annulusRecord =
       this.wellDataService.allRecords().find((r) => r.wellId === wellId) ?? null;
     const insp = latestPm?.inspectionData;
+    const cfg = this.integrityConfig.config();
 
-    const wh = computeWhStatus(insp?.wellhead);
-    const xt = computeXtStatus(insp?.xtBody);
-    const thgr = computeThgrStatus(insp?.wellhead);
-    const dhsv = computeDhsvStatus(insp?.tubing);
-    const tbg = computeTbgStatus(insp?.tubing);
-    const annulusPressure = computeAnnPressureStatus(insp?.annulusPressure);
+    const wh = computeWhStatus(insp?.wellhead, cfg);
+    const xt = computeXtStatus(insp?.xtBody, cfg);
+    const thgr = computeThgrStatus(insp?.wellhead, cfg);
+    const dhsv = computeDhsvStatus(insp?.tubing, cfg);
+    const tbg = computeTbgStatus(insp?.tubing, cfg);
+    const annulusPressure = computeAnnPressureStatus(insp?.annulusPressure, cfg);
 
-    const aBarrier = barrierStatus('A', annulusRecord);
-    const bBarrier = barrierStatus('B', annulusRecord);
+    const aBarrier = barrierStatus('A', annulusRecord, cfg);
+    const bBarrier = barrierStatus('B', annulusRecord, cfg);
 
     const externalStatus = worstStatus(wh, xt, thgr, dhsv);
     const internalStatus = worstStatus(aBarrier, bBarrier, tbg);

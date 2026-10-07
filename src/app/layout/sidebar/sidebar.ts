@@ -31,6 +31,7 @@ export class Sidebar {
       ],
     },
     { label: 'Integrity Report', icon: 'chart',   route: '/report' },
+    { label: 'Integrity Logic',  icon: 'sliders', route: '/admin/integrity-config' },
   ];
 
   protected readonly expandedGroups = signal<ReadonlySet<string>>(

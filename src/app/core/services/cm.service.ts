@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
+import { DEFAULT_INTEGRITY_CONFIG } from '../constants/integrity-defaults';
+import { computeDhsvLeakRate, evaluateDhsvLeakRate, evaluateLeakTest } from '../utils/leak-test';
 import {
   CmDhsvData,
   CmElementData,
@@ -13,15 +15,19 @@ import {
   ComponentStatus,
   DhsvData,
   FunctionTestResult,
+  LeakTestConfig,
   LeakTestResult,
   StuffingBoxStatus,
 } from '../models/well-integrity.models';
 
 type DhsvConfig = Pick<DhsvData, 'topSectionId' | 'dhsvDepth'>;
 
-function leakTest(initial: number | null, final: number | null): LeakTestResult | null {
-  if (initial == null || final == null || initial === 0) return null;
-  return final / initial >= 0.97 ? 'Pass' : 'Fail';
+function leakTest(
+  initial: number | null,
+  final: number | null,
+  cfg: LeakTestConfig,
+): LeakTestResult | null {
+  return evaluateLeakTest('Positive', initial, final, cfg);
 }
 
 function pressureStatus(lt: LeakTestResult | null): ComponentStatus {
@@ -50,10 +56,11 @@ export function buildElementData(
   kind: CmElementKind,
   raw: CmElementFormRaw,
   dhsvConfig?: DhsvConfig | null,
+  cfg: LeakTestConfig = DEFAULT_INTEGRITY_CONFIG.leakTest,
 ): CmElementData {
   switch (kind) {
     case 'pressure': {
-      const lt = leakTest(raw.initialPressure, raw.finalPressure);
+      const lt = leakTest(raw.initialPressure, raw.finalPressure, cfg);
       const data: CmPressureData = {
         initialPressure: raw.initialPressure,
         finalPressure: raw.finalPressure,
@@ -65,7 +72,7 @@ export function buildElementData(
       return data;
     }
     case 'valve': {
-      const lt = leakTest(raw.initialPressure, raw.finalPressure);
+      const lt = leakTest(raw.initialPressure, raw.finalPressure, cfg);
       const data: CmValveData = {
         initialPressure: raw.initialPressure,
         finalPressure: raw.finalPressure,
@@ -96,14 +103,15 @@ export function buildElementData(
         raw.constantForField != null
       ) {
         const { topSectionId, dhsvDepth } = dhsvConfig;
-        leakRate =
-          (topSectionId *
-            topSectionId *
-            dhsvDepth *
-            raw.constantForField *
-            (raw.finalPressure - raw.initialPressureWhenInflowTest)) /
-          30;
-        lt = leakRate <= 15 ? 'Pass' : 'Fail';
+        leakRate = computeDhsvLeakRate(
+          topSectionId,
+          dhsvDepth,
+          raw.constantForField,
+          raw.initialPressureWhenInflowTest,
+          raw.finalPressure,
+          cfg,
+        );
+        lt = evaluateDhsvLeakRate(leakRate, cfg);
       }
       const data: CmDhsvData = {
         pressureBeforeInflowTest: raw.pressureBeforeInflowTest,

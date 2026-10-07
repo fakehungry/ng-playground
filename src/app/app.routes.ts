@@ -43,6 +43,11 @@ export const routes: Routes = [
           import('./features/well-data/failure-report/failure-report').then(m => m.FailureReportForm),
       },
       {
+        path: 'admin/integrity-config',
+        loadComponent: () =>
+          import('./features/admin/integrity-config/integrity-config').then(m => m.IntegrityConfigPage),
+      },
+      {
         path: 'report',
         loadComponent: () => import('./features/report/report').then(m => m.Report),
       },

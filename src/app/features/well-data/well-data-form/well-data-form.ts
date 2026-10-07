@@ -24,6 +24,7 @@ import {
   PmOverrideMonths,
   FlowMechanism,
 } from '../../../core/models/well-integrity.models';
+import { IntegrityConfigService } from '../../../core/services/integrity-config.service';
 import { PmService } from '../../../core/services/pm.service';
 import { FailureReportService } from '../../../core/services/failure-report.service';
 import { AnnulusTab } from '../annulus-tab/annulus-tab';
@@ -44,6 +45,7 @@ export class WellDataForm implements OnInit {
   protected readonly wellService = inject(WellService);
   protected readonly wellDataService = inject(WellDataService);
   protected readonly pmService = inject(PmService);
+  private readonly integrityConfig = inject(IntegrityConfigService);
   protected readonly failureReportService = inject(FailureReportService);
 
   @ViewChildren(AnnulusTab) private annulusTabs!: QueryList<AnnulusTab>;
@@ -132,11 +134,12 @@ export class WellDataForm implements OnInit {
 
     const aAnn = record.annuli.A;
     const bAnn = record.annuli.B;
+    const margins = this.integrityConfig.config().barrier;
 
     return {
-      A: computeAnnulusStatus('A', ct, topPerf, aAnn.toc, aAnn.cblToc, bAnn.shoeDepth),
-      B: computeAnnulusStatus('B', ct, topPerf, aAnn.toc, aAnn.cblToc, bAnn.shoeDepth),
-      C: computeAnnulusStatus('C', ct, topPerf, aAnn.toc, aAnn.cblToc, bAnn.shoeDepth),
+      A: computeAnnulusStatus('A', ct, topPerf, aAnn.toc, aAnn.cblToc, bAnn.shoeDepth, margins),
+      B: computeAnnulusStatus('B', ct, topPerf, aAnn.toc, aAnn.cblToc, bAnn.shoeDepth, margins),
+      C: computeAnnulusStatus('C', ct, topPerf, aAnn.toc, aAnn.cblToc, bAnn.shoeDepth, margins),
     };
   });
 

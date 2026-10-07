@@ -19,7 +19,13 @@ import {
   InspectionFormRaw,
   PmService,
 } from '../../../core/services/pm.service';
+import { IntegrityConfigService } from '../../../core/services/integrity-config.service';
 import { WellDataService } from '../../../core/services/well-data.service';
+import {
+  computeDhsvLeakRate,
+  evaluateDhsvLeakRate,
+  evaluateLeakTest,
+} from '../../../core/utils/leak-test';
 import { WellService } from '../../../core/services/well.service';
 import { DEFAULT_TEST_TIME_MIN, defaultTestType } from '../../../core/utils/test-defaults';
 import { ParsedPm } from '../../../core/services/pm-excel.service';
@@ -51,6 +57,7 @@ export class PmForm implements OnInit {
   private readonly pmService = inject(PmService);
   protected readonly wellService = inject(WellService);
   private readonly wellDataService = inject(WellDataService);
+  private readonly integrityConfig = inject(IntegrityConfigService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -278,14 +285,16 @@ export class PmForm implements OnInit {
       dhsv.finalPressure != null &&
       dhsv.constantForField != null
     ) {
-      leakRate =
-        (config.topSectionId *
-          config.topSectionId *
-          config.dhsvDepth *
-          dhsv.constantForField *
-          (dhsv.finalPressure - dhsv.initialPressureWhenInflowTest)) /
-        30;
-      leakTest = leakRate <= 15 ? 'Pass' : 'Fail';
+      const lc = this.integrityConfig.config().leakTest;
+      leakRate = computeDhsvLeakRate(
+        config.topSectionId,
+        config.dhsvDepth,
+        dhsv.constantForField,
+        dhsv.initialPressureWhenInflowTest,
+        dhsv.finalPressure,
+        lc,
+      );
+      leakTest = evaluateDhsvLeakRate(leakRate, lc);
     }
     const dhsvStatus =
       leakTest === 'Pass' && dhsv.functionTest === 'Pass'
@@ -312,16 +321,14 @@ export class PmForm implements OnInit {
     initialPressure: number | null;
     finalPressure: number | null;
   }): { leakTest: LeakTestResult | null; status: 'Good' | 'Fail' | null } {
-    const { testType, initialPressure: init, finalPressure: fin } = c;
-    if (init == null || fin == null) return { leakTest: null, status: null };
-    if (testType === 'Observe') {
-      const pass = init === 0 && fin === 0;
-      return { leakTest: pass ? 'Pass' : 'Fail', status: pass ? 'Good' : 'Fail' };
-    }
-    const isInflow = testType === 'Inflow';
-    if (isInflow ? fin === 0 : init === 0) return { leakTest: null, status: null };
-    const pass = isInflow ? init / fin >= 0.97 : fin / init >= 0.97;
-    return { leakTest: pass ? 'Pass' : 'Fail', status: pass ? 'Good' : 'Fail' };
+    const leakTest = evaluateLeakTest(
+      c.testType,
+      c.initialPressure,
+      c.finalPressure,
+      this.integrityConfig.config().leakTest,
+    );
+    if (leakTest == null) return { leakTest: null, status: null };
+    return { leakTest, status: leakTest === 'Pass' ? 'Good' : 'Fail' };
   }
 
   private calcValve(c: {
@@ -652,6 +659,7 @@ export class PmForm implements OnInit {
       this.annulusRecord(),
       this.dhsvData(),
       dhsvConstant,
+      this.integrityConfig.config().leakTest,
     );
 
     const value: PmFormValue = {
