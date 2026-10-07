@@ -649,16 +649,43 @@
                   @if (g.rigs.length > 0) {
                   <span class="relative inline-flex items-center group/rig">
                     <svg
-                      class="w-2.5 h-2.5 shrink-0 text-amber-500"
-                      viewBox="0 0 8 8"
+                      class="w-4 h-4 shrink-0 text-amber-500"
+                      viewBox="0 0 24 24"
                       fill="currentColor"
                     >
-                      <circle cx="4" cy="4" r="4" />
+                      <!-- legs -->
+                      <path d="M3.3 14.5h2.2v4.2H3.3zM10.9 14.5h2.3v4.2h-2.3zM18.5 14.5h2.4v4.2h-2.4z" />
+                      <!-- deck: top rail, mid rail, bottom rail, posts -->
+                      <path
+                        d="M2 10.3h20v.5H2zM2 14h20v.5H2zM3 12.1h18v.4H3zM2.8 10.8h.4V14h-.4zM6.9 10.8h.4V14h-.4zM11 10.8h.4V14H11zM15.1 10.8h.4V14h-.4zM19.2 10.8h.4V14h-.4z"
+                      />
+                      <!-- cabin with window + top block -->
+                      <path
+                        fill-rule="evenodd"
+                        d="M4.6 5.5h6.1v4.8H4.6zM5 6.1h1.1V10H5zM5.6 4.7h2.5v.8H5.6z"
+                      />
+                      <!-- derrick crown -->
+                      <path d="M15.4.2h1.3v.9h-1.3zM14.9 1.1h2.3v.7h-2.3zM14.4 1.8h3.3v.8h-3.3z" />
+                      <!-- derrick legs + lattice -->
+                      <path
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="0.6"
+                        d="M15 2.6L13.2 10.3M17.1 2.6L18.9 10.3M15 2.6L17.64 4.9M17.1 2.6L14.49 4.9M14.49 4.9L18.18 7.2M17.64 4.9L13.98 7.2M13.98 7.2L18.72 9.5M18.18 7.2L13.47 9.5M14.49 4.9h3.15M13.98 7.2h4.2M13.47 9.5h5.25"
+                      />
                     </svg>
                     <span
                       class="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-30 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-[10px] font-normal text-white opacity-0 invisible group-hover/rig:opacity-100 group-hover/rig:visible transition-opacity"
                     >
-                      Rig on site: {{ rigNames(g.rigs) }}
+                      <span class="block font-medium">Rig on site</span>
+                      @for (rig of g.rigs; track rig.id) {
+                      <span class="block">
+                        {{ rig.rigName }}: {{ rig.startDate }} → {{ rig.endDate }} ({{
+                          rigDurationDays(rig)
+                        }}
+                        days)
+                      </span>
+                      }
                     </span>
                   </span>
                   }
@@ -681,6 +708,22 @@
                     >
                       {{ badge.label }}
                     </span>
+                    }
+                  </div>
+                  } @if (g.suggested.length > 0) {
+                  <div class="pt-1.5 mt-1 border-t border-dashed border-slate-200">
+                    <p class="text-[10px] font-medium text-slate-500 mb-1">
+                      Suggested: also due next month
+                    </p>
+                    @for (row of g.suggested; track row.well.id) {
+                    <div class="flex items-center gap-2 text-xs opacity-75">
+                      <span
+                        class="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                        [class]="dotClass(row.finalStatus)"
+                      ></span>
+                      <span class="text-slate-600 truncate flex-1">{{ row.well.name }}</span>
+                      <span class="text-[10px] text-slate-400 shrink-0">{{ row.nextPmDate }}</span>
+                    </div>
                     }
                   </div>
                   }

@@ -54,6 +54,7 @@ interface PlatformBucketGroup {
   platformCode: string;
   count: number;
   rows: WellStatusRow[];
+  suggested: WellStatusRow[];
   rigs: RigSchedule[];
 }
 
@@ -66,7 +67,7 @@ interface BucketColumn {
 
 const PIE_COLORS: Record<IntegrityStatus, string> = {
   pass: '#22c55e',
-  warning: '#fbbf24',
+  warning: '#FAFA33',
   fail: '#ef4444',
   'no-data': '#cbd5e1',
 };
@@ -127,10 +128,19 @@ function buildBar(
   return { x: index * (BAR_WIDTH + BAR_GAP), y: BASELINE_Y - height, width: BAR_WIDTH, height };
 }
 
+/** Wells on the same platform due within this many months after a bucket's month are suggested too. */
+const SUGGEST_MONTHS_AHEAD = 1;
+
 function monthRange(month: string): { start: string; end: string } {
   const [y, m] = month.split('-').map(Number);
   const lastDay = new Date(y, m, 0).getDate();
   return { start: `${month}-01`, end: `${month}-${String(lastDay).padStart(2, '0')}` };
+}
+
+function addMonthsToMonth(month: string, n: number): string {
+  const [y, m] = month.split('-').map(Number);
+  const d = new Date(y, m - 1 + n, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
 @Component({
@@ -258,12 +268,23 @@ export class Report implements OnInit {
       });
       const refMonth = b.month === 'overdue' ? new Date().toISOString().slice(0, 7) : b.month;
       const { start, end } = monthRange(refMonth);
+      const suggestUntil = monthRange(addMonthsToMonth(refMonth, SUGGEST_MONTHS_AHEAD)).end;
       const groups: PlatformBucketGroup[] = [...byPlatform.entries()]
         .map(([platformId, rows]) => ({
           platformId,
           platformCode: rows[0].platform.name,
           count: rows.length,
           rows: rows.slice().sort((a, c) => a.well.name.localeCompare(c.well.name)),
+          suggested: (b.month === 'overdue' ? [] : all)
+            .filter(
+              (r) =>
+                r.platform.id === platformId &&
+                !r.isOverdue &&
+                !!r.nextPmDate &&
+                r.nextPmDate > end &&
+                r.nextPmDate <= suggestUntil,
+            )
+            .sort((a, c) => (a.nextPmDate ?? '').localeCompare(c.nextPmDate ?? '')),
           rigs: rigSchedules.filter(
             (r) => r.platformId === platformId && r.startDate <= end && r.endDate >= start,
           ),
@@ -512,8 +533,9 @@ export class Report implements OnInit {
     return null;
   }
 
-  protected rigNames(rigs: RigSchedule[]): string {
-    return rigs.map((r) => r.rigName).join(', ');
+  protected rigDurationDays(rig: RigSchedule): number {
+    const ms = Date.parse(rig.endDate) - Date.parse(rig.startDate);
+    return Math.round(ms / 86_400_000) + 1;
   }
 
   protected mocLabel(entries: MocEntry[] | null): string {
@@ -525,7 +547,7 @@ export class Report implements OnInit {
       case 'pass':
         return 'bg-green-500';
       case 'warning':
-        return 'bg-amber-400';
+        return 'bg-[#FAFA33]';
       case 'fail':
         return 'bg-red-500';
       default:
